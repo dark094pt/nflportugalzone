@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+
+<html data-theme="dark" lang="pt">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Quiz NFL — NFL PT</title>
+<link href="css/style.css" rel="stylesheet"/>
+<style>
+    .page-hero { padding: 140px 0 60px; background: radial-gradient(ellipse at 50% 0%, rgba(212,0,38,0.2) 0%, transparent 60%), linear-gradient(180deg, var(--bg) 0%, var(--surface) 100%); text-align: center; }
+    .quiz-wrap { max-width: 760px; margin: 0 auto; padding: 40px 0 80px; }
+    /* Start screen */
+    .quiz-start { text-align: center; padding: 60px 40px; background: var(--surface); border: 1px solid var(--border); border-radius: 24px; }
+    .quiz-start-icon { font-size: 5rem; margin-bottom: 24px; }
+    .quiz-start h2 { font-family: 'Oswald', sans-serif; font-size: 2rem; font-weight: 700; text-transform: uppercase; margin-bottom: 12px; }
+    .quiz-start p { color: var(--text-secondary); margin-bottom: 32px; font-size: 1rem; }
+    .quiz-difficulty { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-bottom: 32px; }
+    .diff-btn { padding: 10px 24px; border-radius: 100px; border: 2px solid var(--border); background: transparent; color: var(--text); font-family: 'Barlow Condensed', sans-serif; font-size: 0.9rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; }
+    .diff-btn:hover, .diff-btn.selected { border-color: var(--red); background: rgba(212,0,38,0.1); color: var(--red); }
+    /* Progress */
+    .quiz-progress { display: flex; align-items: center; gap: 16px; margin-bottom: 32px; }
+    .progress-bar { flex: 1; height: 6px; background: var(--border); border-radius: 100px; overflow: hidden; }
+    .progress-fill { height: 100%; background: var(--red); border-radius: 100px; transition: width 0.4s ease; }
+    .progress-label { font-family: 'Barlow Condensed', sans-serif; font-size: 0.85rem; font-weight: 700; color: var(--text-muted); letter-spacing: 0.08em; white-space: nowrap; }
+    /* Question card */
+    .question-card { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 36px; margin-bottom: 24px; }
+    .q-category { font-family: 'Barlow Condensed', sans-serif; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--red); margin-bottom: 16px; }
+    .q-text { font-family: 'Oswald', sans-serif; font-size: 1.5rem; font-weight: 600; line-height: 1.4; margin-bottom: 28px; }
+    .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .option-btn { padding: 16px 20px; border-radius: 12px; border: 2px solid var(--border); background: rgba(255,255,255,0.03); color: var(--text); font-family: 'Barlow Condensed', sans-serif; font-size: 1rem; font-weight: 600; letter-spacing: 0.04em; text-align: left; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 12px; }
+    .option-btn:hover:not(:disabled) { border-color: var(--red); background: rgba(212,0,38,0.08); }
+    .option-btn.correct { border-color: #22c55e; background: rgba(34,197,94,0.12); color: #22c55e; }
+    .option-btn.wrong { border-color: var(--red); background: rgba(212,0,38,0.12); color: var(--red); }
+    .option-btn:disabled { cursor: default; }
+    .opt-letter { width: 28px; height: 28px; border-radius: 8px; background: rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 700; flex-shrink: 0; }
+    .option-btn.correct .opt-letter { background: #22c55e; color: white; }
+    .option-btn.wrong .opt-letter { background: var(--red); color: white; }
+    /* Explanation */
+    .explanation { padding: 16px 20px; background: rgba(255,255,255,0.04); border-radius: 10px; margin-top: 16px; font-size: 0.9rem; line-height: 1.6; color: var(--text-secondary); border-left: 3px solid var(--red); }
+    /* Score */
+    .score-display { display: flex; align-items: center; justify-content: center; gap: 24px; padding: 20px 28px; background: rgba(212,0,38,0.08); border: 1px solid rgba(212,0,38,0.2); border-radius: 12px; margin-bottom: 24px; }
+    .score-num { font-family: 'Oswald', sans-serif; font-size: 2.5rem; font-weight: 700; color: var(--red); }
+    .score-lbl { font-family: 'Barlow Condensed', sans-serif; font-size: 0.8rem; color: var(--text-muted); letter-spacing: 0.1em; text-transform: uppercase; }
+    /* Results */
+    .result-card { text-align: center; padding: 60px 40px; background: var(--surface); border: 1px solid var(--border); border-radius: 24px; }
+    .result-emoji { font-size: 5rem; margin-bottom: 20px; }
+    .result-title { font-family: 'Oswald', sans-serif; font-size: 2.2rem; font-weight: 700; text-transform: uppercase; margin-bottom: 12px; }
+    .result-score-big { font-family: 'Oswald', sans-serif; font-size: 4rem; font-weight: 700; color: var(--red); margin-bottom: 8px; }
+    .result-message { color: var(--text-secondary); margin-bottom: 32px; font-size: 1rem; max-width: 400px; margin-left: auto; margin-right: auto; }
+    .result-breakdown { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 32px; }
+    .rb-item { background: rgba(255,255,255,0.04); border-radius: 12px; padding: 16px; text-align: center; }
+    .rb-val { font-family: 'Oswald', sans-serif; font-size: 1.8rem; font-weight: 700; }
+    .rb-lbl { font-family: 'Barlow Condensed', sans-serif; font-size: 0.72rem; color: var(--text-muted); letter-spacing: 0.1em; text-transform: uppercase; margin-top: 4px; }
+    @media (max-width: 560px) { .options-grid { grid-template-columns: 1fr; } .quiz-wrap { padding: 20px 0 60px; } }
+  </style>
+</head>
+<body>
+<div id="nav-placeholder"></div>
+<div class="header-actions">
+<button class="btn-lang" data-i18n="quiz_018" onclick="toggleLang()" style="background:transparent;border:1px solid var(--border-color,rgba(255,255,255,.2));color:var(--text-primary,#f0f4ff);font-size:0.75rem;font-weight:700;padding:0.3rem 0.6rem;border-radius:6px;cursor:pointer;transition:all 0.2s;white-space:nowrap;font-family:inherit;" title="Switch to English">🌐 EN</button>
+<button aria-label="Alternar tema" class="theme-toggle" onclick="toggleTheme()">☀️</button>
+<button aria-expanded="false" aria-label="Menu" class="hamburger"><span></span> <span></span> <span></span></button>
+</div>
+
+
+<nav aria-hidden="true" class="mobile-nav">
+<a data-i18n="quiz_019" href="index.html">🏠 Início</a>
+<a data-i18n="quiz_020" href="nfl.html">🏈 NFL</a>
+<a data-i18n="quiz_021" href="portugal.html">🇵🇹 Portugal</a>
+<a data-i18n="quiz_022" href="equipas.html">🏟 Equipas</a>
+<a data-i18n="quiz_023" href="jogadores.html">👤 Jogadores</a>
+<a data-i18n="quiz_024" href="treinadores.html">🧑‍🏫 Treinadores</a>
+<a data-i18n="quiz_025" href="classificacoes.html">📊 Classificações</a>
+<a data-i18n="quiz_026" href="estatisticas.html">📈 Estatísticas</a>
+<a data-i18n="quiz_027" href="calendario.html">📅 Calendário</a>
+<a data-i18n="quiz_028" href="noticias.html">📰 Notícias</a>
+<a data-i18n="quiz_029" href="quiz.html">🧠 Quiz</a>
+<a data-i18n="quiz_030" href="contactos.html">📞 Contactos</a>
+</nav>
+<section class="page-hero">
+<div class="container">
+<span class="section-badge" data-i18n="quiz_031">🧠 Testa o teu conhecimento</span>
+<h1 class="section-title" data-i18n="quiz_032" style="font-size:clamp(2.2rem,5vw,4rem);margin-top:16px">Quiz NFL</h1>
+<p class="section-sub" data-i18n="quiz_033" style="max-width:520px;margin:0 auto">Responde a 10 perguntas sobre NFL e descobre o teu nível de conhecimento sobre futebol americano.</p>
+</div>
+</section>
+<main class="container">
+<div class="quiz-wrap">
+<div id="quiz-start-screen">
+<div class="quiz-start">
+<div class="quiz-start-icon">🏈</div>
+<h2 data-i18n="quiz_034">Pronto para jogar?</h2>
+<p data-i18n="quiz_035">10 perguntas sobre NFL — história, jogadores, regras e muito mais. Escolhe a tua dificuldade:</p>
+<div class="quiz-difficulty">
+<button class="diff-btn selected" data-i18n="quiz_036" onclick="selectDiff(this,'easy')">🟢 Fácil</button>
+<button class="diff-btn" data-i18n="quiz_037" onclick="selectDiff(this,'medium')">🟡 Médio</button>
+<button class="diff-btn" data-i18n="quiz_038" onclick="selectDiff(this,'hard')">🔴 Difícil</button>
+</div>
+<button class="btn btn-primary" data-i18n="quiz_039" onclick="startQuiz()" style="font-size:1.1rem;padding:16px 40px">Começar Quiz →</button>
+</div>
+</div>
+<div id="quiz-game-screen" style="display:none">
+<div class="quiz-progress">
+<div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+<div class="progress-label" id="progressLabel">1 / 10</div>
+<div class="score-display" style="padding:10px 16px;margin:0">
+<div><div class="score-num" id="scoreDisplay">0</div>
+<div class="score-lbl" data-i18n="quiz_040">Pts</div></div>
+</div>
+</div>
+<div class="question-card" id="questionCard">
+<div class="q-category" id="qCategory"></div>
+<div class="q-text" id="qText"></div>
+<div class="options-grid" id="optionsGrid"></div>
+<div class="explanation" id="explanation" style="display:none"></div>
+</div>
+<div style="text-align:right">
+<button class="btn btn-primary" data-i18n="quiz_041" id="nextBtn" onclick="nextQuestion()" style="display:none">Próxima →</button>
+</div>
+</div>
+<div id="quiz-result-screen" style="display:none">
+<div class="result-card">
+<div class="result-emoji" id="resultEmoji"></div>
+<div class="result-title" id="resultTitle"></div>
+<div class="result-score-big" id="resultScore"></div>
+<div class="result-message" id="resultMessage"></div>
+<div class="result-breakdown">
+<div class="rb-item"><div class="rb-val" id="rbCorrect" style="color:#22c55e"></div>
+<div class="rb-lbl" data-i18n="quiz_042">Certas</div></div>
+<div class="rb-item"><div class="rb-val" id="rbWrong" style="color:var(--red)"></div>
+<div class="rb-lbl" data-i18n="quiz_043">Erradas</div></div>
+<div class="rb-item"><div class="rb-val" id="rbPoints" style="color:#c8a951"></div>
+<div class="rb-lbl" data-i18n="quiz_044">Pontos</div></div>
+</div>
+<button class="btn btn-primary" data-i18n="quiz_045" onclick="restartQuiz()" style="font-size:1.1rem;padding:16px 40px">Jogar Novamente 🔄</button>
+</div>
+</div>
+</div>
+</main>
+<footer class="site-footer">
+<div class="footer-inner">
+<div class="footer-brand">
+<a class="logo" data-i18n="quiz_046" href="index.html"><div class="logo-shield">N</div>NFL<span>PT</span></a>
+<p data-i18n="footer-desc">O destino português para o futebol americano. Notícias, estatísticas, classificações e muito mais sobre a NFL e o futebol americano em Portugal.</p>
+</div>
+<div class="footer-col">
+<h4 data-i18n="quiz_047">NFL</h4>
+<ul>
+<li><a data-i18n="quiz_048" href="nfl.html">Sobre a NFL</a></li>
+<li><a data-i18n="quiz_049" href="equipas.html">Equipas</a></li>
+<li><a data-i18n="quiz_050" href="jogadores.html">Jogadores</a></li>
+<li><a data-i18n="quiz_051" href="treinadores.html">Treinadores</a></li>
+<li><a data-i18n="quiz_052" href="classificacoes.html">Classificações</a></li>
+<li><a data-i18n="quiz_053" href="calendario.html">Calendário</a></li>
+</ul>
+</div>
+<div class="footer-col">
+<h4 data-i18n="quiz_054">Portugal</h4>
+<ul>
+<li><a data-i18n="quiz_055" href="portugal.html">FPFA</a></li>
+<li><a data-i18n="quiz_056" href="portugal.html#competicoes">Competições</a></li>
+<li><a data-i18n="quiz_057" href="portugal.html#flag">Flag Football</a></li>
+</ul>
+</div>
+<div class="footer-col">
+<h4 data-i18n="quiz_058">Site</h4>
+<ul>
+<li><a data-i18n="quiz_059" href="sobre.html">Sobre o Projeto</a></li>
+<li><a data-i18n="quiz_060" href="quiz.html">Quiz NFL</a></li>
+<li><a data-i18n="quiz_061" href="noticias.html">Notícias</a></li>
+<li><a data-i18n="quiz_062" href="contactos.html">Contactos</a></li>
+<li><a data-i18n="quiz_063" href="termos.html">Privacidade</a></li>
+<li><a data-i18n="quiz_064" href="admin.html">Admin</a></li>
+</ul>
+</div>
+</div>
+<div class="footer-bottom">
+<p data-i18n="footer-copy">© 2025 NFL PT. Todos os direitos reservados. Projeto Académico — PAP.</p>
+<p data-i18n="footer-disc">NFL™ e todos os logos são propriedade da National Football League.</p>
+</div>
+</footer>
+<div id="footer-placeholder"></div>
+<script src="js/i18n.js"></script>
+<script src="js/shared.js"></script>
+<script src="js/nav.js"></script>
+<script>
+/* Quiz standalone theme/nav handled by shared.js + nav.js */
+</script>
+<script>
+/* ===== QUIZ NFLPT — 3 DIFICULDADES SEPARADAS ===== */
+
+const QUESTIONS = {
+  easy: [
+    { cat:'Regras Básicas', text:'Quantas jardas são necessárias para um first down?', opts:['5 jardas','10 jardas','15 jardas','20 jardas'], correct:1, explanation:'Uma equipa tem 4 tentativas (downs) para avançar 10 jardas. Se conseguir, renova as tentativas com novo set de 4 downs.' },
+    { cat:'Pontuação', text:'Quantos pontos vale um touchdown?', opts:['3 pontos','4 pontos','6 pontos','7 pontos'], correct:2, explanation:'Um touchdown vale 6 pontos. A equipa pode ainda tentar um extra point por pontapé (1 pt) ou uma conversão de 2 pontos.' },
+    { cat:'Estrutura', text:'Quantas equipas compõem a NFL?', opts:['28','30','32','36'], correct:2, explanation:'A NFL tem 32 equipas divididas em 2 conferências (AFC e NFC), cada uma com 4 divisões de 4 equipas.' },
+    { cat:'Regras Básicas', text:'Quantos jogadores de cada equipa estão em campo ao mesmo tempo?', opts:['9','10','11','12'], correct:2, explanation:'Cada equipa coloca 11 jogadores em campo, perfazendo 22 jogadores no total durante cada jogada.' },
+    { cat:'História', text:'Em que ano foi fundada a NFL?', opts:['1910','1920','1935','1945'], correct:1, explanation:'A NFL foi fundada a 17 de setembro de 1920 em Canton, Ohio, como a American Professional Football Association (APFA).' },
+    { cat:'Super Bowl', text:'Como se chama o troféu entregue ao campeão do Super Bowl?', opts:['Troféu Pete Rozelle','Troféu George Halas','Troféu Vince Lombardi','Troféu Walter Payton'], correct:2, explanation:'O troféu chama-se Vince Lombardi, em homenagem ao lendário treinador dos Green Bay Packers nos anos 60.' },
+    { cat:'Regras Básicas', text:'O que é um "field goal"?', opts:['Touchdown após corrida','Pontapé entre os postes do adversário','Intercepção na end zone','Punt bloqueado'], correct:1, explanation:'Um field goal vale 3 pontos e é marcado quando a bola é pontapeada entre os postes verticais da baliza adversária.' },
+    { cat:'Portugal', text:'Qual é a entidade que gere o futebol americano em Portugal?', opts:['FPF','FPFA','UEFA','IFAF'], correct:1, explanation:'A FPFA (Federação Portuguesa de Futebol Americano) é a entidade responsável por regulamentar e organizar a modalidade em Portugal.' },
+    { cat:'Estrutura', text:'Quantas conferências tem a NFL?', opts:['1','2','3','4'], correct:1, explanation:'A NFL divide-se em duas conferências: a AFC (American Football Conference) e a NFC (National Football Conference).' },
+    { cat:'Regras Básicas', text:'O que é um "safety"?', opts:['Intercepção','QB atirado na sua própria end zone','Field goal falhado','Punt na end zone'], correct:1, explanation:'Um safety vale 2 pontos para a defesa. Ocorre quando o portador da bola é atirado (tackle) dentro da sua própria end zone.' },
+    { cat:'Super Bowl', text:'Em que mês se realiza normalmente o Super Bowl?', opts:['Dezembro','Janeiro','Fevereiro','Março'], correct:2, explanation:'O Super Bowl realiza-se geralmente no início de fevereiro, sendo o evento desportivo mais assistido nos Estados Unidos.' },
+    { cat:'Estrutura', text:'Quantas divisões tem cada conferência da NFL?', opts:['2','3','4','5'], correct:2, explanation:'Cada conferência tem 4 divisões (Norte, Sul, Este, Oeste) com 4 equipas cada, totalizando 16 equipas por conferência.' },
+  ],
+  medium: [
+    { cat:'História', text:'Qual QB ganhou mais Super Bowls como jogador?', opts:['Joe Montana','Terry Bradshaw','Tom Brady','Peyton Manning'], correct:2, explanation:'Tom Brady ganhou 7 Super Bowls — 6 pelos New England Patriots e 1 pelos Tampa Bay Buccaneers em 2021.' },
+    { cat:'Conferências', text:'Qual das seguintes equipas pertence à NFC Norte?', opts:['Buffalo Bills','Green Bay Packers','Kansas City Chiefs','Tampa Bay Buccaneers'], correct:1, explanation:'A NFC Norte é composta pelos Green Bay Packers, Detroit Lions, Minnesota Vikings e Chicago Bears.' },
+    { cat:'Regras', text:'Após um touchdown, quantos pontos vale uma conversão de 2 pontos?', opts:['1 ponto','2 pontos','3 pontos','4 pontos'], correct:1, explanation:'A conversão de 2 pontos é uma alternativa ao extra point (1 pt). A equipa tenta cruzar a goal line de novo a partir da linha das 2 jardas.' },
+    { cat:'Jogadores', text:'Qual posição é responsável por receber o snap e iniciar cada jogada?', opts:['Running Back','Wide Receiver','Quarterback','Center'], correct:2, explanation:'O Quarterback (QB) é o líder do ataque. Recebe o snap do Center, decide a jogada e passa, corre ou entrega a bola.' },
+    { cat:'Super Bowl', text:'Quem venceu o Super Bowl LIX em 2025?', opts:['Kansas City Chiefs','Philadelphia Eagles','Baltimore Ravens','Detroit Lions'], correct:1, explanation:'Os Philadelphia Eagles venceram o Super Bowl LIX por 40-22 contra os Kansas City Chiefs, com Jalen Hurts nomeado MVP.' },
+    { cat:'Portugal', text:'Qual o nome da liga principal de futebol americano em Portugal?', opts:['Liga Nacional Portuguesa','Liga Pro NFL Portugal','LPFA','Superliga FPFA'], correct:2, explanation:'A LPFA (Liga Portuguesa de Futebol Americano) é a principal competição organizada pela FPFA para clubes portugueses.' },
+    { cat:'Temporada', text:'Quantas semanas dura a temporada regular da NFL?', opts:['14 semanas','16 semanas','18 semanas','20 semanas'], correct:2, explanation:'Desde 2021, a temporada regular da NFL tem 18 semanas, com cada equipa a disputar 17 jogos (1 semana de bye).' },
+    { cat:'Regras', text:'O que é uma "intercepção"?', opts:['Passe que toca no chão','QB sacked atrás da linha','Defensor apanha passe destinado ao adversário','Punt bloqueado'], correct:2, explanation:'Uma intercepção ocorre quando um defensor apanha um passe aéreo lançado pelo quarterback adversário, passando a equipa a ter posse de bola.' },
+    { cat:'Conferências', text:'Qual das seguintes equipas pertence à AFC Oeste?', opts:['Dallas Cowboys','Miami Dolphins','Kansas City Chiefs','Chicago Bears'], correct:2, explanation:'A AFC Oeste é composta pelos Kansas City Chiefs, Los Angeles Chargers, Las Vegas Raiders e Denver Broncos.' },
+    { cat:'Equipas', text:'Qual equipa tem mais títulos do Super Bowl?', opts:['Pittsburgh Steelers','New England Patriots','Dallas Cowboys','San Francisco 49ers'], correct:1, explanation:'Os New England Patriots têm 6 títulos do Super Bowl, liderados por Bill Belichick e Tom Brady durante a sua dominância 2001-2019.' },
+    { cat:'Jogadores', text:'Que posição defensiva é responsável por pressionar o QB?', opts:['Cornerback','Safety','Defensive End','Linebacker'], correct:2, explanation:'Os Defensive Ends (DE) são os principais responsáveis por pressionar e derrubar o quarterback adversário — o chamado "sack".' },
+    { cat:'Playoffs', text:'Quantas equipas vão aos playoffs da NFL?', opts:['8 equipas','12 equipas','14 equipas','16 equipas'], correct:2, explanation:'14 equipas qualificam-se para os playoffs — 7 de cada conferência (3 campeões de divisão + 4 wildcards). Desde 2020.' },
+  ],
+  hard: [
+    { cat:'Histórico Avançado', text:'Qual o recorde de jardas passadas numa única temporada regular da NFL?', opts:['5.447 jardas — Peyton Manning','5.477 jardas — Drew Brees','5.239 jardas — Tom Brady','5.376 jardas — Patrick Mahomes'], correct:1, explanation:'Drew Brees estabeleceu o recorde de 5.477 jardas passadas em 2011 pelos New Orleans Saints, uma marca que perdurou anos.' },
+    { cat:'Temporada 2025/26', text:'Qual running back ultrapassou 2.000 jardas corridas na temporada regular de 2024?', opts:['Derrick Henry','Josh Jacobs','Saquon Barkley','Joe Mixon'], correct:2, explanation:'Saquon Barkley correu 2.005 jardas na temporada de 2024 pelos Eagles, tornando-se apenas o 9º jogador na história a atingir essa marca.' },
+    { cat:'Temporada 2025/26', text:'Qual QB venceu o MVP da NFL na temporada regular de 2024?', opts:['Patrick Mahomes','Josh Allen','Lamar Jackson','Jayden Daniels'], correct:2, explanation:'Lamar Jackson venceu o seu 3º MVP em 2024, com 41 TDs e apenas 4 intercepções — a 3ª vez que ganhou o prémio, recorde absoluto.' },
+    { cat:'Draft', text:'Quem foi a 1ª escolha do NFL Draft 2025?', opts:['Travis Hunter','Abdul Carter','Cam Ward','Shedeur Sanders'], correct:2, explanation:'Cam Ward (QB) foi escolhido pelos Tennessee Titans como 1ª pick do NFL Draft 2025, em Green Bay, Wisconsin.' },
+    { cat:'Regras Avançadas', text:'O que é um "onside kick"?', opts:['Kickoff para a end zone','Kickoff curto para tentar recuperar a bola','Punt em 4º down','Field goal tentado do kickoff'], correct:1, explanation:'Um onside kick é um kickoff propositadamente curto. Se a equipa que chutou recuperar a bola depois de 10 jardas, fica com a posse.' },
+    { cat:'Histórico Avançado', text:'Qual jogador detém o recorde de touchdowns na carreira na NFL?', opts:['Jerry Rice','Emmitt Smith','LaDainian Tomlinson','Tom Brady'], correct:0, explanation:'Jerry Rice marcou 208 touchdowns durante a sua carreira, o maior total de TDs na história da NFL. Jogou principalmente pelos 49ers.' },
+    { cat:'Portugal', text:'Em que ano foi fundada a FPFA?', opts:['2001','2004','2007','2010'], correct:2, explanation:'A FPFA foi fundada em 2007. Desde então tem crescido, com mais de 30 clubes filiados e competições a nível national e flag football.' },
+    { cat:'Regras Avançadas', text:'O que é o "salary cap" na NFL?', opts:['Limite de contratos por temporada','Teto máximo salarial que cada equipa pode gastar','Mínimo de salário garantido aos rookies','Bónus pago aos campeões'], correct:1, explanation:'O salary cap é o limite máximo que cada equipa pode gastar em salários de jogadores por temporada. Em 2025, era cerca de 255 milhões de dólares.' },
+    { cat:'Playoffs', text:'Qual a designação das primeiras rondas dos playoffs da NFL?', opts:['Super Round','Wild Card Weekend','Opening Playoffs','Bowl Weekends'], correct:1, explanation:'Os playoffs da NFL começam com o Wild Card Weekend, onde os 3 wildcards de cada conferência jogam contra as equipas com 3ª seed.' },
+    { cat:'Histórico Avançado', text:'Quantas épocas consecutivas sem registo negativo tem Mike Tomlin com os Steelers?', opts:['12 épocas','15 épocas','17 épocas','19 épocas'], correct:2, explanation:'Mike Tomlin nunca teve uma temporada abaixo de .500 em 17+ anos como head coach dos Steelers — uma das marcas mais impressionantes da NFL.' },
+    { cat:'Equipas', text:'Qual equipa da NFL nunca foi a um Super Bowl?', opts:['Detroit Lions','Cleveland Browns','Jacksonville Jaguars','Todas as anteriores'], correct:3, explanation:'Até 2025, os Detroit Lions, Cleveland Browns e Jacksonville Jaguars nunca disputaram um Super Bowl — as 3 únicas franquias nessa situação.' },
+    { cat:'Temporada 2025/26', text:'Qual receber liderou a NFL em jardas recebidas na temporada 2024/25?', opts:['Tyreek Hill','CeeDee Lamb','Ja\'Marr Chase','Justin Jefferson'], correct:2, explanation:'Ja\'Marr Chase (Bengals) liderou a NFL em jardas recebidas e touchdowns na temporada 2024/25, tornando-se o WR mais dominante da liga.' },
+  ]
+};
+
+const DIFF_CONFIG = {
+  easy:   { label:'Fácil',  pts:10, color:'#22c55e' },
+  medium: { label:'Médio',  pts:12, color:'#f59e0b' },
+  hard:   { label:'Difícil',pts:15, color:'#e63946' },
+};
+
+let difficulty = 'easy';
+let currentQ = 0;
+let score = 0;
+let correct = 0;
+let wrong = 0;
+let questions = [];
+
+function selectDiff(btn, diff) {
+  document.querySelectorAll('.diff-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  difficulty = diff;
+}
+
+function shuffleArr(arr) { return [...arr].sort(() => Math.random() - 0.5); }
+
+function startQuiz() {
+  questions = shuffleArr(QUESTIONS[difficulty]).slice(0, 10);
+  currentQ = 0; score = 0; correct = 0; wrong = 0;
+  document.getElementById('quiz-start-screen').style.display = 'none';
+  document.getElementById('quiz-result-screen').style.display = 'none';
+  document.getElementById('quiz-game-screen').style.display = 'block';
+  showQuestion();
+}
+
+function showQuestion() {
+  const q = questions[currentQ];
+  document.getElementById('progressFill').style.width = (currentQ / 10 * 100) + '%';
+  document.getElementById('progressLabel').textContent = (currentQ + 1) + ' / 10';
+  document.getElementById('qCategory').textContent = '📋 ' + q.cat;
+  document.getElementById('qText').textContent = q.text;
+  document.getElementById('explanation').style.display = 'none';
+  document.getElementById('nextBtn').style.display = 'none';
+  const letters = ['A','B','C','D'];
+  const grid = document.getElementById('optionsGrid');
+  grid.innerHTML = '';
+  q.opts.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.innerHTML = `<span class="opt-letter">${letters[i]}</span>${opt}`;
+    btn.onclick = () => selectAnswer(i, q.correct, q.explanation);
+    grid.appendChild(btn);
+  });
+}
+
+function selectAnswer(chosen, correct_idx, explanation) {
+  const btns = document.querySelectorAll('.option-btn');
+  btns.forEach((b, i) => {
+    b.disabled = true;
+    if (i === correct_idx) b.classList.add('correct');
+    else if (i === chosen) b.classList.add('wrong');
+  });
+  const pts = DIFF_CONFIG[difficulty].pts;
+  if (chosen === correct_idx) { score += pts; correct++; document.getElementById('scoreDisplay').textContent = score; }
+  else { wrong++; }
+  document.getElementById('explanation').textContent = '💡 ' + explanation;
+  document.getElementById('explanation').style.display = 'block';
+  document.getElementById('nextBtn').style.display = 'inline-flex';
+  document.getElementById('nextBtn').textContent = currentQ === 9 ? 'Ver Resultado 🏆' : 'Próxima →';
+}
+
+function nextQuestion() {
+  currentQ++;
+  if (currentQ >= 10) { showResults(); return; }
+  showQuestion();
+}
+
+function showResults() {
+  document.getElementById('quiz-game-screen').style.display = 'none';
+  document.getElementById('quiz-result-screen').style.display = 'block';
+  const pct = Math.round(correct / 10 * 100);
+  const emojis = ['😅','🤔','👍','🌟','🏆'];
+  const titles = ['Continua a treinar!','A aprender...','Bom trabalho!','Excelente!','Génio do NFL!'];
+  const msgs = ['Não desistas! Lê o nosso guia de NFL e tenta novamente.','Tens potencial! Explora as páginas de equipas e jogadores.','Bom conhecimento do futebol americano!','O teu conhecimento de NFL é impressionante!','Tens um conhecimento extraordinário da NFL!'];
+  const lvl = pct < 20 ? 0 : pct < 40 ? 1 : pct < 60 ? 2 : pct < 80 ? 3 : 4;
+  document.getElementById('resultEmoji').textContent = emojis[lvl];
+  document.getElementById('resultTitle').textContent = titles[lvl];
+  document.getElementById('resultScore').textContent = score + ' pts';
+  document.getElementById('resultMessage').textContent = msgs[lvl];
+  document.getElementById('rbCorrect').textContent = correct;
+  document.getElementById('rbWrong').textContent = wrong;
+  document.getElementById('rbPoints').textContent = score;
+}
+
+function restartQuiz() {
+  document.getElementById('quiz-result-screen').style.display = 'none';
+  document.getElementById('quiz-start-screen').style.display = 'block';
+}
+</script>
+</body>
+</html>

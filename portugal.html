@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+
+<html data-theme="dark" lang="pt">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Futebol Americano em Portugal — FPFA | NFL PT</title>
+<link href="css/style.css" rel="stylesheet"/>
+<style>
+    .pt-hero {
+      background: linear-gradient(135deg, #001228 0%, #001f5b 60%, #003080 100%);
+      position: relative; overflow: hidden;
+    }
+    .pt-hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4z'/%3E%3C/g%3E%3C/svg%3E");
+    }
+    .competition-card {
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      overflow: hidden;
+      transition: all var(--transition);
+    }
+    .competition-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow), 0 0 40px rgba(0,31,91,0.2);
+      border-color: rgba(107,155,232,0.3);
+    }
+    .comp-header {
+      padding: 20px 24px;
+      background: var(--navy);
+      color: white;
+    }
+    .comp-header h3 { font-size: 1.1rem; font-weight: 700; text-transform: uppercase; }
+    .comp-header p { font-size: 0.85rem; opacity: 0.8; margin-top: 4px; }
+    .comp-body { padding: 20px 24px; }
+    .comp-body p { font-size: 0.92rem; color: var(--text-muted); line-height: 1.75; margin-bottom: 16px; }
+    .comp-meta { display: flex; flex-wrap: wrap; gap: 8px; }
+    .meta-tag {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: rgba(0,31,91,0.15); border: 1px solid rgba(107,155,232,0.2);
+      border-radius: 6px; padding: 5px 10px;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 0.78rem; font-weight: 700;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      color: #6b9be8;
+    }
+    .fpfa-team-card {
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 18px;
+      display: flex; align-items: center; gap: 14px;
+      transition: all var(--transition);
+    }
+    .fpfa-team-card:hover {
+      border-color: rgba(107,155,232,0.3);
+      background: var(--bg3);
+      transform: translateX(4px);
+    }
+    .fpfa-team-logo {
+      width: 52px; height: 52px;
+      border-radius: 10px;
+      background: var(--bg2);
+      border: 1px solid var(--card-border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.6rem; flex-shrink: 0;
+    }
+    .fpfa-team-name { font-family: 'Oswald', sans-serif; font-size: 1rem; font-weight: 600; text-transform: uppercase; margin-bottom: 3px; }
+    .fpfa-team-city { font-size: 0.85rem; color: var(--text-muted); }
+    .fpfa-team-div { font-size: 0.75rem; color: #6b9be8; font-weight: 600; }
+
+    .flag-card {
+      background: linear-gradient(135deg, var(--card), rgba(0,31,91,0.15));
+      border: 1px solid rgba(107,155,232,0.2);
+      border-radius: 14px; padding: 24px;
+      height: 100%;
+    }
+    .flag-icon { font-size: 2.2rem; margin-bottom: 12px; }
+    .flag-card h3 {
+      font-family: 'Oswald', sans-serif; font-size: 1rem;
+      font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em;
+      margin-bottom: 10px; color: #6b9be8;
+    }
+    .flag-card p { font-size: 0.9rem; color: var(--text-muted); line-height: 1.7; }
+
+    .standings-mini {
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: 14px; overflow: hidden;
+    }
+    .sm-header {
+      padding: 16px 20px; background: var(--navy);
+      color: white; font-family: 'Oswald', sans-serif;
+      font-size: 1rem; font-weight: 700; text-transform: uppercase;
+    }
+  </style>
+</head>
+<body>
+<!-- HEADER -->
+<div id="nav-placeholder"></div>
+<div class="header-actions">
+<button class="btn-lang" data-i18n="portugal_019" onclick="toggleLang()" style="background:transparent;border:1px solid var(--border-color,rgba(255,255,255,.2));color:var(--text-primary,#f0f4ff);font-size:0.75rem;font-weight:700;padding:0.3rem 0.6rem;border-radius:6px;cursor:pointer;transition:all 0.2s;white-space:nowrap;font-family:inherit;" title="Switch to English">🌐 EN</button>
+<button class="theme-toggle" onclick="toggleTheme()">☀️</button>
+<button aria-label="Menu" class="hamburger"><span></span> <span></span> <span></span></button>
+</div>
+<nav aria-hidden="true" class="mobile-nav">
+<a data-i18n="portugal_020" href="index.html">🏠 Início</a>
+<a data-i18n="portugal_021" href="nfl.html">🏈 NFL</a>
+<a data-i18n="portugal_022" href="portugal.html">🇵🇹 Portugal</a>
+<a data-i18n="portugal_023" href="equipas.html">🏟 Equipas</a>
+<a data-i18n="portugal_024" href="jogadores.html">👤 Jogadores</a>
+<a data-i18n="portugal_025" href="classificacoes.html">📊 Classificações</a>
+<a data-i18n="portugal_026" href="noticias.html">📰 Notícias</a>
+<a data-i18n="portugal_027" href="quiz.html">🧠 Quiz</a>
+<a data-i18n="portugal_028" href="contactos.html">📞 Contactos</a>
+<a data-i18n="portugal_029" href="sobre.html">ℹ️ Sobre</a>
+</nav>
+<!-- HERO -->
+<div class="pt-hero" style="padding:140px 0 80px;position:relative">
+<div class="container" style="position:relative;z-index:1">
+<div class="breadcrumb" style="color:rgba(255,255,255,0.5)"><a data-i18n="portugal_030" href="index.html" style="color:rgba(255,255,255,0.5)">Início</a> › <span data-i18n="portugal_031" style="color:rgba(255,255,255,0.8)">Portugal</span></div>
+<div data-i18n="portugal_032" style="font-family:'Barlow Condensed',sans-serif;font-size:0.85rem;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:#6b9be8;margin-bottom:16px">Federação Portuguesa de Futebol Americano</div>
+<h1 data-i18n="portugal_033" style="color:white;font-size:clamp(2.5rem,6vw,4.5rem);text-transform:uppercase;margin-bottom:16px">🇵🇹 Portugal</h1>
+<p data-i18n="portugal_034" style="color:rgba(255,255,255,0.75);font-size:1.1rem;max-width:600px">O futebol americano em Portugal cresce a cada ano. Conhece a FPFA, as competições nacionais e a história do desporto no nosso país.</p>
+<div style="display:flex;gap:32px;margin-top:40px;flex-wrap:wrap">
+<div><div data-count="2007" style="font-family:'Oswald',sans-serif;font-size:2.2rem;font-weight:700;color:white">2007</div>
+<div data-i18n="portugal_035" style="font-family:'Barlow Condensed',sans-serif;font-size:0.8rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.6)">Fundação FPFA</div></div>
+<div><div style="font-family:'Oswald',sans-serif;font-size:2.2rem;font-weight:700;color:white">18+</div>
+<div data-i18n="portugal_036" style="font-family:'Barlow Condensed',sans-serif;font-size:0.8rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.6)">Equipas Registadas</div></div>
+<div><div data-i18n="portugal_037" style="font-family:'Oswald',sans-serif;font-size:2.2rem;font-weight:700;color:white">XVI</div>
+<div data-i18n="portugal_038" style="font-family:'Barlow Condensed',sans-serif;font-size:0.8rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.6)">Edição LPFA</div></div>
+<div><div style="font-family:'Oswald',sans-serif;font-size:2.2rem;font-weight:700;color:white">🏈</div>
+<div data-i18n="portugal_039" style="font-family:'Barlow Condensed',sans-serif;font-size:0.8rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.6)">Membro IFAF</div></div>
+</div>
+</div>
+</div>
+<!-- FPFA HISTORY -->
+<section class="section" id="historia">
+<div class="container">
+<div class="grid-2" style="align-items:start;gap:60px">
+<div class="reveal-left">
+<div class="section-label" data-i18n="portugal_040" style="color:#6b9be8">Federação</div>
+<h2 class="section-title" data-i18n="portugal_041">A FPFA</h2>
+<p data-i18n="portugal_042" style="color:var(--text-muted);margin:20px 0;line-height:1.8">
+          A Federação Portuguesa de Futebol Americano (FPFA) é o organismo governante do futebol americano em Portugal, fundado em 2007 com a missão de desenvolver, regulamentar e promover a prática do futebol americano e do flag football a nível nacional.
+        </p>
+<p style="color:var(--text-muted);margin-bottom:20px;line-height:1.8">
+          <span data-i18n="portugal_043a">A FPFA é membro da </span><strong data-i18n="portugal_044">International Federation of American Football (IFAF)</strong><span data-i18n="portugal_043b">, a organização internacional que governa o futebol americano a nível mundial, e da </span><strong data-i18n="portugal_045">European Federation of American Football (EFAF)</strong><span data-i18n="portugal_043c">, o organismo europeu do desporto.</span>
+        </p>
+<p data-i18n="portugal_046" style="color:var(--text-muted);margin-bottom:24px;line-height:1.8">
+          Desde a sua fundação, a FPFA tem trabalhado para expandir o futebol americano por todo o território nacional, da Liga Portuguesa de Futebol Americano (LPFA) às competições de flag football, masculinas e femininas, passando pela formação de árbitros e desenvolvimento das seleções nacionais.
+        </p>
+<div style="display:flex;flex-direction:column;gap:12px">
+<div class="flag-banner" data-i18n="portugal_047">🏈 Liga Portuguesa de Futebol Americano (LPFA) — XVI Edição</div>
+<div class="flag-banner" data-i18n="portugal_048">🚩 Liga FLAD de Flag Football — Temporada 2026</div>
+<div class="flag-banner" data-i18n="portugal_049">🌍 Membro IFAF e EFAF</div>
+<div class="flag-banner" data-i18n="portugal_050">👩 Flag Football Feminino — Seleção Nacional</div>
+</div>
+</div>
+<div class="reveal-right">
+<div style="background:var(--bg2);border-radius:20px;padding:32px;border:1px solid var(--card-border)">
+<div data-i18n="portugal_051" style="font-family:'Oswald',sans-serif;font-size:1rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:20px;color:#6b9be8">Missão e Objetivos</div>
+<div style="display:flex;flex-direction:column;gap:16px">
+<div style="display:flex;gap:12px;align-items:flex-start">
+<div style="width:32px;height:32px;background:rgba(107,155,232,0.15);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0">🎯</div>
+<div>
+<div data-i18n="portugal_052" style="font-weight:600;margin-bottom:4px">Desenvolvimento</div>
+<div data-i18n="portugal_053" style="font-size:0.88rem;color:var(--text-muted)">Expandir a prática do futebol americano por todo Portugal, incluindo regiões onde o desporto ainda não está estabelecido.</div>
+</div>
+</div>
+<div style="display:flex;gap:12px;align-items:flex-start">
+<div style="width:32px;height:32px;background:rgba(107,155,232,0.15);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0">📋</div>
+<div>
+<div data-i18n="portugal_054" style="font-weight:600;margin-bottom:4px">Regulamentação</div>
+<div data-i18n="portugal_055" style="font-size:0.88rem;color:var(--text-muted)">Garantir que as competições nacionais seguem as regras internacionais da IFAF, assegurando fair play e segurança.</div>
+</div>
+</div>
+<div style="display:flex;gap:12px;align-items:flex-start">
+<div style="width:32px;height:32px;background:rgba(107,155,232,0.15);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0">🌱</div>
+<div>
+<div data-i18n="portugal_056" style="font-weight:600;margin-bottom:4px">Formação</div>
+<div data-i18n="portugal_057" style="font-size:0.88rem;color:var(--text-muted)">Formar árbitros, treinadores e dirigentes certificados para suportar o crescimento sustentável do desporto.</div>
+</div>
+</div>
+<div style="display:flex;gap:12px;align-items:flex-start">
+<div style="width:32px;height:32px;background:rgba(107,155,232,0.15);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0">🏅</div>
+<div>
+<div data-i18n="portugal_058" style="font-weight:600;margin-bottom:4px">Representação Internacional</div>
+<div data-i18n="portugal_059" style="font-size:0.88rem;color:var(--text-muted)">Representar Portugal em competições internacionais de flag football e futebol americano de equipamentos.</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- COMPETIÇÕES -->
+<section class="section" id="lpfa" style="background:var(--bg2)">
+<div class="container">
+<div class="text-center mb-48">
+<div class="section-label" data-i18n="portugal_060">Competições Nacionais</div>
+<h2 class="section-title center" data-i18n="portugal_061">Liga e Torneios</h2>
+</div>
+<div class="grid-2 reveal">
+<div class="competition-card">
+<div class="comp-header">
+<div style="font-size:1.8rem;margin-bottom:8px">🏈</div>
+<h3 data-i18n="portugal_062">LPFA XVI — Liga Portuguesa de Futebol Americano</h3>
+<p data-i18n="portugal_063">Temporada 2025-26 · Competição Principal</p>
+</div>
+<div class="comp-body">
+<p data-i18n="portugal_064">A Liga Portuguesa de Futebol Americano (LPFA) é a competição de topo do futebol americano de equipamentos em Portugal, agora na sua 16ª edição. Disputada com um formato de grupos seguido de uma fase de eliminatórias, culminando no Portugal Bowl.</p>
+<p data-i18n="portugal_065">A LPFA conta com equipas de todo o país, com forte presença em Lisboa, Porto, Coimbra e Braga. As equipas jogam com equipamento completo (capacete, ombreira, etc.) seguindo as regras internacionais da IFAF.</p>
+<div class="comp-meta">
+<span class="meta-tag" data-i18n="portugal_066">📍 Portugal</span>
+<span class="meta-tag" data-i18n="portugal_067">🗓 Set–Jun</span>
+<span class="meta-tag" data-i18n="portugal_068">🏆 Portugal Bowl</span>
+<span class="meta-tag" data-i18n="portugal_069">📋 Regras IFAF</span>
+</div>
+</div>
+</div>
+<div class="competition-card reveal delay-1">
+<div class="comp-header" style="background:linear-gradient(135deg,#1a3a1a,#0a2e1a)">
+<div style="font-size:1.8rem;margin-bottom:8px">🏆</div>
+<h3 data-i18n="portugal_070">LPFA Playoffs</h3>
+<p data-i18n="portugal_071">Fase Final · Portugal Bowl</p>
+</div>
+<div class="comp-body">
+<p data-i18n="portugal_072">Após a fase regular da LPFA, as melhores equipas avançam para os playoffs num formato de eliminação direta. A fase final, o Portugal Bowl, é o jogo mais importante do ano do futebol americano português.</p>
+<p data-i18n="portugal_073">O formato de playoffs garante que as melhores equipas da temporada se enfrentem numa competição de alto nível, com os maiores adeptos e cobertura mediática do desporto em Portugal.</p>
+<div class="comp-meta">
+<span class="meta-tag" data-i18n="portugal_074">⚡ Eliminatórias</span>
+<span class="meta-tag" data-i18n="portugal_075">🏟 Portugal Bowl</span>
+<span class="meta-tag" data-i18n="portugal_076">📺 Transmissão</span>
+</div>
+</div>
+</div>
+<div class="competition-card reveal delay-2">
+<div class="comp-header" style="background:linear-gradient(135deg,#2a2a0a,#3a3a00)">
+<div style="font-size:1.8rem;margin-bottom:8px">🏅</div>
+<h3 data-i18n="portugal_077">Pré-época LPFA 2025-26</h3>
+<p data-i18n="portugal_078">Jogos Preparatórios</p>
+</div>
+<div class="comp-body">
+<p data-i18n="portugal_079">A pré-época da LPFA 2025-26 permitiu às equipas testarem os seus novos planéis e sistemas de jogo antes do início da temporada oficial. Os jogos de pré-época são fundamentais para a preparação e deteção de novos talentos.</p>
+<p data-i18n="portugal_080">Várias equipas aproveitaram a pré-época para integrar novos jogadores e experimentar diferentes formações táticas antes do início da temporada regular.</p>
+<div class="comp-meta">
+<span class="meta-tag" data-i18n="portugal_081">🏈 Pré-época</span>
+<span class="meta-tag" data-i18n="portugal_082">🧪 Testes</span>
+<span class="meta-tag" data-i18n="portugal_083">📅 Agosto 2025</span>
+</div>
+</div>
+</div>
+<div class="competition-card reveal delay-3">
+<div class="comp-header" style="background:linear-gradient(135deg,#3a1a0a,#4a0a00)">
+<div style="font-size:1.8rem;margin-bottom:8px">🌟</div>
+<h3 data-i18n="portugal_084">LPFA Awards 2025</h3>
+<p data-i18n="portugal_085">Prémios da Temporada</p>
+</div>
+<div class="comp-body">
+<p data-i18n="portugal_086">Os LPFA Awards reconhecem os melhores jogadores, treinadores e equipas da temporada. As categorias incluem MVP da Liga, Melhor Quarterback, Melhor Defensor, Melhor Rookie e Treinador do Ano.</p>
+<p data-i18n="portugal_087">A cerimónia de prémios é um momento importante para a comunidade do futebol americano português, celebrando os melhores desempenhos da época.</p>
+<div class="comp-meta">
+<span class="meta-tag" data-i18n="portugal_088">🏅 MVP</span>
+<span class="meta-tag" data-i18n="portugal_089">⭐ Prémios</span>
+<span class="meta-tag" data-i18n="portugal_090">🎉 Gala Anual</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- EQUIPAS PT -->
+<section class="section">
+<div class="container">
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:32px;flex-wrap:wrap;gap:16px">
+<div>
+<div class="section-label" data-i18n="portugal_091" style="color:#6b9be8">LPFA</div>
+<h2 class="section-title" data-i18n="portugal_092">Equipas em Portugal</h2>
+</div>
+</div>
+<div class="grid-2 reveal" id="pt-teams">
+<div class="fpfa-team-card">
+<div class="fpfa-team-logo">⚓</div>
+<div><div class="fpfa-team-name" data-i18n="portugal_093">Lisboa Navigators</div>
+<div class="fpfa-team-city" data-i18n="portugal_094">Lisboa</div>
+<div class="fpfa-team-div" data-i18n="portugal_095">LPFA · Conferência Sul</div></div>
+</div>
+<div class="fpfa-team-card">
+<div class="fpfa-team-logo">🦈</div>
+<div><div class="fpfa-team-name" data-i18n="portugal_096">Lisbon Sharks</div>
+<div class="fpfa-team-city" data-i18n="portugal_097">Lisboa</div>
+<div class="fpfa-team-div" data-i18n="portugal_098">LPFA · Conferência Sul</div></div>
+</div>
+<div class="fpfa-team-card">
+<div class="fpfa-team-logo">🦅</div>
+<div><div class="fpfa-team-name" data-i18n="portugal_099">Cascais Eagles</div>
+<div class="fpfa-team-city" data-i18n="portugal_100">Cascais</div>
+<div class="fpfa-team-div" data-i18n="portugal_101">LPFA · Conferência Sul</div></div>
+</div>
+<div class="fpfa-team-card">
+<div class="fpfa-team-logo">🐅</div>
+<div><div class="fpfa-team-name" data-i18n="portugal_102">Porto Assassins</div>
+<div class="fpfa-team-city" data-i18n="portugal_103">Porto</div>
+<div class="fpfa-team-div" data-i18n="portugal_104">LPFA · Conferência Norte</div></div>
+</div>
+<div class="fpfa-team-card">
+<div class="fpfa-team-logo">🐂</div>
+<div><div class="fpfa-team-name" data-i18n="portugal_105">Braga Barbarians</div>
+<div class="fpfa-team-city" data-i18n="portugal_106">Braga</div>
+<div class="fpfa-team-div" data-i18n="portugal_107">LPFA · Conferência Norte</div></div>
+</div>
+<div class="fpfa-team-card">
+<div class="fpfa-team-logo">🦁</div>
+<div><div class="fpfa-team-name" data-i18n="portugal_108">Coimbra Lions</div>
+<div class="fpfa-team-city" data-i18n="portugal_109">Coimbra</div>
+<div class="fpfa-team-div" data-i18n="portugal_110">LPFA · Conferência Centro</div></div>
+</div>
+<div class="fpfa-team-card">
+<div class="fpfa-team-logo">⚡</div>
+<div><div class="fpfa-team-name" data-i18n="portugal_111">Setúbal Thunder</div>
+<div class="fpfa-team-city" data-i18n="portugal_112">Setúbal</div>
+<div class="fpfa-team-div" data-i18n="portugal_113">LPFA · Conferência Sul</div></div>
+</div>
+<div class="fpfa-team-card">
+<div class="fpfa-team-logo">🔱</div>
+<div><div class="fpfa-team-name" data-i18n="portugal_114">Aveiro Seahawks</div>
+<div class="fpfa-team-city" data-i18n="portugal_115">Aveiro</div>
+<div class="fpfa-team-div" data-i18n="portugal_116">LPFA · Conferência Norte</div></div>
+</div>
+</div>
+<div class="info-block mt-32">
+<h4 data-i18n="portugal_117">Informação sobre Equipas</h4>
+<p data-i18n="portugal_118">As equipas listadas são representativas das organizações participantes na LPFA. Para informações completas e atualizadas sobre inscrições, resultados e notícias das equipas, consulta o site oficial da FPFA em fpfa.pt.</p>
+</div>
+</div>
+</section>
+<!-- FLAG FOOTBALL -->
+<section class="section" id="flag" style="background:var(--bg2)">
+<div class="container">
+<div class="text-center mb-48">
+<div class="section-label" data-i18n="portugal_120">Versão Acessível</div>
+<h2 class="section-title center" data-i18n="portugal_121">🚩 Flag Football</h2>
+<p data-i18n="portugal_122" style="color:var(--text-muted);margin-top:16px;max-width:600px;margin-left:auto;margin-right:auto">O flag football é uma versão do futebol americano sem contacto físico direto, tornando o desporto mais acessível a toda a gente.</p>
+</div>
+<div class="grid-2" style="gap:40px;align-items:center;margin-bottom:48px">
+<div class="reveal-left">
+<h3 data-i18n="portugal_123" style="font-family:'Oswald',sans-serif;font-size:1.3rem;font-weight:700;text-transform:uppercase;margin-bottom:16px">O Que é o Flag Football?</h3>
+<p data-i18n="portugal_124" style="color:var(--text-muted);line-height:1.8;margin-bottom:16px">
+          No flag football, em vez de tackling, os jogadores usam "flags" (fitas) presas ao cinto. Para "tacklear" um jogador, o defensor tem de retirar a flag do cinto. Esta versão elimina o contacto físico, tornando o jogo muito mais acessível para todas as idades e géneros.
+        </p>
+<p style="color:var(--text-muted);line-height:1.8;margin-bottom:24px">
+          <span data-i18n="portugal_125a">O flag football foi incluído nos </span><strong data-i18n="portugal_126">Jogos Olímpicos de Los Angeles 2028</strong><span data-i18n="portugal_125b">, o que representa um marco histórico para o crescimento global do desporto, incluindo em Portugal.</span>
+        </p>
+<div style="background:rgba(200,166,48,0.1);border:1px solid rgba(200,166,48,0.25);border-radius:12px;padding:16px">
+<div data-i18n="portugal_127" style="font-family:'Oswald',sans-serif;font-size:0.9rem;font-weight:700;text-transform:uppercase;color:var(--gold);margin-bottom:8px">🏅 Incluído nos Jogos Olímpicos 2028</div>
+<div data-i18n="portugal_128" style="font-size:0.88rem;color:var(--text-muted)">O flag football estará presente nos Jogos Olímpicos de Los Angeles 2028, representando um enorme impulso para o desenvolvimento do desporto a nível mundial e nacional.</div>
+</div>
+</div>
+<div class="reveal-right">
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+<div class="flag-card">
+<div class="flag-icon">🚩</div>
+<h3 data-i18n="portugal_129">Liga FLAD Masculina</h3>
+<p data-i18n="portugal_130">Competição principal de flag football masculino em Portugal, com equipas de todo o país a competir pelo título nacional.</p>
+</div>
+<div class="flag-card">
+<div class="flag-icon">👩</div>
+<h3 data-i18n="portugal_131">Flag Football Feminino</h3>
+<p data-i18n="portugal_132">Competição feminina de flag football com crescimento significativo nos últimos anos e grande participação das equipas portuguesas.</p>
+</div>
+<div class="flag-card">
+<div class="flag-icon">🌍</div>
+<h3 data-i18n="portugal_133">Seleção Nacional</h3>
+<p data-i18n="portugal_134">Portugal tem seleção nacional de flag football que compete em torneios internacionais da IFAF e campeonatos europeus.</p>
+</div>
+<div class="flag-card">
+<div class="flag-icon">👧</div>
+<h3 data-i18n="portugal_135">Flag Equipas</h3>
+<p data-i18n="portugal_136">Várias equipas de flag football espalhadas pelo país participam na Liga FLAD em várias categorias etárias.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Flag standings mini -->
+<h3 style="font-family:'Oswald',sans-serif;font-size:1.3rem;font-weight:700;text-transform:uppercase;margin-bottom:20px;display:flex;align-items:center;gap:8px"><span data-i18n="portugal_138" style="color:#6b9be8">Liga FLAD 2026</span><span data-i18n="portugal_137"> — Classificação</span></h3>
+<div class="standings-mini reveal">
+<div class="sm-header" data-i18n="portugal_139">🚩 Liga FLAD de Flag Football — Temporada 2026</div>
+<div class="table-wrap" style="border:none;border-radius:0">
+<table class="data-table">
+<thead>
+<tr><th>#</th>
+<th data-i18n="portugal_140">Equipa</th>
+<th data-i18n="portugal_141">Cidade</th>
+<th>J</th>
+<th>V</th>
+<th>D</th>
+<th>%</th></tr>
+</thead>
+<tbody>
+<tr><td class="rank-cell top">1</td>
+<td class="fw-700" data-i18n="portugal_142">Lisboa Wolves</td>
+<td data-i18n="portugal_143" style="color:var(--text-muted)">Lisboa</td>
+<td>6</td>
+<td class="stat-highlight">6</td>
+<td>0</td>
+<td>.1000</td></tr>
+<tr><td class="rank-cell top">2</td>
+<td class="fw-700" data-i18n="portugal_144">Porto Eagles</td>
+<td data-i18n="portugal_145" style="color:var(--text-muted)">Porto</td>
+<td>6</td>
+<td class="stat-highlight">4</td>
+<td>2</td>
+<td>.667</td></tr>
+<tr><td class="rank-cell top">3</td>
+<td class="fw-700" data-i18n="portugal_146">Braga Thunder</td>
+<td data-i18n="portugal_147" style="color:var(--text-muted)">Braga</td>
+<td>6</td>
+<td>4</td>
+<td>2</td>
+<td>.667</td></tr>
+<tr><td class="rank-cell">4</td>
+<td class="fw-700" data-i18n="portugal_148">Coimbra Lions</td>
+<td data-i18n="portugal_149" style="color:var(--text-muted)">Coimbra</td>
+<td>6</td>
+<td>3</td>
+<td>3</td>
+<td>.500</td></tr>
+<tr><td class="rank-cell">5</td>
+<td class="fw-700" data-i18n="portugal_150">Setúbal Sharks</td>
+<td data-i18n="portugal_151" style="color:var(--text-muted)">Setúbal</td>
+<td>6</td>
+<td>2</td>
+<td>4</td>
+<td>.333</td></tr>
+<tr><td class="rank-cell">6</td>
+<td class="fw-700" data-i18n="portugal_152">Cascais Ravens</td>
+<td data-i18n="portugal_153" style="color:var(--text-muted)">Cascais</td>
+<td>6</td>
+<td>1</td>
+<td>5</td>
+<td>.167</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="info-block mt-32">
+<h4 data-i18n="portugal_154">Nota sobre Dados</h4>
+<p data-i18n="portugal_155">Os dados de classificação da Liga FLAD são ilustrativos. Para informações completas e atualizadas sobre a Liga FLAD 2026, consulta tournifyapp.com/live/ligaflad2026 e fpfa.pt.</p>
+</div>
+</div>
+</section>
+<!-- SELEÇÃO NACIONAL -->
+<section class="section" id="selecao">
+<div class="container">
+<div class="grid-2" style="gap:60px;align-items:center">
+<div class="reveal-left">
+<div class="section-label" data-i18n="portugal_156" style="color:#6b9be8">Portugal no Mundo</div>
+<h2 class="section-title" data-i18n="portugal_157">Seleção Nacional 🇵🇹</h2>
+<p data-i18n="portugal_158" style="color:var(--text-muted);margin:20px 0;line-height:1.8">
+          Portugal tem representação internacional no flag football, com a seleção nacional a competir em torneios organizados pela IFAF (International Federation of American Football) e pela EFAF (European Federation of American Football).
+        </p>
+<p data-i18n="portugal_159" style="color:var(--text-muted);margin-bottom:24px;line-height:1.8">
+          A seleção feminina de flag football tem ganho especial destaque, competindo nos campeonatos europeus e mundiais. Com os Jogos Olímpicos de 2028 a incluírem o flag football, a pressão para o desenvolvimento das seleções nacionais aumentou significativamente.
+        </p>
+<div style="display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;gap:12px;align-items:center;background:var(--bg2);border:1px solid var(--card-border);border-radius:10px;padding:14px">
+<span style="font-size:1.5rem">🏳️</span>
+<div><div data-i18n="portugal_160" style="font-weight:600;font-size:0.95rem">Seleção Nacional Flag Football Masculina</div>
+<div data-i18n="portugal_161" style="font-size:0.85rem;color:var(--text-muted)">Compete em torneios internacionais IFAF/EFAF</div></div>
+</div>
+<div style="display:flex;gap:12px;align-items:center;background:var(--bg2);border:1px solid var(--card-border);border-radius:10px;padding:14px">
+<span style="font-size:1.5rem">👩‍🦰</span>
+<div><div data-i18n="portugal_162" style="font-weight:600;font-size:0.95rem">Seleção Nacional Flag Football Feminina</div>
+<div data-i18n="portugal_163" style="font-size:0.85rem;color:var(--text-muted)">Campeã nacional — Preparação para os Olímpicos 2028</div></div>
+</div>
+<div style="display:flex;gap:12px;align-items:center;background:var(--bg2);border:1px solid var(--card-border);border-radius:10px;padding:14px">
+<span style="font-size:1.5rem">🌍</span>
+<div><div data-i18n="portugal_164" style="font-weight:600;font-size:0.95rem">IFAF — International Federation of American Football</div>
+<div data-i18n="portugal_165" style="font-size:0.85rem;color:var(--text-muted)">Portugal é membro ativo da federação internacional</div></div>
+</div>
+</div>
+</div>
+<div class="reveal-right">
+<div style="background:linear-gradient(135deg,#001228,#001f5b);border:1px solid rgba(107,155,232,0.2);border-radius:20px;padding:32px">
+<div data-i18n="portugal_166" style="font-family:'Oswald',sans-serif;font-size:1rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:20px;color:#6b9be8">🌍 IFAF &amp; EFAF</div>
+<p data-i18n="portugal_167" style="color:rgba(255,255,255,0.75);font-size:0.9rem;line-height:1.8;margin-bottom:20px">
+            A International Federation of American Football (IFAF) é o organismo que governa o futebol americano a nível mundial, com mais de 70 federações nacionais membros. Portugal, através da FPFA, é membro ativo desta organização.
+          </p>
+<p data-i18n="portugal_168" style="color:rgba(255,255,255,0.75);font-size:0.9rem;line-height:1.8;margin-bottom:20px">
+            A nível europeu, a European Federation of American Football (EFAF) organiza o Campeonato Europeu de Flag Football, onde Portugal tem estado representado pela seleção nacional.
+          </p>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:20px">
+<div style="background:rgba(255,255,255,0.05);border-radius:10px;padding:14px;text-align:center">
+<div style="font-family:'Oswald',sans-serif;font-size:1.6rem;font-weight:700;color:white">70+</div>
+<div data-i18n="portugal_169" style="font-size:0.75rem;color:rgba(255,255,255,0.6);font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:0.1em;text-transform:uppercase">Nações IFAF</div>
+</div>
+<div style="background:rgba(255,255,255,0.05);border-radius:10px;padding:14px;text-align:center">
+<div style="font-family:'Oswald',sans-serif;font-size:1.6rem;font-weight:700;color:white">2028</div>
+<div data-i18n="portugal_170" style="font-size:0.75rem;color:rgba(255,255,255,0.6);font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:0.1em;text-transform:uppercase">Olímpico LA</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- FOOTER -->
+<div id="footer-placeholder"></div>
+<script src="js/i18n.js"></script>
+<script src="js/shared.js"></script>
+<script src="js/nav.js"></script>
+</body>
+</html>

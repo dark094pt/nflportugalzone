@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+
+<html data-theme="dark" lang="pt">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>NFL PT — Futebol Americano em Portugal</title>
+<meta content="NFL PT - O site português dedicado ao futebol americano e à NFL." name="description"/>
+<link href="css/style.css" rel="stylesheet"/>
+<style>
+.scores-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1rem}
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center}
+.feature-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.feature-card{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:1.5rem;transition:var(--transition)}
+.feature-card:hover{border-color:var(--border-accent);transform:translateY(-4px)}
+.feature-icon{font-size:2rem;margin-bottom:0.8rem}
+.feature-card h3{font-family:var(--font-heading);font-size:1rem;font-weight:700;color:var(--text-primary);margin-bottom:0.4rem}
+.feature-card p{font-size:0.85rem;color:var(--text-secondary);line-height:1.6}
+.portugal-section{background:var(--bg-secondary);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.ig-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:2rem}
+.ig-profile{display:flex;align-items:center;gap:1rem}
+.ig-handle{font-family:var(--font-heading);font-weight:700;font-size:1rem;color:var(--text-primary)}
+.ig-followers{font-size:0.8rem;color:var(--text-muted)}
+.scroll-indicator{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:0.3rem;animation:bounce 2s infinite}
+.scroll-indicator span{font-size:0.7rem;color:var(--text-muted);font-family:var(--font-heading);letter-spacing:0.1em;text-transform:uppercase}
+@keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(-8px)}}
+@media(max-width:900px){.about-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div id="nav-placeholder"></div>
+<div class="page-wrapper">
+<!-- HERO -->
+<section class="hero" style="min-height:100vh;padding-top:70px;position:relative;">
+<div class="hero-bg"></div>
+<div class="hero-grid"></div>
+<div style="position:absolute;right:-5%;top:50%;transform:translateY(-50%);opacity:0.03;z-index:1;pointer-events:none;">
+<img alt="" src="https://a.espncdn.com/i/teamlogos/leagues/500/nfl.png" style="width:600px;filter:grayscale(1);"/>
+</div>
+<div class="hero-content">
+<div class="hero-tag" data-i18n="index_001">🏈 Temporada NFL 2025/26</div>
+<h1><span data-i18n="index_002">FUTEBOL</span><br/><span data-i18n="index_002b">AMERICANO</span><br/><span class="accent" data-i18n="index_003">EM PORTUGAL</span></h1>
+<p data-i18n="index_004">O destino definitivo para fãs portugueses da NFL. Resultados em tempo real, classificações, estatísticas e notícias — tudo em português.</p>
+<div class="hero-buttons">
+<a class="btn btn-primary" data-i18n="index_005" href="nfl.html">Descobrir a NFL ↗</a>
+<a class="btn btn-outline" data-i18n="index_006" href="portugal.html">🇵🇹 Portugal</a>
+<a class="btn btn-outline" data-i18n="index_007" href="classificacoes.html">📊 Classificações</a>
+</div>
+<div class="hero-stats">
+<div class="hero-stat-item">
+<span class="hero-stat-number" data-counter="32">32</span> 
+<span class="hero-stat-label" data-i18n="index_008">Equipas NFL</span>
+</div>
+<div class="hero-stat-item">
+<span class="hero-stat-number" data-counter="1200">1.200</span> 
+<span class="hero-stat-label" data-i18n="index_009">Jogadores</span>
+</div>
+<div class="hero-stat-item">
+<span class="hero-stat-number" data-counter="18">18</span> 
+<span class="hero-stat-label" data-i18n="index_010">Semanas Reg.</span>
+</div>
+<div class="hero-stat-item">
+<span class="hero-stat-number" data-counter="105">105+</span>
+<span class="hero-stat-label" data-i18n="index_011">Anos de História</span>
+</div>
+</div>
+</div>
+<div class="scroll-indicator">
+<span data-i18n="index_012">Scroll</span>
+<span style="color:var(--text-muted)">▼</span>
+</div>
+</section>
+<!-- JOGOS -->
+<section class="section" style="background:var(--bg-secondary);border-top:1px solid var(--border);">
+<div class="container">
+<div class="section-header reveal">
+<span class="section-tag" data-i18n="index_013">⚡ Ao Vivo &amp; Recentes</span>
+<h2 class="section-title" data-i18n="index_014">JOGOS EM DESTAQUE</h2>
+<p class="section-subtitle" data-i18n="index_015">Resultados e próximos jogos da temporada NFL 2025/26</p>
+</div>
+<div id="scores-container"><div class="loading-spinner"><div class="spinner"></div></div></div>
+<div style="text-align:center;margin-top:2rem;">
+<a class="btn btn-outline" data-i18n="index_016" href="calendario.html">Ver Calendário Completo →</a>
+</div>
+</div>
+</section>
+<!-- CLASSIFICAÇÕES -->
+<section class="section">
+<div class="container">
+<div class="section-header reveal">
+<span class="section-tag" data-i18n="index_017">📊 Temporada 2025/26</span>
+<h2 class="section-title" data-i18n="index_018">CLASSIFICAÇÕES</h2>
+</div>
+<div class="grid-2" id="standings-preview"><div class="loading-spinner"><div class="spinner"></div></div></div>
+<div style="text-align:center;margin-top:2rem;">
+<a class="btn btn-primary" data-i18n="index_019" href="classificacoes.html">Ver Classificações Completas →</a>
+</div>
+</div>
+</section>
+<!-- SOBRE NFL -->
+<section class="section" style="background:var(--bg-secondary);border-top:1px solid var(--border);border-bottom:1px solid var(--border);">
+<div class="container">
+<div class="about-grid">
+<div class="reveal">
+<span class="section-tag" data-i18n="index_020">🏈 Sobre a Liga</span>
+<h2 style="font-family:var(--font-display);font-size:clamp(2.5rem,4vw,4rem);color:var(--text-primary);line-height:1;margin-bottom:1.5rem;">NATIONAL<br/>FOOTBALL<br/><span data-i18n="index_022" style="color:var(--red)">LEAGUE</span></h2>
+<p data-i18n="index_023" style="color:var(--text-secondary);line-height:1.8;margin-bottom:1.5rem;">A NFL é a liga de futebol americano profissional mais importante do mundo, fundada em 1920. Com 32 equipas divididas em duas conferências (AFC e NFC), é a liga desportiva com maior receita do planeta.</p>
+<p data-i18n="index_024" style="color:var(--text-secondary);line-height:1.8;margin-bottom:2rem;">O Super Bowl, a final da NFL, é um dos eventos desportivos mais assistidos do mundo, com audiências superiores a 100 milhões de espectadores.</p>
+<a class="btn btn-primary" data-i18n="index_025" href="nfl.html">Saber Mais sobre a NFL →</a>
+</div>
+<div class="reveal reveal-delay-2">
+<div class="feature-grid-2">
+<div class="feature-card"><div class="feature-icon">🏆</div><h3 data-i18n="index_026">Super Bowl</h3><p data-i18n="index_027">A final da NFL, o maior evento desportivo americano anual.</p></div>
+<div class="feature-card"><div class="feature-icon">📅</div><h3 data-i18n="index_028">18 Semanas</h3><p data-i18n="index_029">Temporada regular com 17 jogos por equipa.</p></div>
+<div class="feature-card"><div class="feature-icon">🏟</div><h3 data-i18n="index_030">32 Equipas</h3><p data-i18n="index_031">AFC e NFC com 4 divisões cada, 4 equipas por divisão.</p></div>
+<div class="feature-card"><div class="feature-icon">💰</div><h3 data-i18n="index_032">$20B+ Receita</h3><p data-i18n="index_033">A liga desportiva com maior receita do mundo.</p></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- PORTUGAL -->
+<section class="section portugal-section">
+<div class="container">
+<div class="about-grid">
+<div class="reveal">
+<div style="display:flex;flex-direction:column;gap:1rem;">
+<div class="highlight-card"><h3 data-i18n="index_034" style="font-family:var(--font-heading);font-weight:700;font-size:1.1rem;color:var(--text-primary);margin-bottom:0.5rem;">🏟 Liga Portuguesa (LPFA)</h3><p data-i18n="index_035" style="color:var(--text-secondary);font-size:0.9rem;">A competição principal do futebol americano em Portugal, com equipas de todo o país.</p></div>
+<div class="highlight-card"><h3 data-i18n="index_036" style="font-family:var(--font-heading);font-weight:700;font-size:1.1rem;color:var(--text-primary);margin-bottom:0.5rem;">🏃 Flag Football</h3><p data-i18n="index_037" style="color:var(--text-secondary);font-size:0.9rem;">Modalidade em crescimento em Portugal, com competições masculinas, femininas e juvenis.</p></div>
+<div class="highlight-card"><h3 data-i18n="index_038" style="font-family:var(--font-heading);font-weight:700;font-size:1.1rem;color:var(--text-primary);margin-bottom:0.5rem;">🇵🇹 Seleção Nacional</h3><p data-i18n="index_039" style="color:var(--text-secondary);font-size:0.9rem;">Portugal tem seleções nacionais de futebol americano e flag football representando o país internacionalmente.</p></div>
+</div>
+</div>
+<div class="reveal reveal-delay-2">
+<span class="section-tag" data-i18n="index_040">🇵🇹 Federação Portuguesa</span>
+<h2 style="font-family:var(--font-display);font-size:clamp(2.5rem,4vw,4rem);color:var(--text-primary);line-height:1;margin-bottom:1.5rem;"><span data-i18n="index_041">FUTEBOL</span><br/><span data-i18n="index_041b">AMERICANO</span><br/><span data-i18n="index_042" style="color:var(--red)">EM PORTUGAL</span></h2>
+<p data-i18n="index_043" style="color:var(--text-secondary);line-height:1.8;margin-bottom:1.5rem;">A Federação Portuguesa de Futebol Americano (FPFA) é o órgão responsável pela organização e desenvolvimento do futebol americano em Portugal desde 2004.</p>
+<p data-i18n="index_044" style="color:var(--text-secondary);line-height:1.8;margin-bottom:2rem;">Com competições desde a elite até ao nível recreativo, a FPFA promove o crescimento desta modalidade em todo o território nacional.</p>
+<a class="btn btn-primary" data-i18n="index_045" href="portugal.html">Explorar Portugal →</a>
+</div>
+</div>
+</div>
+</section>
+<!-- EQUIPAS MINI -->
+<section class="section">
+<div class="container">
+<div class="section-header reveal">
+<span class="section-tag" data-i18n="index_046">🏟 As 32 Franquias</span>
+<h2 class="section-title" data-i18n="index_047">EQUIPAS NFL</h2>
+<p class="section-subtitle" data-i18n="index_048">Conhece todas as equipas da National Football League</p>
+</div>
+<div class="teams-grid" id="teams-mini-grid" style="grid-template-columns:repeat(auto-fill,minmax(130px,1fr))"></div>
+<div style="text-align:center;margin-top:2rem;"><a class="btn btn-outline" data-i18n="index_049" href="equipas.html">Ver Todas as Equipas →</a></div>
+</div>
+</section>
+<!-- NOTÍCIAS -->
+<section class="section" style="background:var(--bg-secondary);border-top:1px solid var(--border);">
+<div class="container">
+<div class="section-header reveal">
+<span class="section-tag" data-i18n="index_050">📰 Últimas</span>
+<h2 class="section-title" data-i18n="index_051">NOTÍCIAS</h2>
+</div>
+<div class="news-grid" id="news-grid"></div>
+<div style="text-align:center;margin-top:2rem;"><a class="btn btn-outline" data-i18n="index_052" href="noticias.html">Ver Todas as Notícias →</a></div>
+</div>
+</section>
+<!-- INSTAGRAM -->
+<section class="section">
+<div class="container">
+<div class="ig-header reveal">
+<div class="ig-profile">
+<div style="width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);padding:3px;">
+<img alt="" src="https://a.espncdn.com/i/teamlogos/leagues/500/nfl.png" style="width:100%;height:100%;border-radius:50%;object-fit:cover;border:2px solid var(--bg-primary);"/>
+</div>
+<div>
+<div class="ig-handle">@nflportugalzone</div>
+<div class="ig-followers" data-i18n="index_053">Segue-nos no Instagram</div>
+</div>
+</div>
+<a class="btn btn-primary btn-sm" data-i18n="index_054" href="https://www.instagram.com/nflportugalzone/">📸 Seguir</a>
+</div>
+<div class="instagram-grid" id="ig-grid"></div>
+</div>
+</section>
+<!-- NEWSLETTER -->
+<section class="section" style="background:var(--bg-secondary);border-top:1px solid var(--border);">
+<div class="container">
+<div class="newsletter-box reveal">
+<div style="font-size:2.5rem;margin-bottom:0.5rem;">🏈</div>
+<h2 data-i18n="index_055">FICA A PAR DE TUDO</h2>
+<p data-i18n="index_056">Subscreve a nossa newsletter e recebe as últimas notícias, resultados e análises da NFL.</p>
+<form class="newsletter-form" id="newsletter-form-home">
+<input placeholder="O teu email..." required="" type="email"/>
+<button class="btn btn-primary" data-i18n="index_057" type="submit">Subscrever</button>
+</form>
+</div>
+</div>
+</section>
+</div>
+<div id="footer-placeholder"></div>
+<script src="js/i18n.js"></script>
+<script src="js/shared.js"></script>
+<script src="js/nav.js"></script>
+<script>
+async function loadScores(){
+  const c=document.getElementById('scores-container');
+  try{
+    const data=await getNFLScoreboard();
+    const events=data.events||[];
+    if(!events.length){c.innerHTML='<p style="text-align:center;color:var(--text-muted);padding:2rem;">Sem jogos disponíveis agora.</p>';return;}
+    c.innerHTML='<div class="scores-grid">'+events.slice(0,6).map(e=>{
+      const comp=e.competitions[0];
+      const home=comp.competitors.find(c=>c.homeAway==='home');
+      const away=comp.competitors.find(c=>c.homeAway==='away');
+      const status=comp.status.type.shortDetail;
+      const isLive=comp.status.type.state==='in';
+      const hs=home?.score||'–';const as2=away?.score||'–';
+      const hw=parseInt(hs)>parseInt(as2);const aw=parseInt(as2)>parseInt(hs);
+      const ha=home?.team.abbreviation?.toLowerCase()||'';
+      const aa=away?.team.abbreviation?.toLowerCase()||'';
+      return `<div class="score-card">
+        <div class="score-card-header">${isLive?'<span class="live-badge">Ao Vivo</span>':''} ${status}</div>
+        <div class="score-teams">
+          <div class="score-team"><div class="score-team-info">
+            <img src="https://a.espncdn.com/i/teamlogos/nfl/500/${aa}.png" alt="" onerror="this.src='https://a.espncdn.com/i/teamlogos/leagues/500/nfl.png'">
+            <span class="score-team-name">${away?.team.abbreviation||'?'}</span>
+          </div><span class="score-team-score ${aw?'winner':''}">${as2}</span></div>
+          <div class="score-team"><div class="score-team-info">
+            <img src="https://a.espncdn.com/i/teamlogos/nfl/500/${ha}.png" alt="" onerror="this.src='https://a.espncdn.com/i/teamlogos/leagues/500/nfl.png'">
+            <span class="score-team-name">${home?.team.abbreviation||'?'}</span>
+          </div><span class="score-team-score ${hw?'winner':''}">${hs}</span></div>
+        </div>
+      </div>`;
+    }).join('')+'</div>';
+  }catch(e){c.innerHTML='<p style="text-align:center;color:var(--text-muted);padding:2rem;">Dados indisponíveis no momento.</p>';}
+}
+
+async function loadStandingsPreview(){
+  const c=document.getElementById('standings-preview');
+  try{
+    const data=await getNFLStandings();
+    const groups=data.children||[];
+    const afc=groups.find(g=>g.abbreviation==='AFC')||groups[0];
+    const nfc=groups.find(g=>g.abbreviation==='NFC')||groups[1];
+    const render=conf=>{
+      if(!conf)return'';
+      const teams=conf.standings?.entries?.slice(0,8)||[];
+      return`<div class="card" style="padding:1.5rem;">
+        <h3 style="font-family:var(--font-display);font-size:1.5rem;color:var(--red);margin-bottom:1rem;">${conf.name||conf.abbreviation}</h3>
+        <div class="standings-wrapper"><table class="standings-table">
+          <thead><tr><th>Equipa</th>
+<th>V</th>
+<th>D</th>
+<th>%</th></tr></thead>
+          <tbody>${teams.map(e=>{
+            const s=e.stats||[];
+            const w=s.find(x=>x.name==='wins')?.value??'–';
+            const l=s.find(x=>x.name==='losses')?.value??'–';
+            const pct=s.find(x=>x.name==='winPercent')?.value;
+            const ab=e.team?.abbreviation?.toLowerCase()||'';
+            return`<tr><td><div class="team-cell"><img src="https://a.espncdn.com/i/teamlogos/nfl/500/${ab}.png" onerror="this.src='https://a.espncdn.com/i/teamlogos/leagues/500/nfl.png'" alt=""><span>${e.team?.shortDisplayName||'?'}</span></div></td>
+            <td>${w}</td>
+<td>${l}</td>
+<td>${pct!==undefined?parseFloat(pct).toFixed(3):'–'}</td></tr>`;
+          }).join('')}</tbody>
+        </table></div>
+      </div>`;
+    };
+    c.innerHTML=render(afc)+render(nfc);
+  }catch(e){c.innerHTML='<p style="text-align:center;color:var(--text-muted);grid-column:1/-1;padding:2rem;">Classificações indisponíveis.</p>';}
+}
+
+async function loadNews(){
+  const c=document.getElementById('news-grid');
+  try{
+    const data=await getNFLNews(6);
+    const arts=data.articles||[];
+    if(!arts.length)throw new Error();
+    c.innerHTML=arts.slice(0,6).map(a=>{
+      const img=a.images?.[0]?.url||'https://a.espncdn.com/i/teamlogos/leagues/500/nfl.png';
+      const cat=a.categories?.[0]?.description||'NFL';
+      const date=a.published?new Date(a.published).toLocaleDateString('pt-PT'):'';
+      return`<div class="news-card reveal">
+        <div class="news-card-img-wrapper"><img class="news-card-img" src="${img}" alt="${a.headline}" loading="lazy" onerror="this.src='https://a.espncdn.com/i/teamlogos/leagues/500/nfl.png'"></div>
+        <div class="news-card-body">
+          <div class="news-card-cat">${cat}</div>
+          <div class="news-card-title">${a.headline}</div>
+          <div class="news-card-desc">${a.description||''}</div>
+          <div class="news-card-meta"><span>${date}</span></div>
+        </div>
+      </div>`;
+    }).join('');
+    initScrollReveal();
+  }catch(e){c.innerHTML='<p style="text-align:center;color:var(--text-muted);grid-column:1/-1;padding:2rem;">Notícias indisponíveis.</p>';}
+}
+
+function loadTeamsMini(){
+  const g=document.getElementById('teams-mini-grid');
+  g.innerHTML=NFL_TEAMS.map(t=>`
+    <a href="equipas.html#${t.abbr}" class="team-card reveal">
+      <img src="${getTeamLogo(t.abbr)}" alt="${t.name}" loading="lazy" onerror="this.src='https://a.espncdn.com/i/teamlogos/leagues/500/nfl.png'">
+      <div class="team-card-name">${t.abbr.toUpperCase()}</div>
+      <div class="team-card-conf">${t.conf}</div>
+    </a>`).join('');
+  initScrollReveal();
+}
+
+function loadInstagram(){
+  const g=document.getElementById('ig-grid');
+  g.innerHTML=NFL_TEAMS.slice(0,6).map(t=>`
+    <div class="instagram-post">
+      <img src="${getTeamLogo(t.abbr)}" alt="${t.name}" loading="lazy">
+      <div class="instagram-post-overlay"><span>❤️ ${(Math.random()*3+0.5).toFixed(1)}K</span> <span>💬 ${Math.floor(Math.random()*80+20)}</span></div>
+    </div>`).join('');
+}
+
+loadScores();loadStandingsPreview();loadNews();loadTeamsMini();loadInstagram();
+</script>
+</body>
+</html>

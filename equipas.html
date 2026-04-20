@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+
+<html data-theme="dark" lang="pt">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Equipas NFL — NFL PT</title>
+<link href="css/style.css" rel="stylesheet"/>
+<style>
+.conf-section{margin-bottom:3rem}
+.conf-title{font-family:var(--font-display);font-size:2.5rem;color:var(--text-primary);margin-bottom:0.5rem;display:flex;align-items:center;gap:1rem}
+.conf-title span{color:var(--red)}
+.div-title{font-family:var(--font-heading);font-size:0.8rem;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-muted);margin:1.5rem 0 1rem;padding-left:1rem;border-left:3px solid var(--red)}
+.team-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:2000;align-items:center;justify-content:center;padding:1rem}
+.team-modal.open{display:flex}
+.team-modal-box{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:2.5rem;max-width:600px;width:100%;position:relative;max-height:80vh;overflow-y:auto}
+.team-modal-close{position:absolute;top:1rem;right:1rem;background:none;border:none;color:var(--text-muted);font-size:1.5rem;cursor:pointer}
+.team-modal-header{display:flex;align-items:center;gap:1.5rem;margin-bottom:1.5rem}
+.team-modal-header img{width:80px;height:80px;object-fit:contain}
+.team-modal-name{font-family:var(--font-display);font-size:2rem;color:var(--text-primary);line-height:1}
+.team-modal-info{font-size:0.85rem;color:var(--text-muted);margin-top:0.3rem}
+.team-modal-desc{font-size:0.9rem;color:var(--text-secondary);line-height:1.7}
+.filter-bar{display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:2rem}
+.filter-btn{background:var(--bg-card);border:1px solid var(--border);color:var(--text-secondary);font-family:var(--font-heading);font-size:0.8rem;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;padding:0.5rem 1rem;border-radius:8px;cursor:pointer;transition:var(--transition)}
+.filter-btn:hover,.filter-btn.active{background:rgba(230,57,70,0.1);border-color:var(--red);color:var(--red)}
+</style>
+</head>
+<body>
+<div id="nav-placeholder"></div>
+<div class="page-wrapper">
+<div class="page-hero">
+<div class="container">
+<div class="page-hero-tag" data-i18n="equipas_001">🏟 National Football League</div>
+<h1><span data-i18n="equipas_003_pre">EQUIPAS </span> <span data-i18n="equipas_003" style="color:var(--red)">NFL</span></h1>
+<p data-i18n="equipas_004">As 32 franquias da National Football League divididas em AFC e NFC, cada uma com a sua rica história e tradição.</p>
+</div>
+</div>
+<section class="section">
+<div class="container">
+<div class="filter-bar">
+<button class="filter-btn active" data-filter="all" data-i18n="equipas_005">Todas</button> 
+<button class="filter-btn" data-filter="AFC" data-i18n="equipas_006">AFC</button> 
+<button class="filter-btn" data-filter="NFC" data-i18n="equipas_007">NFC</button> 
+<button class="filter-btn" data-filter="East" data-i18n="equipas_008">Este</button> 
+<button class="filter-btn" data-filter="North" data-i18n="equipas_009">Norte</button> 
+<button class="filter-btn" data-filter="South" data-i18n="equipas_010">Sul</button> 
+<button class="filter-btn" data-filter="West" data-i18n="equipas_011">Oeste</button>
+</div>
+<div id="teams-container"></div>
+</div>
+</section>
+</div>
+<!-- Modal -->
+<div class="team-modal" id="team-modal">
+<div class="team-modal-box">
+<button class="team-modal-close" onclick="closeModal()">✕</button>
+<div id="modal-content"></div>
+</div>
+</div>
+<div id="footer-placeholder"></div>
+<script src="js/i18n.js"></script>
+<script src="js/shared.js"></script>
+<script src="js/nav.js"></script>
+<script>
+const TEAM_HISTORY = {
+  kc:"Os Kansas City Chiefs foram fundados em 1960 como parte da AFL. Sob o comando do lendário treinador Andy Reid e do quarterback Patrick Mahomes, tornaram-se uma das equipas mais dominantes da era moderna, conquistando múltiplos Super Bowls. O seu estádio, o GEHA Field at Arrowhead Stadium, é conhecido pelo ruído ensurdecedor dos seus adeptos.",
+  phi:"Os Philadelphia Eagles são uma das franquias mais antigas da NFL, fundados em 1933. Conhecidos pelos seus apaixonados adeptos, os Eagles conquistaram o seu primeiro Super Bowl em 2018 (LII), derrotando os New England Patriots. Em 2025, são uma das equipas mais fortes da liga.",
+  bal:"Os Baltimore Ravens foram fundados em 1996 após a mudança dos Cleveland Browns. Com dois Super Bowls conquistados (2001 e 2013), são conhecidos pelas suas defesas lendárias. Lamar Jackson, o seu quarterback, é um dos jogadores mais dinâmicos da liga atual.",
+  buf:"Os Buffalo Bills têm uma das fanbasas mais leais da NFL. Apesar de quatro aparições consecutivas no Super Bowl nos anos 90 (sem vitória), a equipa renasceu com Josh Allen, tornando-se candidato ao título na era moderna.",
+  dal:"Os Dallas Cowboys, apelidados de 'America's Team', são uma das franquias mais valiosas do desporto mundial. Com cinco Super Bowls conquistados, o seu estádio AT&T Stadium é um dos mais modernos e espetaculares do mundo.",
+  sf:"Os San Francisco 49ers são uma das franquias mais bem-sucedidas da NFL com cinco Super Bowls. Na era moderna, sob Kyle Shanahan, tornaram-se regularmente candidatos ao título. O seu sistema ofensivo é considerado um dos mais inovadores da liga.",
+  det:"Os Detroit Lions têm uma das histórias mais longas da NFL, fundados em 1930. Após décadas de dificuldades, a equipa renasceu sob o comando de Dan Campbell, tornando-se uma das mais empolgantes da liga atual com um estilo de jogo físico e agressivo.",
+  min:"Os Minnesota Vikings são conhecidos pelos seus adeptos apaixonados e pelo US Bank Stadium. Com quatro aparições no Super Bowl sem conquista, continuam à procura do título máximo. Sam Darnold liderou a equipa a uma grande temporada em 2024.",
+  gb:"Os Green Bay Packers são únicos na NFL por serem de propriedade comunitária sem fins lucrativos. Com 13 títulos da NFL (incluindo 4 Super Bowls), o Lambeau Field é considerado uma das melhores arenas desportivas do mundo.",
+  chi:"Os Chicago Bears são um dos clubes mais antigos da NFL, fundados em 1919. Com 9 títulos da NFL e 1 Super Bowl, têm uma das maiores histórias do desporto americano. O jovem quarterback Caleb Williams representa o futuro da franquia.",
+  cin:"Os Cincinnati Bengals, fundados em 1968, tiveram um renascimento espetacular com Joe Burrow e Ja'Marr Chase. Chegaram ao Super Bowl LVI em 2022, tornando-se uma das equipas mais empolgantes da NFL moderna.",
+  cle:"Os Cleveland Browns são uma das franquias com histórias mais ricas da NFL, fundados em 1946. Com um novo estádio aprovado e jovens talentos, a equipa tenta reconquistar a glória do passado.",
+  den:"Os Denver Broncos têm três Super Bowls e são conhecidos pela altitude de Denver, que dificulta a vida dos adversários. John Elway e Peyton Manning são lendas imortais desta franquia.",
+  lv:"Os Las Vegas Raiders, anteriormente Oakland Raiders, são conhecidos pela sua filosofia 'Commitment to Excellence'. A sua mística e o 'Raider Nation' são únicos na NFL.",
+  lac:"Os Los Angeles Chargers são conhecidos pelos seus fãs viajantes e pelo talento do QB Justin Herbert. Baseados no SoFi Stadium, partilhado com os Rams.",
+  hou:"Os Houston Texans são uma das franquias mais jovens da NFL, fundados em 2002. Com C.J. Stroud à frente, tornaram-se um dos times mais promissores da AFC South.",
+  ind:"Os Indianapolis Colts têm uma das rivalidades mais épicas da NFL com os New England Patriots durante a era Peyton Manning. Continuam à procura de um QB franchise.",
+  jax:"Os Jacksonville Jaguars, fundados em 1995, tiveram momentos épicos como as suas chegadas ao AFC Championship. Trevor Lawrence lidera a reconstrução da franquia.",
+  ten:"Os Tennessee Titans são os sucessores dos Houston Oilers. O 'Music City Miracle' é um dos plays mais memoráveis da história dos playoffs da NFL.",
+  ne:"Os New England Patriots são a dinastia moderna da NFL, com 6 Super Bowls conquistados sob Bill Belichick e Tom Brady entre 2001 e 2019. Na era pós-Brady, a equipa reinicia com novos projetos.",
+  mia:"Os Miami Dolphins têm a única temporada perfeita da NFL (1972, 17-0). Com Tua Tagovailoa e Tyreek Hill, a equipa voltou a ser candidata ao título.",
+  nyj:"Os New York Jets, baseados em East Rutherford, nunca chegaram ao Super Bowl após a vitória de Joe Namath em 1969. Aaron Rodgers lidera a esperança de mudança.",
+  nyg:"Os New York Giants têm 4 Super Bowls, incluindo duas vitórias sobre os Patriots imbatíveis. A reconstrução está em curso com Daniel Jones.",
+  wsh:"Os Washington Commanders (anteriormente Redskins, depois Football Team) têm três Super Bowls e uma das fanbasas mais antigas da liga.",
+  ari:"Os Arizona Cardinals são a franquia ativa mais antiga do futebol profissional americano, fundados em 1898. Com Kyler Murray, buscam a glória.",
+  atl:"Os Atlanta Falcons são conhecidos pelo 'Dirty Bird' e pela dramática derrota no Super Bowl LI. Com Kirk Cousins, a equipa busca o seu primeiro título.",
+  car:"Os Carolina Panthers, fundados em 1995, chegaram ao Super Bowl em 2016 com Cam Newton. Em reconstrução, apostam em jovens talentos.",
+  no:"Os New Orleans Saints têm a sua lenda de ouro, o Super Bowl XLIV em 2010. O Who Dat Nation é uma das fanbasas mais apaixonadas da NFL.",
+  tb:"Os Tampa Bay Buccaneers conquistaram dois Super Bowls (2003 e 2021). Com a chegada de Tom Brady em 2021, tornaram-se campeões de forma inesperada.",
+  lar:"Os Los Angeles Rams, de volta a L.A. em 2016, conquistaram o Super Bowl LVI em 2022. O seu modelo de construção de plantel é um dos mais arrojados da liga.",
+  sea:"Os Seattle Seahawks são conhecidos pelo '12th Man' e pelo 'Legion of Boom'. Com dois Super Bowls (2014) sob Pete Carroll, são uma das franquias mais populares.",
+};
+
+const TEAM_EXTRAS = {
+  kc:{stadium:"GEHA Field at Arrowhead Stadium",city:"Kansas City, Missouri",founded:"1960",superbowls:4},
+  phi:{stadium:"Lincoln Financial Field",city:"Philadelphia, Pennsylvania",founded:"1933",superbowls:1},
+  bal:{stadium:"M&T Bank Stadium",city:"Baltimore, Maryland",founded:"1996",superbowls:2},
+  buf:{stadium:"Highmark Stadium",city:"Orchard Park, New York",founded:"1960",superbowls:0},
+  dal:{stadium:"AT&T Stadium",city:"Arlington, Texas",founded:"1960",superbowls:5},
+  sf:{stadium:"Levi's Stadium",city:"Santa Clara, California",founded:"1946",superbowls:5},
+  det:{stadium:"Ford Field",city:"Detroit, Michigan",founded:"1930",superbowls:0},
+  min:{stadium:"U.S. Bank Stadium",city:"Minneapolis, Minnesota",founded:"1961",superbowls:0},
+  gb:{stadium:"Lambeau Field",city:"Green Bay, Wisconsin",founded:"1919",superbowls:4},
+  chi:{stadium:"Soldier Field",city:"Chicago, Illinois",founded:"1919",superbowls:1},
+  cin:{stadium:"Paycor Stadium",city:"Cincinnati, Ohio",founded:"1968",superbowls:0},
+  cle:{stadium:"Cleveland Browns Stadium",city:"Cleveland, Ohio",founded:"1946",superbowls:0},
+  den:{stadium:"Empower Field at Mile High",city:"Denver, Colorado",founded:"1960",superbowls:3},
+  lv:{stadium:"Allegiant Stadium",city:"Las Vegas, Nevada",founded:"1960",superbowls:1},
+  lac:{stadium:"SoFi Stadium",city:"Inglewood, California",founded:"1960",superbowls:0},
+  hou:{stadium:"NRG Stadium",city:"Houston, Texas",founded:"2002",superbowls:0},
+  ind:{stadium:"Lucas Oil Stadium",city:"Indianapolis, Indiana",founded:"1953",superbowls:2},
+  jax:{stadium:"EverBank Stadium",city:"Jacksonville, Florida",founded:"1995",superbowls:0},
+  ten:{stadium:"Nissan Stadium",city:"Nashville, Tennessee",founded:"1960",superbowls:0},
+  ne:{stadium:"Gillette Stadium",city:"Foxborough, Massachusetts",founded:"1960",superbowls:6},
+  mia:{stadium:"Hard Rock Stadium",city:"Miami Gardens, Florida",founded:"1966",superbowls:2},
+  nyj:{stadium:"MetLife Stadium",city:"East Rutherford, New Jersey",founded:"1960",superbowls:1},
+  nyg:{stadium:"MetLife Stadium",city:"East Rutherford, New Jersey",founded:"1925",superbowls:4},
+  wsh:{stadium:"Northwest Stadium",city:"Landover, Maryland",founded:"1932",superbowls:3},
+  ari:{stadium:"State Farm Stadium",city:"Glendale, Arizona",founded:"1898",superbowls:0},
+  atl:{stadium:"Mercedes-Benz Stadium",city:"Atlanta, Georgia",founded:"1966",superbowls:0},
+  car:{stadium:"Bank of America Stadium",city:"Charlotte, North Carolina",founded:"1995",superbowls:0},
+  no:{stadium:"Caesars Superdome",city:"New Orleans, Louisiana",founded:"1967",superbowls:1},
+  tb:{stadium:"Raymond James Stadium",city:"Tampa, Florida",founded:"1976",superbowls:2},
+  lar:{stadium:"SoFi Stadium",city:"Inglewood, California",founded:"1936",superbowls:2},
+  sea:{stadium:"Lumen Field",city:"Seattle, Washington",founded:"1976",superbowls:1},
+};
+
+let currentFilter='all';
+
+function renderTeams(){
+  const container=document.getElementById('teams-container');
+  const confs=['AFC','NFC'];
+  const divs=['East','North','South','West'];
+  let html='';
+  confs.forEach(conf=>{
+    const confTeams=NFL_TEAMS.filter(t=>t.conf===conf);
+    if(currentFilter!=='all'&&currentFilter!==conf&&!divs.includes(currentFilter)){
+      // skip conf if conf filter doesn't match
+      const matchConf=confTeams.some(t=>t.conf===currentFilter||t.div===currentFilter);
+      if(!matchConf)return;
+    }
+    html+=`<div class="conf-section">
+      <div class="conf-title">${conf} <span>Conference</span></div>`;
+    divs.forEach(div=>{
+      const divTeams=confTeams.filter(t=>t.div===div);
+      const filtered=divTeams.filter(t=>{
+        if(currentFilter==='all')return true;
+        if(currentFilter===conf)return true;
+        if(currentFilter===div)return true;
+        return false;
+      });
+      if(!filtered.length)return;
+      html+=`<div class="div-title">${conf} ${div}</div>
+        <div class="teams-grid" style="grid-template-columns:repeat(auto-fill,minmax(200px,1fr));margin-bottom:1.5rem;">`;
+      filtered.forEach(t=>{
+        html+=`<div class="team-card reveal" id="${t.abbr}" onclick="openTeamModal('${t.abbr}')">
+          <img src="${getTeamLogo(t.abbr)}" alt="${t.name}" loading="lazy" onerror="this.src='https://a.espncdn.com/i/teamlogos/leagues/500/nfl.png'">
+          <div class="team-card-name">${t.name}</div>
+          <div class="team-card-city">${t.city}</div>
+          <div class="team-card-conf">${t.conf} ${t.div}</div>
+        </div>`;
+      });
+      html+=`</div>`;
+    });
+    html+=`</div>`;
+  });
+  container.innerHTML=html;
+  initScrollReveal();
+}
+
+function openTeamModal(abbr){
+  const t=NFL_TEAMS.find(x=>x.abbr===abbr);
+  const extra=TEAM_EXTRAS[abbr]||{};
+  const hist=TEAM_HISTORY[abbr]||`${t?.name||abbr} — uma das franquias históricas da NFL.`;
+  const sb=extra.superbowls||0;
+  document.getElementById('modal-content').innerHTML=`
+    <div style="display:flex;align-items:center;gap:1.5rem;margin-bottom:1.5rem;">
+      <img src="${getTeamLogo(abbr)}" alt="${t?.name}" style="width:80px;height:80px;object-fit:contain;">
+      <div>
+        <div style="font-family:var(--font-display);font-size:2rem;color:var(--text-primary);line-height:1;">${t?.name||abbr}</div>
+        <div style="font-size:0.85rem;color:var(--text-muted);margin-top:0.3rem;">${extra.city||''}</div>
+        <span class="badge badge-red" style="margin-top:0.5rem;">${t?.conf} ${t?.div}</span>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1.5rem;">
+      <div style="text-align:center;background:var(--bg-secondary);border-radius:8px;padding:1rem;">
+        <div style="font-family:var(--font-display);font-size:1.5rem;color:var(--red);">${sb}</div>
+        <div style="font-size:0.75rem;color:var(--text-muted);text-transform:uppercase;">Super Bowls</div>
+      </div>
+      <div style="text-align:center;background:var(--bg-secondary);border-radius:8px;padding:1rem;">
+        <div style="font-family:var(--font-display);font-size:1.5rem;color:var(--text-primary);">${extra.founded||'—'}</div>
+        <div style="font-size:0.75rem;color:var(--text-muted);text-transform:uppercase;">Fundação</div>
+      </div>
+      <div style="text-align:center;background:var(--bg-secondary);border-radius:8px;padding:1rem;">
+        <div style="font-family:var(--font-display);font-size:1.2rem;color:var(--text-primary);">${abbr.toUpperCase()}</div>
+        <div style="font-size:0.75rem;color:var(--text-muted);text-transform:uppercase;">Abreviatura</div>
+      </div>
+    </div>
+    ${extra.stadium?`<p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:1rem;">🏟 ${extra.stadium}</p>`:''}
+    <p style="font-size:0.9rem;color:var(--text-secondary);line-height:1.7;">${hist}</p>`;
+  document.getElementById('team-modal').classList.add('open');
+}
+
+function closeModal(){document.getElementById('team-modal').classList.remove('open');}
+document.getElementById('team-modal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeModal();});
+
+document.querySelectorAll('.filter-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    currentFilter=btn.dataset.filter;
+    renderTeams();
+  });
+});
+
+renderTeams();
+</script>
+</body>
+</html>

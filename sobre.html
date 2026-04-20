@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+
+<html data-theme="dark" lang="pt">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Sobre o Projeto — NFL PT</title>
+<link href="css/style.css" rel="stylesheet"/>
+<style>
+    .page-hero { padding: 140px 0 60px; background: radial-gradient(ellipse at 50% 0%, rgba(1,51,105,0.2) 0%, transparent 60%), linear-gradient(180deg, var(--bg) 0%, var(--surface) 100%); text-align: center; }
+    .about-layout { display: grid; grid-template-columns: 1fr 340px; gap: 56px; padding: 56px 0 80px; align-items: start; }
+    .about-section { margin-bottom: 48px; }
+    .about-section h2 { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; letter-spacing: 0.06em; margin-bottom: 16px; }
+    .about-section h2 span { color: var(--red); }
+    .about-section p { color: var(--text-secondary); line-height: 1.8; font-size: 0.95rem; margin-bottom: 14px; }
+    .about-section p:last-child { margin-bottom: 0; }
+    .tech-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-top: 20px; }
+    .tech-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px; text-align: center; transition: all 0.3s; }
+    .tech-card:hover { border-color: var(--red); transform: translateY(-3px); }
+    .tech-icon { font-size: 2rem; margin-bottom: 6px; }
+    .tech-name { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 0.88rem; }
+    .tech-desc { font-size: 0.72rem; color: var(--text-muted); margin-top: 2px; }
+    .pages-list { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 16px; }
+    .page-item { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 12px 16px; display: flex; align-items: center; gap: 10px; font-family: 'Barlow Condensed', sans-serif; font-size: 0.88rem; font-weight: 600; transition: all 0.2s; }
+    .page-item:hover { border-color: var(--red); }
+    .objective-list { list-style: none; padding: 0; margin: 16px 0 0; }
+    .objective-list li { padding: 10px 0; border-bottom: 1px solid var(--border); color: var(--text-secondary); display: flex; gap: 12px; align-items: flex-start; font-size: 0.93rem; line-height: 1.5; }
+    .objective-list li:last-child { border-bottom: none; }
+    .objective-list li::before { content: '✅'; flex-shrink: 0; }
+    /* Sidebar */
+    .info-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 24px; margin-bottom: 24px; }
+    .info-card-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; letter-spacing: 0.06em; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
+    .info-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.85rem; }
+    .info-row:last-child { border-bottom: none; }
+    .info-label { color: var(--text-muted); font-family: 'Barlow Condensed', sans-serif; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; }
+    .info-val { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; color: var(--text); }
+    .stat-highlight { text-align: center; padding: 20px 0; border-bottom: 1px solid var(--border); }
+    .stat-highlight:last-child { border-bottom: none; }
+    .stat-big { font-family: 'Bebas Neue', sans-serif; font-size: 2.8rem; color: var(--red); line-height: 1; }
+    .stat-small { font-family: 'Barlow Condensed', sans-serif; font-size: 0.78rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); margin-top: 2px; }
+    @media (max-width: 900px) { .about-layout { grid-template-columns: 1fr; } }
+    @media (max-width: 500px) { .pages-list { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+<div id="nav-placeholder"></div>
+<div class="header-actions">
+<button class="btn-lang" data-i18n="sobre_018" onclick="toggleLang()" style="background:transparent;border:1px solid var(--border-color,rgba(255,255,255,.2));color:var(--text-primary,#f0f4ff);font-size:0.75rem;font-weight:700;padding:0.3rem 0.6rem;border-radius:6px;cursor:pointer;transition:all 0.2s;white-space:nowrap;font-family:inherit;" title="Switch to English">🌐 EN</button>
+<button aria-label="Alternar tema" class="theme-toggle" onclick="toggleTheme()">☀️</button>
+<button aria-expanded="false" aria-label="Menu" class="hamburger"><span></span> <span></span> <span></span></button>
+</div>
+<nav aria-hidden="true" class="mobile-nav">
+<a data-i18n="sobre_019" href="index.html">🏠 Início</a>
+<a data-i18n="sobre_020" href="nfl.html">🏈 NFL</a>
+<a data-i18n="sobre_021" href="portugal.html">🇵🇹 Portugal</a>
+<a data-i18n="sobre_022" href="equipas.html">🏟 Equipas</a>
+<a data-i18n="sobre_023" href="jogadores.html">👤 Jogadores</a>
+<a data-i18n="sobre_024" href="treinadores.html">🧑‍🏫 Treinadores</a>
+<a data-i18n="sobre_025" href="classificacoes.html">📊 Classificações</a>
+<a data-i18n="sobre_026" href="estatisticas.html">📈 Estatísticas</a>
+<a data-i18n="sobre_027" href="calendario.html">📅 Calendário</a>
+<a data-i18n="sobre_028" href="noticias.html">📰 Notícias</a>
+<a data-i18n="sobre_029" href="quiz.html">🧠 Quiz</a>
+<a data-i18n="sobre_030" href="contactos.html">📞 Contactos</a>
+</nav>
+<section class="page-hero">
+<div class="container">
+<span class="section-badge" data-i18n="sobre_031">🎓 Projeto PAP</span>
+<h1 class="section-title" data-i18n="sobre_032" style="font-size:clamp(2.2rem,5vw,4rem);margin-top:16px">Sobre o Projeto</h1>
+<p class="section-sub" data-i18n="sobre_033" style="max-width:520px;margin:0 auto">NFL PT é um projeto académico desenvolvido como Prova de Aptidão Profissional (PAP), combinando paixão pelo futebol americano e desenvolvimento web.</p>
+</div>
+</section>
+<main class="container">
+<div class="about-layout">
+<div>
+<!-- About -->
+<div class="about-section reveal">
+<h2><span data-i18n="sobre_036">O Que é o </span> <span data-i18n="sobre_037">NFL PT?</span></h2>
+<p data-i18n="sobre_038">O NFL PT é um website de referência em língua portuguesa dedicado ao futebol americano — tanto a liga profissional norte-americana (NFL) como o movimento nacional em Portugal, sob a alçada da Federação Portuguesa de Futebol Americano (FPFA).</p>
+<p data-i18n="sobre_039">Este projeto nasceu da vontade de criar um espaço centralizado, moderno e acessível para os fãs portugueses de futebol americano, onde possam encontrar tudo desde as regras básicas até às estatísticas avançadas da temporada, passando por perfis de jogadores, equipas, classificações e muito mais.</p>
+<p data-i18n="sobre_040">A falta de conteúdo de qualidade em português sobre a NFL foi a principal motivação. A maioria dos sites existentes está em inglês, limitando o acesso a quem está a começar a seguir a modalidade.</p>
+</div>
+<!-- Objectives -->
+<div class="about-section reveal">
+<h2><span data-i18n="sobre_041">Objetivos do </span> <span data-i18n="sobre_042">Projeto</span></h2>
+<ul class="objective-list">
+<li data-i18n="sobre_043">Criar um hub completo de futebol americano em língua portuguesa, acessível a todos os públicos</li>
+<li data-i18n="sobre_044">Apresentar as 32 equipas da NFL com informações detalhadas sobre história, títulos e conferências</li>
+<li data-i18n="sobre_045">Divulgar o futebol americano em Portugal e as competições nacionais da FPFA</li>
+<li data-i18n="sobre_046">Desenvolver competências de desenvolvimento web front-end (HTML, CSS, JavaScript)</li>
+<li data-i18n="sobre_047">Aplicar princípios de design UI/UX moderno, com modo escuro e modo claro</li>
+<li data-i18n="sobre_048">Garantir responsividade total para dispositivos móveis, tablets e desktop</li>
+<li data-i18n="sobre_049">Criar conteúdo educativo (Quiz, guias) para novos fãs da modalidade</li>
+<li data-i18n="sobre_050">Documentar e apresentar o projeto como PAP na área de Multimédia/Tecnologias</li>
+</ul>
+</div>
+<!-- Pages -->
+<div class="about-section reveal">
+<h2><span data-i18n="sobre_051">Páginas do </span> <span data-i18n="sobre_052">Website</span></h2>
+<p data-i18n="sobre_053">O NFL PT é composto por múltiplas secções, cada uma com conteúdo específico e design dedicado:</p>
+<div class="pages-list">
+<div class="page-item" data-i18n="sobre_054">🏠 Página Inicial</div>
+<div class="page-item" data-i18n="sobre_055">🏈 NFL — A Liga</div>
+<div class="page-item" data-i18n="sobre_056">🇵🇹 Portugal / FPFA</div>
+<div class="page-item" data-i18n="sobre_057">🏟️ Equipas NFL</div>
+<div class="page-item" data-i18n="sobre_058">👤 Jogadores</div>
+<div class="page-item" data-i18n="sobre_059">🧑‍🏫 Treinadores</div>
+<div class="page-item" data-i18n="sobre_060">📊 Classificações</div>
+<div class="page-item" data-i18n="sobre_061">📈 Estatísticas</div>
+<div class="page-item" data-i18n="sobre_062">📅 Calendário</div>
+<div class="page-item" data-i18n="sobre_063">📰 Notícias</div>
+<div class="page-item" data-i18n="sobre_064">🧠 Quiz Interativo</div>
+<div class="page-item" data-i18n="sobre_065">📞 Contactos</div>
+</div>
+</div>
+<!-- Tech -->
+<div class="about-section reveal">
+<h2><span data-i18n="sobre_066">Tecnologias </span> <span data-i18n="sobre_067">Utilizadas</span></h2>
+<p data-i18n="sobre_068">O projeto foi desenvolvido com tecnologias web modernas, sem dependência de frameworks ou CMS externos — tudo construído de raiz:</p>
+<div class="tech-grid">
+<div class="tech-card">
+<div class="tech-icon">🌐</div>
+<div class="tech-name" data-i18n="sobre_069">HTML5</div>
+<div class="tech-desc" data-i18n="sobre_070">Estrutura semântica</div>
+</div>
+<div class="tech-card">
+<div class="tech-icon">🎨</div>
+<div class="tech-name" data-i18n="sobre_071">CSS3</div>
+<div class="tech-desc" data-i18n="sobre_072">Animações &amp; layouts</div>
+</div>
+<div class="tech-card">
+<div class="tech-icon">⚡</div>
+<div class="tech-name" data-i18n="sobre_073">JavaScript</div>
+<div class="tech-desc" data-i18n="sobre_074">Interatividade</div>
+</div>
+<div class="tech-card">
+<div class="tech-icon">🔤</div>
+<div class="tech-name" data-i18n="sobre_075">Google Fonts</div>
+<div class="tech-desc" data-i18n="sobre_076">Bebas Neue + Barlow</div>
+</div>
+<div class="tech-card">
+<div class="tech-icon">🖼️</div>
+<div class="tech-name" data-i18n="sobre_077">ESPN CDN</div>
+<div class="tech-desc" data-i18n="sobre_078">Logos &amp; headshots</div>
+</div>
+<div class="tech-card">
+<div class="tech-icon">📸</div>
+<div class="tech-name" data-i18n="sobre_079">Unsplash</div>
+<div class="tech-desc" data-i18n="sobre_080">Imagens de stock</div>
+</div>
+</div>
+</div>
+<!-- Design -->
+<div class="about-section reveal">
+<h2><span data-i18n="sobre_081">Design e </span> <span data-i18n="sobre_082">Acessibilidade</span></h2>
+<p data-i18n="sobre_083">O design do NFL PT foi pensado para ser moderno, imersivo e profissional, com inspiração nos sites oficiais de desporto como ESPN, NFL.com e DAZN. As principais características de design incluem:</p>
+<ul class="objective-list">
+<li><b data-i18n="sobre_085">Modo Escuro/Claro</b><span data-i18n="sobre_084"> — O utilizador pode alternar entre temas, com preferência guardada no browser</span></li>
+<li><b data-i18n="sobre_087">Responsivo</b> — Layout adaptado para mobile (&lt; 480px), tablet (768px) e desktop (1200px+)</li>
+<li><b data-i18n="sobre_089">Tipografia</b><span data-i18n="sobre_088"> — Bebas Neue para títulos de impacto, Barlow para leitura confortável</span></li>
+<li><b data-i18n="sobre_091">Animações</b><span data-i18n="sobre_090"> — Scroll reveal, hover effects e contadores animados para uma experiência dinâmica</span></li>
+<li><b data-i18n="sobre_093">Performance</b><span data-i18n="sobre_092"> — Imagens com lazy loading, CSS otimizado e JavaScript não bloqueante</span></li>
+<li><b data-i18n="sobre_095">Acessibilidade</b><span data-i18n="sobre_094"> — Atributos ARIA, contraste adequado e navegação por teclado</span></li>
+</ul>
+</div>
+</div>
+<!-- Sidebar -->
+<aside>
+<div class="info-card reveal">
+<div class="info-card-title" data-i18n="sobre_096">📋 Informações do Projeto</div>
+<div class="info-row"><span class="info-label" data-i18n="sobre_097">Tipo</span> <span class="info-val" data-i18n="sobre_098">Projeto PAP</span></div>
+<div class="info-row"><span class="info-label" data-i18n="sobre_099">Área</span> <span class="info-val" data-i18n="sobre_100">Multimédia / Web</span></div>
+<div class="info-row"><span class="info-label" data-i18n="sobre_101">Ano</span> <span class="info-val">2025–26</span></div>
+<div class="info-row"><span class="info-label" data-i18n="sobre_102">Idioma</span> <span class="info-val" data-i18n="sobre_103">Português 🇵🇹</span></div>
+<div class="info-row"><span class="info-label" data-i18n="sobre_104">Tema</span> <span class="info-val" data-i18n="sobre_105">Futebol Americano</span></div>
+<div class="info-row"><span class="info-label" data-i18n="sobre_106">Estado</span> <span class="info-val" data-i18n="sobre_107" style="color:var(--green,#00c864)">✅ Concluído</span></div>
+</div>
+<div class="info-card reveal">
+<div class="info-card-title" data-i18n="sobre_108">📊 Dimensão do Projeto</div>
+<div class="stat-highlight">
+<div class="stat-big" id="cnt-pages">0</div>
+<div class="stat-small" data-i18n="sobre_109">Páginas HTML</div>
+</div>
+<div class="stat-highlight">
+<div class="stat-big" id="cnt-teams">0</div>
+<div class="stat-small" data-i18n="sobre_110">Equipas NFL</div>
+</div>
+<div class="stat-highlight">
+<div class="stat-big" id="cnt-players">0</div>
+<div class="stat-small" data-i18n="sobre_111">Jogadores em Destaque</div>
+</div>
+<div class="stat-highlight">
+<div class="stat-big" id="cnt-questions">0</div>
+<div class="stat-small" data-i18n="sobre_112">Perguntas de Quiz</div>
+</div>
+</div>
+<div class="info-card reveal">
+<div class="info-card-title" data-i18n="sobre_113">🎯 Competências Desenvolvidas</div>
+<div style="font-family:'Barlow Condensed',sans-serif;font-size:0.88rem;line-height:2.2;color:var(--text-secondary)">
+<div data-i18n="sobre_114">✅ HTML5 semântico</div>
+<div data-i18n="sobre_115">✅ CSS3 avançado (Grid, Flex)</div>
+<div data-i18n="sobre_116">✅ JavaScript ES6+</div>
+<div data-i18n="sobre_117">✅ Design responsivo</div>
+<div data-i18n="sobre_118">✅ UI/UX Design</div>
+<div data-i18n="sobre_119">✅ Dark/Light mode</div>
+<div data-i18n="sobre_120">✅ Animações CSS/JS</div>
+<div data-i18n="sobre_121">✅ Gestão de conteúdo</div>
+<div data-i18n="sobre_122">✅ Pesquisa e curadoria</div>
+</div>
+</div>
+<div class="info-card reveal">
+<div class="info-card-title" data-i18n="sobre_123">🏈 Sobre a NFL</div>
+<p data-i18n="sobre_124" style="font-size:0.85rem;color:var(--text-secondary);line-height:1.7;margin:0">A National Football League (NFL) foi fundada em 1920 e é atualmente a liga desportiva profissional mais valiosa do mundo, com 32 equipas, mais de 100 milhões de espectadores e receitas superiores a 20 mil milhões de dólares anuais.</p>
+</div>
+</aside>
+</div>
+</main>
+<div id="footer-placeholder"></div>
+<script src="js/i18n.js"></script>
+<script src="js/shared.js"></script>
+<script src="js/nav.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const counts = {
+    'cnt-pages': 16,
+    'cnt-teams': 32,
+    'cnt-players': 30,
+    'cnt-questions': 36
+  };
+  Object.entries(counts).forEach(([id, val]) => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.dataset.target = val;
+      animateCounter(el);
+    }
+  });
+});
+</script>
+</body>
+</html>

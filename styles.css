@@ -1,0 +1,534 @@
+/* =============================================
+   NFL PT — DESIGN SYSTEM
+   ============================================= */
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@300;400;500;600;700;900&family=Barlow+Condensed:wght@400;600;700;900&family=Oswald:wght@400;500;600;700&display=swap');
+
+:root {
+  --nfl-red:#d50a0a;--nfl-red-dark:#a00808;--nfl-red-glow:rgba(213,10,10,.3);
+  --nfl-blue:#013369;--nfl-gold:#f5a623;
+  --bg-primary:#f0f2f5;--bg-secondary:#ffffff;--bg-tertiary:#e4e8f0;
+  --bg-card:#ffffff;--bg-nav:rgba(255,255,255,.97);--bg-hero:#0a0e1a;
+  --text-primary:#0d1117;--text-secondary:#2d3748;--text-muted:#4a5568;
+  --border-color:rgba(0,0,0,.1);
+  --shadow-sm:0 2px 8px rgba(0,0,0,.08);--shadow-md:0 4px 20px rgba(0,0,0,.12);
+  --shadow-lg:0 8px 40px rgba(0,0,0,.15);--shadow-red:0 4px 20px rgba(213,10,10,.25);
+  --glass:rgba(255,255,255,.8);--input-bg:#ffffff;--input-border:#d1d5db;
+  --table-stripe:rgba(0,0,0,.03);--badge-bg:#f0f2f5;
+}
+[data-theme="dark"]{
+  --bg-primary:#070b14;--bg-secondary:#0d1421;--bg-tertiary:#111827;
+  --bg-card:#111827;--bg-nav:rgba(7,11,20,.97);--bg-hero:#050810;
+  --text-primary:#f0f4ff;--text-secondary:#cbd5e0;--text-muted:#8899aa;
+  --border-color:rgba(255,255,255,.08);
+  --shadow-sm:0 2px 8px rgba(0,0,0,.4);--shadow-md:0 4px 20px rgba(0,0,0,.5);
+  --shadow-lg:0 8px 40px rgba(0,0,0,.6);--shadow-red:0 4px 30px rgba(213,10,10,.4);
+  --glass:rgba(13,20,33,.85);--input-bg:#111827;--input-border:rgba(255,255,255,.15);
+  --table-stripe:rgba(255,255,255,.03);--badge-bg:rgba(255,255,255,.08);
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Barlow',sans-serif;background:var(--bg-primary);color:var(--text-primary);transition:background .3s,color .3s;overflow-x:hidden;line-height:1.6}
+a{color:inherit;text-decoration:none}
+img{max-width:100%;display:block}
+ul{list-style:none}
+button{cursor:pointer;border:none;background:none;font-family:inherit}
+
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:var(--bg-secondary)}
+::-webkit-scrollbar-thumb{background:var(--nfl-red);border-radius:3px}
+
+h1,h2,h3,h4,h5,h6{font-family:'Bebas Neue',cursive;letter-spacing:.05em;line-height:1.1;color:var(--text-primary)}
+p{color:var(--text-secondary)}
+
+/* NAV */
+.navbar{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--bg-nav);backdrop-filter:blur(20px);border-bottom:1px solid var(--border-color);transition:all .3s}
+.navbar.scrolled{box-shadow:0 4px 30px rgba(0,0,0,.15)}
+.nav-container{max-width:1400px;margin:0 auto;padding:0 1.5rem;display:flex;align-items:center;justify-content:space-between;height:68px}
+.nav-logo{display:flex;align-items:center;gap:.5rem;font-family:'Bebas Neue',cursive;font-size:1.5rem;letter-spacing:.1em}
+.logo-icon{width:38px;height:38px;background:var(--nfl-red);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;box-shadow:var(--shadow-red)}
+.logo-accent{color:var(--nfl-red)}
+.nav-menu{display:flex;align-items:center;gap:.15rem}
+.nav-link{padding:.45rem .7rem;border-radius:6px;font-size:.8rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--text-secondary);transition:all .2s;position:relative;white-space:nowrap}
+.nav-link:hover,.nav-link.active{color:var(--nfl-red);background:rgba(213,10,10,.08)}
+.nav-link.active::after{content:'';position:absolute;bottom:-1px;left:50%;transform:translateX(-50%);width:16px;height:2px;background:var(--nfl-red);border-radius:2px}
+.nav-actions{display:flex;align-items:center;gap:.75rem}
+
+/* Dropdown */
+.nav-dropdown{position:relative}
+.nav-dropdown-menu{position:absolute;top:calc(100% + 8px);left:50%;transform:translateX(-50%);background:var(--bg-card);border:1px solid var(--border-color);border-radius:12px;padding:.6rem;min-width:170px;box-shadow:var(--shadow-lg);opacity:0;visibility:hidden;transition:all .2s;z-index:100}
+.nav-dropdown:hover .nav-dropdown-menu{opacity:1;visibility:visible;top:calc(100% + 4px)}
+.nav-dropdown-menu a{display:block;padding:.45rem .7rem;font-size:.83rem;font-weight:500;border-radius:6px;color:var(--text-secondary);transition:all .2s}
+.nav-dropdown-menu a:hover{color:var(--nfl-red);background:rgba(213,10,10,.08)}
+
+/* Theme Toggle */
+.theme-toggle{width:42px;height:22px;background:var(--bg-tertiary);border-radius:11px;position:relative;cursor:pointer;border:1px solid var(--border-color);transition:background .3s;flex-shrink:0}
+.theme-toggle::after{content:'';position:absolute;top:2px;left:2px;width:16px;height:16px;background:var(--nfl-red);border-radius:50%;transition:transform .3s}
+[data-theme="dark"] .theme-toggle::after{transform:translateX(20px)}
+
+/* Hamburger */
+.hamburger{display:none;flex-direction:column;gap:5px;padding:8px;cursor:pointer}
+.hamburger span{width:22px;height:2px;background:var(--text-primary);border-radius:2px;transition:all .3s}
+.hamburger.open span:nth-child(1){transform:rotate(45deg) translate(5px,5px)}
+.hamburger.open span:nth-child(2){opacity:0}
+.hamburger.open span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px)}
+
+/* Mobile Menu */
+.mobile-menu{display:none;position:fixed;inset:0;background:var(--bg-secondary);z-index:999;padding:5rem 1.5rem 2rem;flex-direction:column;overflow-y:auto}
+.mobile-menu.open{display:flex}
+.mobile-menu-link{display:block;padding:.9rem 1rem;border-radius:10px;font-family:'Bebas Neue',cursive;font-size:1.4rem;letter-spacing:.08em;color:var(--text-primary);border-bottom:1px solid var(--border-color);transition:all .2s}
+.mobile-menu-link:hover{color:var(--nfl-red);padding-left:1.5rem}
+
+/* HERO */
+.hero{position:relative;min-height:100vh;display:flex;align-items:center;overflow:hidden;background:var(--bg-hero)}
+.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 70% 40%,rgba(213,10,10,.12) 0%,transparent 60%),radial-gradient(ellipse 60% 80% at 20% 80%,rgba(1,51,105,.15) 0%,transparent 60%),linear-gradient(135deg,#050810 0%,#0a1228 50%,#08060e 100%)}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.02) 1px,transparent 1px);background-size:60px 60px}
+.hero-content{position:relative;z-index:2;max-width:1400px;margin:0 auto;padding:9rem 2rem 5rem;width:100%}
+.hero-badge{display:inline-flex;align-items:center;gap:.5rem;background:rgba(213,10,10,.15);border:1px solid rgba(213,10,10,.3);border-radius:100px;padding:.35rem .9rem;font-size:.75rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:#ff6b6b;margin-bottom:1.5rem;animation:fadeSlideDown .7s ease forwards}
+.hero-title{font-family:'Bebas Neue',cursive;font-size:clamp(3rem,10vw,7.5rem);line-height:.9;color:#fff;margin-bottom:1.5rem;animation:fadeSlideUp .8s ease .2s both}
+.hero-title .accent{color:var(--nfl-red)}
+.hero-title .outline{-webkit-text-stroke:2px rgba(255,255,255,.4);color:transparent}
+.hero-subtitle{font-size:clamp(.95rem,2vw,1.2rem);color:rgba(255,255,255,.65);max-width:580px;margin-bottom:2.5rem;animation:fadeSlideUp .8s ease .35s both;font-weight:300;line-height:1.7}
+.hero-actions{display:flex;gap:1rem;flex-wrap:wrap;animation:fadeSlideUp .8s ease .5s both}
+.hero-stats{display:flex;gap:3rem;margin-top:4rem;padding-top:2rem;border-top:1px solid rgba(255,255,255,.1);animation:fadeIn .8s ease .7s both;flex-wrap:wrap}
+.hero-stat-value{font-family:'Bebas Neue',cursive;font-size:2.5rem;color:var(--nfl-red);line-height:1}
+.hero-stat-label{font-size:.7rem;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.5);margin-top:.2rem}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:.5rem;padding:.75rem 1.75rem;border-radius:8px;font-size:.88rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;transition:all .25s;cursor:pointer;white-space:nowrap;border:2px solid transparent}
+.btn-primary{background:var(--nfl-red);color:#fff;box-shadow:var(--shadow-red)}
+.btn-primary:hover{background:var(--nfl-red-dark);transform:translateY(-2px);box-shadow:0 8px 30px rgba(213,10,10,.4)}
+.btn-outline{background:transparent;border-color:rgba(255,255,255,.3);color:#fff}
+.btn-outline:hover{border-color:#fff;background:rgba(255,255,255,.1)}
+.btn-ghost{background:var(--badge-bg);color:var(--text-primary);border-color:var(--border-color)}
+.btn-ghost:hover{border-color:var(--nfl-red);color:var(--nfl-red)}
+.btn-sm{padding:.45rem 1.1rem;font-size:.78rem}
+.btn-lg{padding:1rem 2.5rem;font-size:1rem}
+
+/* SECTIONS */
+.section{padding:6rem 0}
+.section-sm{padding:4rem 0}
+.section-dark{background:var(--bg-secondary)}
+.section-alt{background:var(--bg-tertiary)}
+.container{max-width:1400px;margin:0 auto;padding:0 2rem}
+.container-sm{max-width:900px;margin:0 auto;padding:0 2rem}
+.section-header{margin-bottom:3rem}
+.section-header.center{text-align:center}
+.section-label{display:inline-flex;align-items:center;gap:.5rem;font-size:.73rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--nfl-red);margin-bottom:.6rem}
+.section-label::before,.section-label::after{content:'';width:18px;height:2px;background:var(--nfl-red)}
+.section-title{font-family:'Bebas Neue',cursive;font-size:clamp(2rem,4vw,3.2rem);letter-spacing:.05em;color:var(--text-primary);line-height:1.05}
+.section-subtitle{font-size:1rem;color:var(--text-muted);margin-top:.65rem;max-width:600px;line-height:1.7}
+
+/* CARDS */
+.card{background:var(--bg-card);border:1px solid var(--border-color);border-radius:16px;overflow:hidden;transition:all .3s;box-shadow:var(--shadow-sm)}
+.card:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg);border-color:rgba(213,10,10,.2)}
+.card-body{padding:1.5rem}
+.card-title{font-size:1.05rem;font-weight:700;margin-bottom:.5rem;color:var(--text-primary)}
+.card-text{font-size:.875rem;color:var(--text-muted);line-height:1.6}
+
+/* TEAM CARDS */
+.team-card{background:var(--bg-card);border:1px solid var(--border-color);border-radius:16px;padding:1.5rem 1rem;display:flex;flex-direction:column;align-items:center;text-align:center;gap:.75rem;transition:all .3s;cursor:pointer;position:relative;overflow:hidden}
+.team-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--team-color,var(--nfl-red)),transparent);opacity:0;transition:opacity .3s}
+.team-card:hover::before{opacity:1}
+.team-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg)}
+.team-logo{width:72px;height:72px;object-fit:contain;filter:drop-shadow(0 4px 8px rgba(0,0,0,.2));transition:transform .3s}
+.team-card:hover .team-logo{transform:scale(1.12)}
+.team-name{font-family:'Bebas Neue',cursive;font-size:1rem;letter-spacing:.08em;color:var(--text-primary)}
+.team-city{font-size:.75rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.1em}
+.team-conf{font-size:.7rem;padding:.2rem .55rem;border-radius:100px;font-weight:700;letter-spacing:.05em}
+.afc{background:rgba(213,10,10,.1);color:var(--nfl-red)}
+.nfc{background:rgba(1,51,105,.1);color:var(--nfl-blue)}
+[data-theme="dark"] .nfc{background:rgba(1,51,105,.3);color:#5b8fd4}
+
+/* PLAYER CARDS */
+.player-card{background:var(--bg-card);border:1px solid var(--border-color);border-radius:16px;overflow:hidden;transition:all .3s;cursor:pointer}
+.player-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg)}
+.player-image-wrap{position:relative;aspect-ratio:3/4;background:linear-gradient(135deg,var(--bg-tertiary),var(--bg-secondary));overflow:hidden;display:flex;align-items:center;justify-content:center}
+.player-image{width:100%;height:100%;object-fit:cover;object-position:top;transition:transform .4s}
+.player-card:hover .player-image{transform:scale(1.05)}
+.player-placeholder{font-size:4rem;opacity:.2}
+.player-overlay{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,.85));padding:2rem 1rem 1rem}
+.player-number{font-family:'Bebas Neue',cursive;font-size:3rem;color:rgba(255,255,255,.12);position:absolute;top:.5rem;right:.75rem;line-height:1}
+.player-pos{display:inline-block;background:var(--nfl-red);color:#fff;font-size:.68rem;font-weight:700;letter-spacing:.1em;padding:.18rem .45rem;border-radius:4px;margin-bottom:.4rem}
+.player-name-overlay{font-family:'Bebas Neue',cursive;font-size:1.15rem;color:#fff;letter-spacing:.05em}
+.player-info{padding:.9rem 1.1rem}
+.player-team{font-size:.78rem;color:var(--text-muted);font-weight:600;letter-spacing:.05em}
+.player-stats-row{display:flex;gap:.75rem;margin-top:.65rem;flex-wrap:wrap}
+.player-stat{text-align:center}
+.player-stat-value{font-family:'Bebas Neue',cursive;font-size:1.15rem;color:var(--nfl-red)}
+.player-stat-label{font-size:.62rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em}
+
+/* GRIDS */
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem}
+.grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:1.5rem}
+.grid-5{display:grid;grid-template-columns:repeat(5,1fr);gap:1.25rem}
+.grid-6{display:grid;grid-template-columns:repeat(6,1fr);gap:1rem}
+.grid-auto{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:1.25rem}
+
+/* STANDINGS */
+.standings-container{overflow-x:auto;border-radius:12px;border:1px solid var(--border-color)}
+.standings-table{width:100%;border-collapse:collapse;font-size:.875rem}
+.standings-table th{background:var(--bg-secondary);padding:.65rem 1rem;text-align:left;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--text-muted);border-bottom:2px solid var(--border-color);white-space:nowrap}
+.standings-table td{padding:.65rem 1rem;border-bottom:1px solid var(--border-color);white-space:nowrap}
+.standings-table tr:last-child td{border-bottom:none}
+.standings-table tr:nth-child(even) td{background:var(--table-stripe)}
+.standings-table tr:hover td{background:rgba(213,10,10,.04)}
+.standings-rank{font-family:'Bebas Neue',cursive;font-size:1.1rem;color:var(--text-muted)}
+.standings-team{display:flex;align-items:center;gap:.65rem;font-weight:600}
+.standings-team img{width:26px;height:26px;object-fit:contain}
+.standings-win{color:var(--nfl-red);font-weight:700}
+.standings-div-name{font-family:'Bebas Neue',cursive;font-size:.95rem;letter-spacing:.1em;padding:.75rem 1rem;background:var(--bg-tertiary);border-bottom:1px solid var(--border-color)}
+.div-afc{border-left:4px solid var(--nfl-red)}
+.div-nfc{border-left:4px solid var(--nfl-blue)}
+
+/* SCORE CARDS */
+.score-card{background:var(--bg-card);border:1px solid var(--border-color);border-radius:14px;padding:1.1rem;transition:all .3s}
+.score-card:hover{box-shadow:var(--shadow-md);border-color:rgba(213,10,10,.2)}
+.score-week{font-size:.68rem;text-transform:uppercase;letter-spacing:.15em;color:var(--text-muted);font-weight:700;margin-bottom:.75rem}
+.score-teams{display:flex;flex-direction:column;gap:.4rem}
+.score-team{display:flex;align-items:center;justify-content:space-between;padding:.45rem .65rem;border-radius:7px}
+.score-team.winner{background:rgba(213,10,10,.07)}
+.score-team-info{display:flex;align-items:center;gap:.65rem}
+.score-team-logo{width:28px;height:28px;object-fit:contain}
+.score-team-name{font-weight:700;font-size:.875rem}
+.score-team-record{font-size:.72rem;color:var(--text-muted)}
+.score-points{font-family:'Bebas Neue',cursive;font-size:1.4rem;color:var(--text-primary)}
+.score-team.winner .score-points{color:var(--nfl-red)}
+.score-status{text-align:center;font-size:.72rem;font-weight:700;letter-spacing:.05em;margin-top:.65rem;padding-top:.65rem;border-top:1px solid var(--border-color)}
+.status-final{color:var(--text-muted)}
+.status-live{color:#22c55e}
+.status-upcoming{color:var(--nfl-gold)}
+
+/* TABS */
+.tabs{display:flex;gap:.2rem;background:var(--bg-tertiary);border-radius:10px;padding:.3rem;width:fit-content;margin-bottom:2rem;flex-wrap:wrap}
+.tab-btn{padding:.45rem 1.1rem;border-radius:7px;font-size:.82rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--text-muted);transition:all .2s;cursor:pointer;background:none;border:none}
+.tab-btn.active{background:var(--nfl-red);color:#fff;box-shadow:var(--shadow-red)}
+.tab-content{display:none}
+.tab-content.active{display:block}
+
+/* BADGES */
+.badge{display:inline-flex;align-items:center;gap:.2rem;padding:.18rem .55rem;border-radius:100px;font-size:.7rem;font-weight:700;letter-spacing:.05em}
+.badge-red{background:rgba(213,10,10,.12);color:var(--nfl-red)}
+.badge-blue{background:rgba(37,99,235,.1);color:#2563eb}
+[data-theme="dark"] .badge-blue{background:rgba(59,130,246,.15);color:#60a5fa}
+.badge-green{background:rgba(34,197,94,.1);color:#16a34a}
+[data-theme="dark"] .badge-green{background:rgba(34,197,94,.15);color:#4ade80}
+.badge-gold{background:rgba(245,166,35,.12);color:#b45309}
+[data-theme="dark"] .badge-gold{background:rgba(245,166,35,.15);color:var(--nfl-gold)}
+
+/* FORMS */
+.form-group{margin-bottom:1.25rem}
+.form-label{display:block;font-size:.84rem;font-weight:600;margin-bottom:.45rem;color:var(--text-secondary)}
+.form-input,.form-select,.form-textarea{width:100%;padding:.7rem 1rem;background:var(--input-bg);border:1.5px solid var(--input-border);border-radius:8px;font-family:'Barlow',sans-serif;font-size:.93rem;color:var(--text-primary);transition:all .2s;outline:none}
+.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--nfl-red);box-shadow:0 0 0 3px rgba(213,10,10,.1)}
+.form-textarea{resize:vertical;min-height:120px}
+.form-select option{background:var(--bg-card);color:var(--text-primary)}
+
+/* NEWSLETTER */
+.newsletter-wrap{background:linear-gradient(135deg,var(--nfl-red) 0%,#8b0000 100%);border-radius:24px;padding:4rem;text-align:center;position:relative;overflow:hidden}
+.newsletter-wrap::before{content:'';position:absolute;top:-50%;right:-10%;width:400px;height:400px;background:rgba(255,255,255,.04);border-radius:50%}
+.newsletter-wrap h2{color:#fff;font-size:clamp(1.5rem,3vw,2.5rem)}
+.newsletter-wrap p{color:rgba(255,255,255,.8)}
+.newsletter-form{display:flex;gap:.75rem;max-width:480px;margin:2rem auto 0;flex-wrap:wrap}
+.newsletter-input{flex:1;min-width:200px;padding:.82rem 1.2rem;border-radius:8px;border:none;background:rgba(255,255,255,.15);color:#fff;font-size:.93rem;outline:none}
+.newsletter-input::placeholder{color:rgba(255,255,255,.55)}
+.newsletter-input:focus{background:rgba(255,255,255,.22)}
+.newsletter-btn{padding:.82rem 1.6rem;background:#fff;color:var(--nfl-red);border-radius:8px;font-weight:700;font-size:.88rem;letter-spacing:.05em;text-transform:uppercase;cursor:pointer;border:none;transition:all .25s;white-space:nowrap}
+.newsletter-btn:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(0,0,0,.25)}
+
+/* FOOTER */
+.footer{background:var(--bg-secondary);border-top:1px solid var(--border-color);padding:4rem 0 2rem}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:3rem;margin-bottom:3rem}
+.footer-desc{font-size:.875rem;color:var(--text-muted);line-height:1.7;margin-bottom:1.25rem}
+.footer-social{display:flex;gap:.6rem}
+.social-btn{width:36px;height:36px;border-radius:8px;background:var(--bg-tertiary);border:1px solid var(--border-color);display:flex;align-items:center;justify-content:center;font-size:.88rem;transition:all .25s;cursor:pointer;color:var(--text-muted)}
+.social-btn:hover{background:var(--nfl-red);border-color:var(--nfl-red);color:#fff;transform:translateY(-2px)}
+.footer-heading{font-family:'Bebas Neue',cursive;font-size:.95rem;letter-spacing:.1em;margin-bottom:1.1rem;color:var(--text-primary)}
+.footer-links{display:flex;flex-direction:column;gap:.45rem}
+.footer-links a{font-size:.855rem;color:var(--text-muted);transition:color .2s}
+.footer-links a:hover{color:var(--nfl-red)}
+.footer-bottom{padding-top:1.5rem;border-top:1px solid var(--border-color);display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap}
+.footer-copy{font-size:.78rem;color:var(--text-muted)}
+
+/* PAGE HERO */
+.page-hero{padding:8rem 0 4rem;background:var(--bg-hero);position:relative;overflow:hidden}
+.page-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 80% at 80% 50%,rgba(213,10,10,.1) 0%,transparent 70%),linear-gradient(180deg,#050810 0%,#0a1228 100%)}
+.page-hero-content{position:relative;z-index:1;max-width:1400px;margin:0 auto;padding:0 2rem}
+.page-hero-breadcrumb{display:flex;align-items:center;gap:.45rem;font-size:.78rem;color:rgba(255,255,255,.45);margin-bottom:1.25rem}
+.page-hero-breadcrumb a{color:rgba(255,255,255,.45);transition:color .2s}
+.page-hero-breadcrumb a:hover{color:var(--nfl-red)}
+.page-hero-breadcrumb .sep{color:rgba(255,255,255,.2)}
+.page-hero-title{font-family:'Bebas Neue',cursive;font-size:clamp(2.5rem,6vw,5rem);color:#fff;letter-spacing:.05em;line-height:1}
+.page-hero-title .accent{color:var(--nfl-red)}
+.page-hero-sub{font-size:1.05rem;color:rgba(255,255,255,.55);margin-top:.65rem;font-weight:300}
+
+/* STATS GRID */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:1.1rem}
+.stat-item{background:var(--bg-card);border:1px solid var(--border-color);border-radius:12px;padding:1.1rem;text-align:center;transition:all .3s}
+.stat-item:hover{border-color:rgba(213,10,10,.3);box-shadow:var(--shadow-md)}
+.stat-value{font-family:'Bebas Neue',cursive;font-size:1.9rem;color:var(--nfl-red);line-height:1}
+.stat-label{font-size:.7rem;text-transform:uppercase;letter-spacing:.1em;color:var(--text-muted);margin-top:.2rem}
+
+/* QUIZ */
+.quiz-container{max-width:680px;margin:0 auto}
+.quiz-progress{height:4px;background:var(--bg-tertiary);border-radius:2px;margin-bottom:2rem;overflow:hidden}
+.quiz-progress-bar{height:100%;background:var(--nfl-red);border-radius:2px;transition:width .5s ease}
+.quiz-question{font-family:'Barlow Condensed',sans-serif;font-size:1.45rem;font-weight:700;margin-bottom:1.5rem;color:var(--text-primary);line-height:1.3}
+.quiz-options{display:flex;flex-direction:column;gap:.65rem}
+.quiz-option{padding:.9rem 1.15rem;border:2px solid var(--border-color);border-radius:10px;cursor:pointer;font-size:.92rem;font-weight:500;color:var(--text-secondary);background:var(--bg-card);transition:all .2s;text-align:left;width:100%}
+.quiz-option:hover{border-color:var(--nfl-red);color:var(--nfl-red);background:rgba(213,10,10,.04)}
+.quiz-option.correct{border-color:#22c55e;background:rgba(34,197,94,.08);color:#16a34a}
+.quiz-option.wrong{border-color:var(--nfl-red);background:rgba(213,10,10,.08);color:var(--nfl-red)}
+.quiz-score-display{text-align:center;padding:3rem 2rem}
+.quiz-score-number{font-family:'Bebas Neue',cursive;font-size:6rem;color:var(--nfl-red);line-height:1}
+
+/* INSTAGRAM */
+.instagram-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;border-radius:12px;overflow:hidden}
+.instagram-post{aspect-ratio:1;position:relative;overflow:hidden;cursor:pointer;background:var(--bg-tertiary)}
+.instagram-post img{width:100%;height:100%;object-fit:cover;transition:transform .4s}
+.instagram-post:hover img{transform:scale(1.1)}
+.instagram-overlay{position:absolute;inset:0;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .3s;gap:1.5rem;color:#fff;font-size:1rem;font-weight:700}
+.instagram-post:hover .instagram-overlay{opacity:1}
+
+/* NEWS */
+.news-card{background:var(--bg-card);border:1px solid var(--border-color);border-radius:16px;overflow:hidden;transition:all .3s;cursor:pointer}
+.news-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg)}
+.news-image-wrap{overflow:hidden}
+.news-image{width:100%;aspect-ratio:16/9;object-fit:cover;transition:transform .4s}
+.news-card:hover .news-image{transform:scale(1.05)}
+.news-body{padding:1.15rem}
+.news-category{display:inline-block;font-size:.68rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--nfl-red);margin-bottom:.4rem}
+.news-title{font-family:'Barlow Condensed',sans-serif;font-size:1.05rem;font-weight:700;line-height:1.3;margin-bottom:.4rem;color:var(--text-primary);transition:color .2s}
+.news-card:hover .news-title{color:var(--nfl-red)}
+.news-excerpt{font-size:.835rem;color:var(--text-muted);line-height:1.5;margin-bottom:.85rem}
+.news-meta{display:flex;align-items:center;justify-content:space-between;font-size:.75rem;color:var(--text-muted)}
+
+/* COACH CARDS */
+.coach-card{background:var(--bg-card);border:1px solid var(--border-color);border-radius:16px;overflow:hidden;transition:all .3s}
+.coach-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg)}
+.coach-image-wrap{overflow:hidden}
+.coach-image{width:100%;aspect-ratio:4/3;object-fit:cover;object-position:top;transition:transform .4s}
+.coach-card:hover .coach-image{transform:scale(1.05)}
+.coach-body{padding:1.1rem}
+.coach-name{font-family:'Bebas Neue',cursive;font-size:1.2rem;letter-spacing:.05em;margin-bottom:.2rem}
+.coach-role{font-size:.75rem;text-transform:uppercase;letter-spacing:.1em;color:var(--nfl-red);font-weight:700;margin-bottom:.3rem}
+.coach-team{font-size:.82rem;color:var(--text-muted)}
+.coach-record{font-size:.82rem;color:var(--text-secondary);margin-top:.3rem;font-weight:600}
+
+/* SCROLL REVEAL */
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.reveal-delay-1{transition-delay:.1s}
+.reveal-delay-2{transition-delay:.2s}
+.reveal-delay-3{transition-delay:.3s}
+.reveal-delay-4{transition-delay:.4s}
+
+/* ANIMATIONS */
+@keyframes fadeSlideDown{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeSlideUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes float{0%,100%{transform:translateY(-50%)}50%{transform:translateY(calc(-50% - 18px))}}
+@keyframes pulse-red{0%,100%{box-shadow:0 0 0 0 rgba(213,10,10,.4)}50%{box-shadow:0 0 0 12px rgba(213,10,10,0)}}
+@keyframes pulse-green{0%,100%{box-shadow:0 0 0 0 rgba(34,197,94,.4)}50%{box-shadow:0 0 0 8px rgba(34,197,94,0)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* DIVIDER */
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--border-color),transparent);margin:3rem 0}
+
+/* INFO BOXES */
+.info-box{background:var(--bg-card);border:1px solid var(--border-color);border-left:4px solid var(--nfl-red);border-radius:0 12px 12px 0;padding:1.1rem 1.4rem;margin:1.5rem 0}
+.info-box-title{font-weight:700;font-size:.87rem;color:var(--nfl-red);margin-bottom:.4rem;text-transform:uppercase;letter-spacing:.05em}
+.info-box p{font-size:.88rem}
+
+/* TIMELINE */
+.timeline{position:relative;padding-left:2rem}
+.timeline::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,var(--nfl-red),transparent)}
+.timeline-item{position:relative;padding-bottom:2rem}
+.timeline-item::before{content:'';position:absolute;left:-2.45rem;top:4px;width:11px;height:11px;background:var(--nfl-red);border-radius:50%;border:2px solid var(--bg-primary)}
+.timeline-year{font-family:'Bebas Neue',cursive;font-size:1.05rem;color:var(--nfl-red);letter-spacing:.1em}
+.timeline-text{font-size:.875rem;color:var(--text-secondary);line-height:1.6}
+
+/* ADMIN */
+.admin-sidebar{width:240px;background:var(--bg-secondary);border-right:1px solid var(--border-color);min-height:calc(100vh - 68px);padding:1.5rem 1rem;flex-shrink:0}
+.admin-layout{display:flex;min-height:calc(100vh - 68px)}
+.admin-main{flex:1;padding:2rem;overflow:auto;background:var(--bg-primary)}
+.admin-nav-item{display:flex;align-items:center;gap:.65rem;padding:.65rem .9rem;border-radius:8px;font-size:.845rem;font-weight:600;color:var(--text-muted);cursor:pointer;transition:all .2s;margin-bottom:.2rem;background:none;border:none;width:100%;text-align:left}
+.admin-nav-item:hover,.admin-nav-item.active{background:rgba(213,10,10,.08);color:var(--nfl-red)}
+.admin-card{background:var(--bg-card);border:1px solid var(--border-color);border-radius:16px;padding:1.4rem;margin-bottom:1.4rem}
+.admin-stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.4rem}
+.admin-stat{background:var(--bg-card);border:1px solid var(--border-color);border-radius:12px;padding:1.1rem;text-align:center}
+.admin-stat-val{font-family:'Bebas Neue',cursive;font-size:1.9rem;color:var(--nfl-red)}
+.admin-stat-label{font-size:.75rem;color:var(--text-muted)}
+
+/* BACK TO TOP */
+.back-to-top{position:fixed;bottom:2rem;right:2rem;width:42px;height:42px;background:var(--nfl-red);color:#fff;border-radius:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:0;transform:translateY(20px);transition:all .3s;box-shadow:var(--shadow-red);z-index:100;border:none;font-size:1.1rem}
+.back-to-top.visible{opacity:1;transform:translateY(0)}
+.back-to-top:hover{transform:translateY(-4px)}
+
+/* ACCORDION */
+.accordion-item{border-bottom:1px solid var(--border-color)}
+.accordion-header{padding:1.1rem 0;display:flex;justify-content:space-between;align-items:center;cursor:pointer;font-weight:600;color:var(--text-primary);transition:color .2s;background:none;border:none;width:100%;text-align:left;font-size:.95rem;font-family:'Barlow',sans-serif}
+.accordion-header:hover{color:var(--nfl-red)}
+.accordion-icon{width:22px;height:22px;border-radius:50%;background:var(--bg-tertiary);display:flex;align-items:center;justify-content:center;font-size:.75rem;transition:all .3s;flex-shrink:0}
+.accordion-header.open .accordion-icon{background:var(--nfl-red);color:#fff;transform:rotate(45deg)}
+.accordion-body{max-height:0;overflow:hidden;transition:max-height .4s ease,padding .3s ease}
+.accordion-body.open{max-height:600px;padding-bottom:1.1rem}
+.accordion-text{font-size:.88rem;color:var(--text-secondary);line-height:1.7}
+
+/* LIVE DOT */
+.live-dot{display:inline-flex;align-items:center;gap:.35rem}
+.live-dot::before{content:'';width:7px;height:7px;background:#22c55e;border-radius:50%;animation:pulse-green 2s infinite}
+
+/* LOADER */
+.loader{display:inline-block;width:20px;height:20px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite}
+
+/* SEARCH */
+.search-bar{display:flex;align-items:center;gap:.75rem;background:var(--bg-card);border:1.5px solid var(--border-color);border-radius:10px;padding:.6rem 1rem;transition:border-color .2s}
+.search-bar:focus-within{border-color:var(--nfl-red)}
+.search-bar input{border:none;background:none;color:var(--text-primary);font-size:.92rem;outline:none;flex:1;font-family:'Barlow',sans-serif}
+.search-bar input::placeholder{color:var(--text-muted)}
+
+/* FILTER CHIPS */
+.filter-chips{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1.5rem}
+.chip{padding:.35rem .9rem;border-radius:100px;font-size:.78rem;font-weight:700;border:1.5px solid var(--border-color);color:var(--text-muted);cursor:pointer;transition:all .2s;background:var(--bg-card)}
+.chip:hover,.chip.active{background:var(--nfl-red);border-color:var(--nfl-red);color:#fff}
+
+/* POSITION TABLE */
+.pos-pill{display:inline-block;padding:.15rem .5rem;border-radius:4px;font-size:.7rem;font-weight:700;background:rgba(213,10,10,.1);color:var(--nfl-red);letter-spacing:.05em}
+
+/* RESPONSIVE */
+@media(max-width:1200px){
+  .grid-6{grid-template-columns:repeat(4,1fr)}
+  .footer-grid{grid-template-columns:1fr 1fr;gap:2rem}
+}
+@media(max-width:1024px){
+  .grid-4{grid-template-columns:repeat(3,1fr)}
+  .grid-5{grid-template-columns:repeat(3,1fr)}
+  .nav-menu{display:none}
+  .hamburger{display:flex}
+  .admin-stat-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:768px){
+  .grid-4,.grid-3{grid-template-columns:repeat(2,1fr)}
+  .grid-6{grid-template-columns:repeat(3,1fr)}
+  .grid-2{grid-template-columns:1fr}
+  .hero-stats{gap:1.5rem}
+  .newsletter-form{flex-direction:column}
+  .footer-grid{grid-template-columns:1fr;gap:2rem}
+  .section{padding:3.5rem 0}
+  .tabs{flex-wrap:wrap}
+  .admin-layout{flex-direction:column}
+  .admin-sidebar{width:100%;min-height:auto}
+}
+@media(max-width:480px){
+  .grid-4,.grid-3,.grid-6{grid-template-columns:repeat(2,1fr)}
+  .hero-actions{flex-direction:column}
+  .container{padding:0 1rem}
+  .newsletter-wrap{padding:2.5rem 1.25rem}
+  .page-hero{padding:6rem 0 2.5rem}
+}
+
+/* UTILITIES */
+.text-center{text-align:center}
+.text-right{text-align:right}
+.flex{display:flex}
+.flex-center{display:flex;align-items:center;justify-content:center}
+.flex-between{display:flex;align-items:center;justify-content:space-between}
+.flex-col{display:flex;flex-direction:column}
+.gap-1{gap:.5rem}.gap-2{gap:1rem}.gap-3{gap:1.5rem}
+.mt-1{margin-top:.5rem}.mt-2{margin-top:1rem}.mt-3{margin-top:1.5rem}.mt-4{margin-top:2rem}
+.mb-2{margin-bottom:1rem}.mb-3{margin-bottom:1.5rem}.mb-4{margin-bottom:2rem}
+.w-full{width:100%}.rounded{border-radius:12px}.overflow-hidden{overflow:hidden}
+.text-red{color:var(--nfl-red)}.text-muted{color:var(--text-muted)}.font-bold{font-weight:700}
+.text-sm{font-size:.875rem}.text-xs{font-size:.75rem}.text-lg{font-size:1.15rem}
+.italic{font-style:italic}
+.uppercase{text-transform:uppercase;letter-spacing:.05em}
+.line-clamp-2{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.line-clamp-3{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+
+/* ===== ALIAS VARIABLES (compatibilidade com páginas) ===== */
+:root {
+  --bg: var(--bg-primary);
+  --surface: var(--bg-card);
+  --bg2: var(--bg-secondary);
+  --bg3: var(--bg-tertiary);
+  --red: var(--nfl-red);
+  --blue: var(--nfl-blue);
+  --navy: var(--nfl-blue);
+  --navy-mid: #1a4a8a;
+  --gold: var(--nfl-gold);
+  --text: var(--text-primary);
+  --border: var(--border-color);
+  --card: var(--bg-card);
+  --card-border: var(--border-color);
+  --shadow: var(--shadow-md);
+  --transition: all 0.3s ease;
+  --text-dim: var(--text-muted);
+  --green: #16a34a;
+  --surface-2: var(--bg-tertiary);
+}
+[data-theme="dark"] {
+  --bg: #070b14;
+  --surface: #111827;
+  --bg2: #0d1421;
+  --bg3: #111827;
+  --red: #d50a0a;
+  --blue: #013369;
+  --navy: #013369;
+  --navy-mid: #1a4a8a;
+  --gold: #f5a623;
+  --text: #f0f4ff;
+  --border: rgba(255,255,255,.08);
+  --card: #111827;
+  --card-border: rgba(255,255,255,.08);
+  --shadow: 0 4px 20px rgba(0,0,0,.5);
+  --text-dim: #8899aa;
+  --green: #22c55e;
+  --surface-2: #1a2235;
+}
+
+/* ===== NAV — .site-header structure (nfl, portugal, quiz, sobre, etc.) ===== */
+.site-header{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--bg-nav);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border-color);transition:box-shadow .3s}
+.site-header.scrolled{box-shadow:0 4px 30px rgba(0,0,0,.25)}
+.header-inner{max-width:1400px;margin:0 auto;padding:0 1.5rem;display:flex;align-items:center;justify-content:space-between;height:68px;gap:1rem}
+.logo{display:flex;align-items:center;gap:.55rem;font-family:'Bebas Neue',cursive;font-size:1.45rem;letter-spacing:.1em;color:var(--text-primary);text-decoration:none;flex-shrink:0}
+.logo span{color:var(--nfl-red)}
+.logo-shield{width:36px;height:36px;background:var(--nfl-red);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1rem;font-weight:900;color:#fff;box-shadow:0 0 18px rgba(213,10,10,.45)}
+.site-nav{display:flex;align-items:center;gap:.15rem;flex:1;justify-content:center;flex-wrap:nowrap}
+.site-nav .nav-link{padding:.4rem .65rem;border-radius:6px;font-family:'Barlow Condensed',sans-serif;font-size:.8rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--text-secondary);transition:color .2s,background .2s;white-space:nowrap;text-decoration:none}
+.site-nav .nav-link:hover,.site-nav .nav-link.active{color:var(--nfl-red);background:rgba(213,10,10,.09)}
+.nav-dropdown{position:relative}
+.dropdown-menu{position:absolute;top:calc(100% + 6px);left:50%;transform:translateX(-50%);background:var(--bg-card);border:1px solid var(--border-color);border-radius:10px;padding:.5rem;min-width:160px;box-shadow:0 8px 32px rgba(0,0,0,.3);opacity:0;visibility:hidden;transition:opacity .2s,visibility .2s,top .2s;z-index:200}
+.nav-dropdown:hover .dropdown-menu{opacity:1;visibility:visible;top:calc(100% + 2px)}
+.dropdown-menu a{display:block;padding:.4rem .65rem;font-family:'Barlow Condensed',sans-serif;font-size:.85rem;font-weight:600;color:var(--text-secondary);border-radius:6px;transition:color .2s,background .2s;text-decoration:none}
+.dropdown-menu a:hover{color:var(--nfl-red);background:rgba(213,10,10,.09)}
+.header-actions{display:flex;align-items:center;gap:.5rem;flex-shrink:0}
+.theme-toggle{background:transparent;border:1px solid var(--border-color);border-radius:8px;padding:.35rem .55rem;font-size:.95rem;cursor:pointer;transition:border-color .2s,background .2s;line-height:1}
+.theme-toggle:hover{border-color:var(--nfl-red);background:rgba(213,10,10,.08)}
+body{padding-top:68px}
+/* Mobile nav hidden by default */
+.mobile-nav{display:none;flex-direction:column;gap:0;background:var(--bg-card);border-bottom:1px solid var(--border-color);position:fixed;top:68px;left:0;right:0;z-index:999;max-height:calc(100vh - 68px);overflow-y:auto;transform:translateY(-8px);opacity:0;transition:opacity .25s,transform .25s;pointer-events:none}
+.mobile-nav.open{display:flex;opacity:1;transform:translateY(0);pointer-events:auto}
+.mobile-nav a{padding:.85rem 1.5rem;font-family:'Barlow Condensed',sans-serif;font-size:.95rem;font-weight:700;color:var(--text-secondary);border-bottom:1px solid var(--border-color);text-decoration:none;transition:color .15s,background .15s;letter-spacing:.03em}
+.mobile-nav a:last-child{border-bottom:none}
+.mobile-nav a:hover{color:var(--nfl-red);background:rgba(213,10,10,.07)}
+/* Footer in main.js pages */
+.site-footer{background:var(--bg-tertiary);border-top:1px solid var(--border-color);padding:3rem 0 1.5rem;margin-top:4rem}
+.footer-inner{max-width:1400px;margin:0 auto;padding:0 1.5rem;display:grid;grid-template-columns:1.5fr repeat(3,1fr);gap:2.5rem}
+.footer-brand p{font-size:.85rem;color:var(--text-muted);line-height:1.7;margin-top:.6rem;max-width:260px}
+.footer-brand .logo{font-size:1.3rem;margin-bottom:.5rem}
+.footer-col h4{font-family:'Barlow Condensed',sans-serif;font-size:.75rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.75rem}
+.footer-col ul{list-style:none;padding:0;display:flex;flex-direction:column;gap:.35rem}
+.footer-col ul li a{font-size:.85rem;color:var(--text-secondary);transition:color .15s;text-decoration:none}
+.footer-col ul li a:hover{color:var(--nfl-red)}
+.footer-bottom{max-width:1400px;margin:.5rem auto 0;padding:1.25rem 1.5rem 0;border-top:1px solid var(--border-color);display:flex;justify-content:space-between;flex-wrap:wrap;gap:.5rem}
+.footer-bottom p{font-size:.78rem;color:var(--text-muted)}
+/* Responsive */
+@media(max-width:1100px){.site-nav .nav-link{font-size:.72rem;padding:.38rem .5rem}}
+@media(max-width:900px){
+  .site-nav{display:none}
+  .hamburger{display:flex}
+}
+@media(max-width:700px){.footer-inner{grid-template-columns:1fr 1fr}}
+@media(max-width:480px){.footer-inner{grid-template-columns:1fr}}

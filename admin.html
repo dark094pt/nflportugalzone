@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+
+<html data-theme="dark" lang="pt">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Admin — NFL PT</title>
+<link href="css/style.css" rel="stylesheet"/>
+<style>
+:root{--bg:var(--bg-primary);--surface:var(--bg-card);--bg2:var(--bg-secondary);--border:var(--border);--red:#e63946;--text:var(--text-primary);--text-muted:var(--text-muted);--gold:#f5a623}
+</style>
+
+<style>
+    /* ── Login ── */
+    .login-overlay{position:fixed;inset:0;background:var(--bg,#070b14);z-index:2000;display:flex;align-items:center;justify-content:center}
+    .login-box{background:var(--surface,#111827);border:1px solid var(--border,rgba(255,255,255,.08));border-radius:24px;padding:52px 44px;width:100%;max-width:420px;text-align:center;box-shadow:0 24px 60px rgba(0,0,0,.5)}
+    .login-logo{font-family:'Bebas Neue',sans-serif;font-size:2.8rem;letter-spacing:.08em;margin-bottom:6px}
+    .login-logo span{color:var(--red,#d50a0a)}
+    .login-sub{font-family:'Barlow Condensed',sans-serif;color:var(--text-muted,#8899aa);font-size:.95rem;margin-bottom:36px;letter-spacing:.04em;text-transform:uppercase}
+    .login-field{width:100%;padding:14px 18px;border-radius:12px;border:1.5px solid var(--border,rgba(255,255,255,.1));background:var(--bg,#070b14);color:var(--text,#f0f4ff);font-family:'Barlow',sans-serif;font-size:.95rem;transition:border-color .2s;box-sizing:border-box;margin-bottom:12px}
+    .login-field:focus{outline:none;border-color:var(--red,#d50a0a)}
+    .login-btn{width:100%;padding:15px;border-radius:12px;background:var(--red,#d50a0a);border:none;color:#fff;font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:.1em;cursor:pointer;transition:opacity .2s,transform .1s;margin-top:4px}
+    .login-btn:hover{opacity:.88;transform:translateY(-1px)}
+    .login-btn:active{transform:translateY(0)}
+    /* ── Layout ── */
+    body{padding-top:68px}
+    .admin-wrapper{display:none;min-height:calc(100vh - 68px)}
+    .admin-wrapper.visible{display:flex}
+    .admin-sidebar{width:256px;background:var(--surface,#111827);border-right:1px solid var(--border,rgba(255,255,255,.08));position:fixed;top:68px;left:0;bottom:0;overflow-y:auto;z-index:100;display:flex;flex-direction:column;padding:28px 0}
+    .admin-brand{padding:0 24px 24px;border-bottom:1px solid var(--border,rgba(255,255,255,.08));margin-bottom:20px}
+    .admin-brand-name{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:.06em;color:var(--text-muted,#8899aa)}
+    .admin-brand-name b{color:var(--red,#d50a0a)}
+    .sidebar-section{padding:6px 24px 4px;font-family:'Barlow Condensed',sans-serif;font-size:.65rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--text-muted,#8899aa);margin-top:12px}
+    .sidebar-btn{display:flex;align-items:center;gap:10px;padding:10px 24px;font-family:'Barlow Condensed',sans-serif;font-size:.92rem;font-weight:600;letter-spacing:.03em;color:var(--text-secondary,#cbd5e0);cursor:pointer;border:none;background:none;width:100%;text-align:left;transition:all .15s;border-right:3px solid transparent}
+    .sidebar-btn:hover{background:rgba(213,10,10,.07);color:var(--text,#f0f4ff)}
+    .sidebar-btn.active{background:rgba(213,10,10,.12);color:var(--red,#d50a0a);border-right-color:var(--red,#d50a0a)}
+    .sidebar-btn .icon{font-size:1rem;width:22px;text-align:center;flex-shrink:0}
+    .sidebar-spacer{flex:1}
+    .admin-main{margin-left:256px;padding:36px 40px;flex:1;min-height:calc(100vh - 68px);background:var(--bg,#070b14)}
+    /* ── Panel ── */
+    .admin-panel{display:none}
+    .admin-panel.active{display:block}
+    .panel-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:32px;flex-wrap:wrap;gap:16px;padding-bottom:20px;border-bottom:1px solid var(--border,rgba(255,255,255,.08))}
+    .panel-title{font-family:'Bebas Neue',sans-serif;font-size:2.2rem;letter-spacing:.06em;line-height:1}
+    .panel-title span{color:var(--red,#d50a0a)}
+    .panel-actions{display:flex;gap:10px}
+    /* ── Stat cards ── */
+    .stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px;margin-bottom:32px}
+    .stat-card{background:var(--surface,#111827);border:1px solid var(--border,rgba(255,255,255,.08));border-radius:16px;padding:22px 20px}
+    .stat-card-label{font-family:'Barlow Condensed',sans-serif;font-size:.7rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted,#8899aa);margin-bottom:10px}
+    .stat-card-value{font-family:'Bebas Neue',sans-serif;font-size:2.6rem;color:var(--red,#d50a0a);line-height:1}
+    .stat-card-trend{font-family:'Barlow Condensed',sans-serif;font-size:.78rem;color:#22c55e;margin-top:5px}
+    /* ── Table ── */
+    .admin-card{background:var(--surface,#111827);border:1px solid var(--border,rgba(255,255,255,.08));border-radius:16px;overflow:hidden;margin-bottom:24px}
+    .admin-card-header{padding:16px 22px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border,rgba(255,255,255,.08))}
+    .admin-card-title{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.95rem;letter-spacing:.04em}
+    .admin-tbl{width:100%;border-collapse:collapse}
+    .admin-tbl th{padding:11px 20px;text-align:left;font-family:'Barlow Condensed',sans-serif;font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted,#8899aa);background:rgba(0,0,0,.15)}
+    .admin-tbl td{padding:13px 20px;font-size:.88rem;border-top:1px solid var(--border,rgba(255,255,255,.08));color:var(--text-secondary,#cbd5e0)}
+    .admin-tbl tr:hover td{background:rgba(213,10,10,.03)}
+    .badge{display:inline-block;padding:3px 10px;border-radius:100px;font-family:'Barlow Condensed',sans-serif;font-size:.7rem;font-weight:700;letter-spacing:.06em}
+    .badge-green{background:rgba(34,197,94,.15);color:#22c55e}
+    .badge-yellow{background:rgba(245,166,35,.15);color:#f59e0b}
+    .badge-red{background:rgba(213,10,10,.15);color:var(--red,#d50a0a)}
+    /* ── Btns ── */
+    .btn-adm{padding:9px 18px;border-radius:10px;border:none;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.87rem;letter-spacing:.04em;cursor:pointer;transition:all .2s}
+    .btn-adm.primary{background:var(--red,#d50a0a);color:#fff}
+    .btn-adm.primary:hover{opacity:.88}
+    .btn-adm.outline{background:transparent;border:1.5px solid var(--border,rgba(255,255,255,.15));color:var(--text,#f0f4ff)}
+    .btn-adm.outline:hover{border-color:var(--red,#d50a0a);color:var(--red,#d50a0a)}
+    .btn-adm.sm{padding:5px 12px;font-size:.78rem}
+    /* ── Forms ── */
+    .form-card{background:var(--surface,#111827);border:1px solid var(--border,rgba(255,255,255,.08));border-radius:16px;padding:28px;margin-bottom:24px}
+    .form-card h3{font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:.06em;margin-bottom:20px}
+    .fgroup{margin-bottom:16px}
+    .flabel{display:block;font-family:'Barlow Condensed',sans-serif;font-size:.75rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted,#8899aa);margin-bottom:7px}
+    .finput{width:100%;padding:11px 15px;border-radius:10px;border:1.5px solid var(--border,rgba(255,255,255,.1));background:rgba(0,0,0,.2);color:var(--text,#f0f4ff);font-family:'Barlow',sans-serif;font-size:.9rem;transition:border-color .2s;box-sizing:border-box}
+    .finput:focus{outline:none;border-color:var(--red,#d50a0a)}
+    .frow{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    .ftextarea{min-height:100px;resize:vertical}
+    /* ── Responsive ── */
+    @media(max-width:900px){.admin-sidebar{display:none}.admin-main{margin-left:0;padding:24px 16px}.frow{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<!-- Header -->
+<header class="site-header" id="siteHeader">
+<div class="header-inner">
+<a class="logo" data-i18n="admin_001" href="index.html"><div class="logo-shield">N</div>NFL<span>PT</span></a>
+<nav class="site-nav">
+<a class="nav-link" data-i18n="admin_002" href="index.html">← Voltar ao Site</a>
+</nav>
+<div class="header-actions">
+<button class="btn-lang" data-i18n="admin_003" onclick="toggleLang()" style="background:transparent;border:1px solid var(--border-color,rgba(255,255,255,.2));color:var(--text-primary,#f0f4ff);font-size:0.75rem;font-weight:700;padding:0.3rem 0.6rem;border-radius:6px;cursor:pointer;transition:all 0.2s;white-space:nowrap;font-family:inherit;" title="Switch to English">🌐 EN</button>
+<button aria-label="Alternar tema" class="theme-toggle" onclick="toggleTheme()">☀️</button>
+</div>
+</div>
+</header>
+<!-- Login -->
+<div class="login-overlay" id="loginOverlay">
+<div class="login-box">
+<div class="login-logo" data-i18n="admin_004">NFL<span>PT</span></div>
+<div class="login-sub" data-i18n="admin_005">Painel de Administração</div>
+<input autocomplete="username" class="login-field" id="loginUser" placeholder="Utilizador" type="text"/>
+<input autocomplete="current-password" class="login-field" id="loginPass" placeholder="Password" type="password"/>
+<button class="login-btn" data-i18n="admin_006" onclick="doLogin()">ENTRAR</button>
+</div>
+</div>
+<!-- Admin Dashboard -->
+<div class="admin-wrapper" id="adminWrapper">
+<aside class="admin-sidebar">
+<div class="admin-brand">
+<div class="admin-brand-name" data-i18n="admin_007">NFL<b>PT</b> Admin</div>
+</div>
+<div class="sidebar-section" data-i18n="admin_008">Geral</div>
+<button class="sidebar-btn active" data-i18n="admin_009" onclick="showPanel('dashboard',this)"><span class="icon">📊</span>Dashboard</button>
+<button class="sidebar-btn" data-i18n="admin_010" onclick="showPanel('noticias',this)"><span class="icon">📰</span>Notícias</button>
+<button class="sidebar-btn" data-i18n="admin_011" onclick="showPanel('mensagens',this)"><span class="icon">📬</span>Mensagens</button>
+<div class="sidebar-section" data-i18n="admin_012">Conteúdo</div>
+<button class="sidebar-btn" data-i18n="admin_013" onclick="showPanel('jogadores',this)"><span class="icon">👤</span>Jogadores</button>
+<button class="sidebar-btn" data-i18n="admin_014" onclick="showPanel('equipas',this)"><span class="icon">🏟️</span>Equipas</button>
+<button class="sidebar-btn" data-i18n="admin_015" onclick="showPanel('quiz',this)"><span class="icon">🧠</span>Quiz</button>
+<div class="sidebar-section" data-i18n="admin_016">Sistema</div>
+<button class="sidebar-btn" data-i18n="admin_017" onclick="showPanel('definicoes',this)"><span class="icon">⚙️</span>Definições</button>
+<div class="sidebar-spacer"></div>
+<button class="sidebar-btn" data-i18n="admin_018" onclick="doLogout()" style="color:#e63946"><span class="icon">🚪</span>Sair</button>
+</aside>
+<main class="admin-main">
+<!-- Dashboard -->
+<div class="admin-panel active" id="panel-dashboard">
+<div class="panel-header">
+<div class="panel-title"><span data-i18n="admin_021_pre">Dashboard </span> <span data-i18n="admin_021">Geral</span></div>
+<div class="panel-actions">
+<button class="btn-adm outline" data-i18n="admin_022">Exportar</button>
+<button class="btn-adm primary" data-i18n="admin_023">+ Nova Notícia</button>
+</div>
+</div>
+<div class="stat-grid">
+<div class="stat-card"><div class="stat-card-label" data-i18n="admin_024">Páginas</div>
+<div class="stat-card-value">16</div>
+<div class="stat-card-trend" data-i18n="admin_025">↑ Completo</div></div>
+<div class="stat-card"><div class="stat-card-label" data-i18n="admin_026">Notícias</div>
+<div class="stat-card-value">8</div>
+<div class="stat-card-trend" data-i18n="admin_027">↑ 3 esta semana</div></div>
+<div class="stat-card"><div class="stat-card-label" data-i18n="admin_028">Mensagens</div>
+<div class="stat-card-value">5</div>
+<div class="stat-card-trend" data-i18n="admin_029">2 novas</div></div>
+<div class="stat-card"><div class="stat-card-label" data-i18n="admin_030">Jogadores</div>
+<div class="stat-card-value">30</div>
+<div class="stat-card-trend" data-i18n="admin_031">Atualizado</div></div>
+<div class="stat-card"><div class="stat-card-label" data-i18n="admin_032">Equipas NFL</div>
+<div class="stat-card-value">32</div>
+<div class="stat-card-trend" data-i18n="admin_033">↑ Todas</div></div>
+</div>
+<div class="admin-card">
+<div class="admin-card-header">
+<div class="admin-card-title" data-i18n="admin_034">📰 Últimas Notícias</div>
+<button class="btn-adm outline sm" data-i18n="admin_035">Ver tudo</button>
+</div>
+<table class="admin-tbl">
+<thead><tr><th data-i18n="admin_036">Título</th>
+<th data-i18n="admin_037">Categoria</th>
+<th data-i18n="admin_038">Data</th>
+<th data-i18n="admin_039">Estado</th>
+<th data-i18n="admin_040">Ações</th></tr></thead>
+<tbody>
+<tr><td data-i18n="admin_041">Eagles vencem Super Bowl LIX por 40-22</td>
+<td data-i18n="admin_042">Super Bowl</td>
+<td>09/02/2025</td>
+<td><span class="badge badge-green" data-i18n="admin_043">Publicado</span></td>
+<td><button class="btn-adm outline sm" data-i18n="admin_044">Editar</button></td></tr>
+<tr><td data-i18n="admin_045">Lamar Jackson conquista 3º MVP da carreira</td>
+<td data-i18n="admin_046">Prémios</td>
+<td>08/01/2025</td>
+<td><span class="badge badge-green" data-i18n="admin_047">Publicado</span></td>
+<td><button class="btn-adm outline sm" data-i18n="admin_048">Editar</button></td></tr>
+<tr><td data-i18n="admin_049">NFL Draft 2025 — Cam Ward escolhido pelos Titans</td>
+<td data-i18n="admin_050">Draft</td>
+<td>24/04/2025</td>
+<td><span class="badge badge-yellow" data-i18n="admin_051">Rascunho</span></td>
+<td><button class="btn-adm outline sm" data-i18n="admin_052">Editar</button></td></tr>
+<tr><td data-i18n="admin_053">Portugal confirma presença no Europeu de Flag</td>
+<td data-i18n="admin_054">Portugal</td>
+<td>15/03/2025</td>
+<td><span class="badge badge-green" data-i18n="admin_055">Publicado</span></td>
+<td><button class="btn-adm outline sm" data-i18n="admin_056">Editar</button></td></tr>
+<tr><td data-i18n="admin_057">Kansas City Chiefs — Preview temporada 2025/26</td>
+<td data-i18n="admin_058">Equipas</td>
+<td>28/07/2025</td>
+<td><span class="badge badge-red" data-i18n="admin_059">Agendado</span></td>
+<td><button class="btn-adm outline sm" data-i18n="admin_060">Editar</button></td></tr>
+</tbody>
+</table>
+</div>
+<div class="admin-card">
+<div class="admin-card-header">
+<div class="admin-card-title" data-i18n="admin_061">📬 Mensagens Recentes</div>
+<button class="btn-adm outline sm" data-i18n="admin_062">Ver todas</button>
+</div>
+<table class="admin-tbl">
+<thead><tr><th data-i18n="admin_063">Nome</th>
+<th data-i18n="admin_064">Assunto</th>
+<th data-i18n="admin_065">Data</th>
+<th data-i18n="admin_066">Estado</th></tr></thead>
+<tbody>
+<tr><td data-i18n="admin_067">João Silva</td>
+<td data-i18n="admin_068">Sugestão de conteúdo</td>
+<td data-i18n="admin_069">Hoje</td>
+<td><span class="badge badge-yellow" data-i18n="admin_070">Pendente</span></td></tr>
+<tr><td data-i18n="admin_071">Maria Santos</td>
+<td data-i18n="admin_072">Erro numa estatística</td>
+<td data-i18n="admin_073">Ontem</td>
+<td><span class="badge badge-yellow" data-i18n="admin_074">Pendente</span></td></tr>
+<tr><td data-i18n="admin_075">Pedro Costa</td>
+<td data-i18n="admin_076">Colaboração</td>
+<td>20/03/2025</td>
+<td><span class="badge badge-green" data-i18n="admin_077">Respondido</span></td></tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Noticias -->
+<div class="admin-panel" id="panel-noticias">
+<div class="panel-header">
+<div class="panel-title"><span data-i18n="admin_079_pre">Gestão de </span> <span data-i18n="admin_079">Notícias</span></div>
+<button class="btn-adm primary" data-i18n="admin_080" onclick="document.getElementById('novaNoticia').style.display='block'">+ Nova Notícia</button>
+</div>
+<div class="form-card" id="novaNoticia" style="display:none">
+<h3 data-i18n="admin_081">Nova Notícia</h3>
+<div class="frow">
+<div class="fgroup"><label class="flabel" data-i18n="admin_082">Título</label><input class="finput" placeholder="Título da notícia..." type="text"/></div>
+<div class="fgroup"><label class="flabel" data-i18n="admin_083">Categoria</label><select class="finput"><option data-i18n="admin_084">Super Bowl</option><option data-i18n="admin_085">Equipas</option><option data-i18n="admin_086">Jogadores</option><option data-i18n="admin_087">Portugal</option><option data-i18n="admin_088">Draft</option></select></div>
+</div>
+<div class="fgroup"><label class="flabel" data-i18n="admin_089">Resumo</label><textarea class="finput ftextarea" placeholder="Resumo (máx. 200 caracteres)..."></textarea></div>
+<div class="fgroup"><label class="flabel" data-i18n="admin_090">Conteúdo</label><textarea class="finput ftextarea" placeholder="Corpo completo da notícia..." style="min-height:160px"></textarea></div>
+<div class="frow">
+<div class="fgroup"><label class="flabel" data-i18n="admin_091">URL da Imagem</label><input class="finput" placeholder="https://..." type="text"/></div>
+<div class="fgroup"><label class="flabel" data-i18n="admin_092">Estado</label><select class="finput"><option data-i18n="admin_093">Publicado</option><option data-i18n="admin_094">Rascunho</option><option data-i18n="admin_095">Agendado</option></select></div>
+</div>
+<div style="display:flex;gap:10px">
+<button class="btn-adm primary" data-i18n="admin_096" onclick="showNotification('Notícia guardada!','success')">Guardar</button> 
+<button class="btn-adm outline" data-i18n="admin_097" onclick="document.getElementById('novaNoticia').style.display='none'">Cancelar</button>
+</div>
+</div>
+<div class="admin-card">
+<div class="admin-card-header"><div class="admin-card-title" data-i18n="admin_098">Todas as Notícias</div></div>
+<table class="admin-tbl">
+<thead><tr><th data-i18n="admin_099">Título</th>
+<th data-i18n="admin_100">Categoria</th>
+<th data-i18n="admin_101">Data</th>
+<th data-i18n="admin_102">Estado</th>
+<th data-i18n="admin_103">Ações</th></tr></thead>
+<tbody>
+<tr><td data-i18n="admin_104">Eagles vencem Super Bowl LIX</td>
+<td data-i18n="admin_105">Super Bowl</td>
+<td>09/02/2025</td>
+<td><span class="badge badge-green" data-i18n="admin_106">Publicado</span></td>
+<td><button class="btn-adm outline sm" data-i18n="admin_107">Editar</button></td></tr>
+<tr><td data-i18n="admin_108">Lamar Jackson — 3º MVP da carreira</td>
+<td data-i18n="admin_109">Prémios</td>
+<td>08/01/2025</td>
+<td><span class="badge badge-green" data-i18n="admin_110">Publicado</span></td>
+<td><button class="btn-adm outline sm" data-i18n="admin_111">Editar</button></td></tr>
+<tr><td data-i18n="admin_112">NFL Draft 2025 — Cam Ward 1ª pick</td>
+<td data-i18n="admin_113">Draft</td>
+<td>24/04/2025</td>
+<td><span class="badge badge-yellow" data-i18n="admin_114">Rascunho</span></td>
+<td><button class="btn-adm outline sm" data-i18n="admin_115">Editar</button></td></tr>
+<tr><td data-i18n="admin_116">Portugal no Europeu de Flag Football</td>
+<td data-i18n="admin_117">Portugal</td>
+<td>15/03/2025</td>
+<td><span class="badge badge-green" data-i18n="admin_118">Publicado</span></td>
+<td><button class="btn-adm outline sm" data-i18n="admin_119">Editar</button></td></tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Mensagens -->
+<div class="admin-panel" id="panel-mensagens">
+<div class="panel-header"><div class="panel-title"><span data-i18n="admin_121_pre">Caixa de </span> <span data-i18n="admin_121">Mensagens</span></div></div>
+<div class="admin-card">
+<div class="admin-card-header"><div class="admin-card-title" data-i18n="admin_122">📬 Formulário de Contacto</div></div>
+<table class="admin-tbl">
+<thead><tr><th data-i18n="admin_123">Nome</th>
+<th data-i18n="admin_124">Assunto</th>
+<th data-i18n="admin_125">Mensagem</th>
+<th data-i18n="admin_126">Data</th>
+<th data-i18n="admin_127">Estado</th></tr></thead>
+<tbody>
+<tr><td data-i18n="admin_128">João Silva</td>
+<td data-i18n="admin_129">Sugestão</td>
+<td data-i18n="admin_130" style="max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Seria interessante ter uma secção sobre o Draft...</td>
+<td data-i18n="admin_131">Hoje</td>
+<td><span class="badge badge-yellow" data-i18n="admin_132">Pendente</span></td></tr>
+<tr><td data-i18n="admin_133">Maria Santos</td>
+<td data-i18n="admin_134">Erro</td>
+<td data-i18n="admin_135" style="max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">As jardas do Barkley estão incorretas na pág...</td>
+<td data-i18n="admin_136">Ontem</td>
+<td><span class="badge badge-yellow" data-i18n="admin_137">Pendente</span></td></tr>
+<tr><td data-i18n="admin_138">Pedro Costa</td>
+<td data-i18n="admin_139">Colaboração</td>
+<td data-i18n="admin_140" style="max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Tenho interesse em colaborar com conteúdo...</td>
+<td>20/03</td>
+<td><span class="badge badge-green" data-i18n="admin_141">Respondido</span></td></tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Jogadores -->
+<div class="admin-panel" id="panel-jogadores">
+<div class="panel-header">
+<div class="panel-title"><span data-i18n="admin_143_pre">Gerir </span> <span data-i18n="admin_143">Jogadores</span></div>
+<button class="btn-adm primary" data-i18n="admin_144">+ Adicionar</button>
+</div>
+<div class="admin-card">
+<div class="admin-card-header"><div class="admin-card-title" data-i18n="admin_145">Jogadores em Destaque — Temporada 2025/26</div></div>
+<table class="admin-tbl">
+<thead><tr><th data-i18n="admin_146">Nome</th>
+<th data-i18n="admin_147">Posição</th>
+<th data-i18n="admin_148">Equipa</th>
+<th data-i18n="admin_149">Temporada</th>
+<th data-i18n="admin_150">Ações</th></tr></thead>
+<tbody>
+<tr><td data-i18n="admin_151">Lamar Jackson</td>
+<td>QB</td>
+<td data-i18n="admin_152">Baltimore Ravens</td>
+<td>2025/26</td>
+<td><button class="btn-adm outline sm" data-i18n="admin_153">Editar</button></td></tr>
+<tr><td data-i18n="admin_154">Patrick Mahomes</td>
+<td>QB</td>
+<td data-i18n="admin_155">Kansas City Chiefs</td>
+<td>2025/26</td>
+<td><button class="btn-adm outline sm" data-i18n="admin_156">Editar</button></td></tr>
+<tr><td data-i18n="admin_157">Josh Allen</td>
+<td>QB</td>
+<td data-i18n="admin_158">Buffalo Bills</td>
+<td>2025/26</td>
+<td><button class="btn-adm outline sm" data-i18n="admin_159">Editar</button></td></tr>
+<tr><td data-i18n="admin_160">Saquon Barkley</td>
+<td>RB</td>
+<td data-i18n="admin_161">Philadelphia Eagles</td>
+<td>2025/26</td>
+<td><button class="btn-adm outline sm" data-i18n="admin_162">Editar</button></td></tr>
+<tr><td data-i18n="admin_163">Tyreek Hill</td>
+<td>WR</td>
+<td data-i18n="admin_164">Miami Dolphins</td>
+<td>2025/26</td>
+<td><button class="btn-adm outline sm" data-i18n="admin_165">Editar</button></td></tr>
+<tr><td data-i18n="admin_166">Travis Kelce</td>
+<td>TE</td>
+<td data-i18n="admin_167">Kansas City Chiefs</td>
+<td>2025/26</td>
+<td><button class="btn-adm outline sm" data-i18n="admin_168">Editar</button></td></tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Equipas -->
+<div class="admin-panel" id="panel-equipas">
+<div class="panel-header"><div class="panel-title"><span data-i18n="admin_170_pre">Gerir </span> <span data-i18n="admin_170">Equipas</span></div></div>
+<p data-i18n="admin_171" style="color:var(--text-muted,#8899aa);margin-bottom:24px;font-size:.9rem">Editar informação das 32 equipas NFL.</p>
+<div class="form-card">
+<h3 data-i18n="admin_172">Editar Equipa</h3>
+<div class="frow">
+<div class="fgroup"><label class="flabel" data-i18n="admin_173">Nome da Equipa</label><input class="finput" type="text" value="Philadelphia Eagles"/></div>
+<div class="fgroup"><label class="flabel" data-i18n="admin_174">Cidade</label><input class="finput" type="text" value="Philadelphia"/></div>
+</div>
+<div class="frow">
+<div class="fgroup"><label class="flabel" data-i18n="admin_175">Conferência</label><select class="finput"><option data-i18n="admin_176">NFC</option><option data-i18n="admin_177">AFC</option></select></div>
+<div class="fgroup"><label class="flabel" data-i18n="admin_178">Divisão</label><select class="finput"><option data-i18n="admin_179">NFC East</option><option data-i18n="admin_180">NFC West</option><option data-i18n="admin_181">NFC North</option><option data-i18n="admin_182">NFC South</option><option data-i18n="admin_183">AFC East</option><option data-i18n="admin_184">AFC West</option><option data-i18n="admin_185">AFC North</option><option data-i18n="admin_186">AFC South</option></select></div>
+</div>
+<div class="frow">
+<div class="fgroup"><label class="flabel" data-i18n="admin_187">Super Bowls</label><input class="finput" type="number" value="4"/></div>
+<div class="fgroup"><label class="flabel" data-i18n="admin_188">Cor Principal</label><input class="finput" style="height:44px;cursor:pointer" type="color" value="#004C54"/></div>
+</div>
+<button class="btn-adm primary" data-i18n="admin_189" onclick="showNotification('Equipa atualizada!','success')">Guardar Alterações</button>
+</div>
+</div>
+<!-- Quiz -->
+<div class="admin-panel" id="panel-quiz">
+<div class="panel-header">
+<div class="panel-title"><span data-i18n="admin_191_pre">Gerir </span> <span data-i18n="admin_191">Quiz</span></div>
+<button class="btn-adm primary" data-i18n="admin_192">+ Adicionar Pergunta</button>
+</div>
+<p data-i18n="admin_193" style="color:var(--text-muted,#8899aa);margin-bottom:24px;font-size:.9rem">36 perguntas únicas distribuídas por 3 níveis de dificuldade.</p>
+<div class="admin-card">
+<div class="admin-card-header"><div class="admin-card-title" data-i18n="admin_194">Perguntas — 12 por nível</div></div>
+<table class="admin-tbl">
+<thead><tr><th>#</th>
+<th data-i18n="admin_195">Pergunta</th>
+<th data-i18n="admin_196">Dificuldade</th>
+<th data-i18n="admin_197">Ações</th></tr></thead>
+<tbody>
+<tr><td>1</td>
+<td data-i18n="admin_198">Quantas jardas para um first down?</td>
+<td><span class="badge badge-green" data-i18n="admin_199">Fácil</span></td>
+<td><button class="btn-adm outline sm" data-i18n="admin_200">Editar</button></td></tr>
+<tr><td>2</td>
+<td data-i18n="admin_201">Quantos pontos vale um touchdown?</td>
+<td><span class="badge badge-green" data-i18n="admin_202">Fácil</span></td>
+<td><button class="btn-adm outline sm" data-i18n="admin_203">Editar</button></td></tr>
+<tr><td>3</td>
+<td data-i18n="admin_204">Quantas equipas compõem a NFL?</td>
+<td><span class="badge badge-green" data-i18n="admin_205">Fácil</span></td>
+<td><button class="btn-adm outline sm" data-i18n="admin_206">Editar</button></td></tr>
+<tr><td>4</td>
+<td data-i18n="admin_207">Qual QB ganhou mais Super Bowls?</td>
+<td><span class="badge badge-yellow" data-i18n="admin_208">Médio</span></td>
+<td><button class="btn-adm outline sm" data-i18n="admin_209">Editar</button></td></tr>
+<tr><td>5</td>
+<td data-i18n="admin_210">Quem venceu o Super Bowl LIX?</td>
+<td><span class="badge badge-yellow" data-i18n="admin_211">Médio</span></td>
+<td><button class="btn-adm outline sm" data-i18n="admin_212">Editar</button></td></tr>
+<tr><td>6</td>
+<td data-i18n="admin_213">Qual o recorde de jardas passadas numa época?</td>
+<td><span class="badge badge-red" data-i18n="admin_214">Difícil</span></td>
+<td><button class="btn-adm outline sm" data-i18n="admin_215">Editar</button></td></tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Definicoes -->
+<div class="admin-panel" id="panel-definicoes">
+<div class="panel-header"><div class="panel-title"><span data-i18n="admin_217_pre">Definições do </span> <span data-i18n="admin_217">Sistema</span></div></div>
+<div class="form-card">
+<h3 data-i18n="admin_218">Configurações Gerais</h3>
+<div class="fgroup"><label class="flabel" data-i18n="admin_219">Nome do Site</label><input class="finput" type="text" value="NFL PT"/></div>
+<div class="fgroup"><label class="flabel" data-i18n="admin_220">Descrição</label><textarea class="finput ftextarea" data-i18n="admin_221" style="min-height:80px">O hub definitivo do futebol americano em Portugal.</textarea></div>
+<div class="frow">
+<div class="fgroup"><label class="flabel" data-i18n="admin_222">Temporada Atual</label><input class="finput" type="text" value="2025-26"/></div>
+<div class="fgroup"><label class="flabel" data-i18n="admin_223">Tema Padrão</label><select class="finput"><option data-i18n="admin_224">Escuro</option><option data-i18n="admin_225">Claro</option></select></div>
+</div>
+<button class="btn-adm primary" data-i18n="admin_226" onclick="showNotification('Definições guardadas!','success')">Guardar</button>
+</div>
+<div class="form-card">
+<h3 data-i18n="admin_227">Gestão de Acesso</h3>
+<div class="frow">
+<div class="fgroup"><label class="flabel" data-i18n="admin_228">Utilizador Admin</label><input class="finput" type="text" value="admin"/></div>
+<div class="fgroup"><label class="flabel" data-i18n="admin_229">Nova Password</label><input class="finput" placeholder="••••••••" type="password"/></div>
+</div>
+<button class="btn-adm outline" data-i18n="admin_230" onclick="showNotification('Password atualizada!','success')">Alterar Password</button>
+</div>
+</div>
+</main>
+</div>
+<script src="js/i18n.js"></script>
+<script src="js/main.js"></script>
+<script>
+function doLogin() {
+  const u = document.getElementById('loginUser').value.trim();
+  const p = document.getElementById('loginPass').value;
+  if (u === 'admin' && p === 'nflpt2025') {
+    document.getElementById('loginOverlay').style.display = 'none';
+    document.getElementById('adminWrapper').classList.add('visible');
+    showNotification('Bem-vindo ao painel NFL PT! 🏈', 'success');
+  } else {
+    showNotification('Credenciais incorretas. Tenta novamente.', 'error');
+    document.getElementById('loginPass').value = '';
+    document.getElementById('loginPass').focus();
+  }
+}
+function doLogout() {
+  document.getElementById('adminWrapper').classList.remove('visible');
+  document.getElementById('loginOverlay').style.display = 'flex';
+  document.getElementById('loginUser').value = '';
+  document.getElementById('loginPass').value = '';
+}
+function showPanel(id, btn) {
+  document.querySelectorAll('.admin-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.sidebar-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('panel-' + id).classList.add('active');
+  btn.classList.add('active');
+}
+function showNotification(msg, type) {
+  const n = document.createElement('div');
+  n.style.cssText = `position:fixed;bottom:2rem;right:2rem;z-index:9999;background:${type==='success'?'#22c55e':'#d50a0a'};color:#fff;padding:1rem 1.5rem;border-radius:12px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:.95rem;box-shadow:0 8px 30px rgba(0,0,0,.4);opacity:0;transition:opacity .3s,transform .3s;transform:translateY(8px)`;
+  n.textContent = msg;
+  document.body.appendChild(n);
+  requestAnimationFrame(() => { n.style.opacity='1'; n.style.transform='translateY(0)'; });
+  setTimeout(() => { n.style.opacity='0'; n.style.transform='translateY(8px)'; setTimeout(()=>n.remove(),300); }, 3500);
+}
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('loginPass').addEventListener('keydown', e => { if (e.key==='Enter') doLogin(); });
+  document.getElementById('loginUser').addEventListener('keydown', e => { if (e.key==='Enter') document.getElementById('loginPass').focus(); });
+});
+</script>
+</body>
+</html>

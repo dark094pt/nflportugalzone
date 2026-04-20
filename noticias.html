@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html data-theme="dark" lang="pt">
+<head>
+<meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Notícias NFL — NFL PT</title>
+<link href="css/style.css" rel="stylesheet"/>
+<style>
+.news-featured{display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-bottom:3rem}
+.news-featured-card{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;overflow:hidden;transition:var(--transition);cursor:pointer}
+.news-featured-card:hover{border-color:var(--border-accent);transform:translateY(-4px);box-shadow:var(--shadow-glow)}
+.news-featured-img{width:100%;height:260px;object-fit:cover}
+.news-featured-body{padding:1.5rem}
+.news-featured-title{font-family:var(--font-heading);font-size:1.3rem;font-weight:700;color:var(--text-primary);margin-bottom:0.5rem;line-height:1.3}
+.search-bar{background:var(--bg-card);border:1px solid var(--border);border-radius:10px;padding:0.85rem 1rem;color:var(--text-primary);font-size:0.95rem;width:100%;margin-bottom:2rem;font-family:var(--font-body)}
+.search-bar:focus{outline:none;border-color:var(--red)}
+.cat-filters{display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:2rem}
+.cat-btn{background:var(--bg-card);border:1px solid var(--border);color:var(--text-secondary);font-family:var(--font-heading);font-size:0.75rem;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;padding:0.4rem 0.8rem;border-radius:6px;cursor:pointer;transition:var(--transition)}
+.cat-btn.active,.cat-btn:hover{background:rgba(230,57,70,0.1);border-color:var(--red);color:var(--red)}
+.news-card{cursor:pointer}
+.news-card:hover .news-card-title{color:var(--red)}
+/* Article Modal */
+.article-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:2000;display:flex;align-items:flex-start;justify-content:center;padding:2rem 1rem;overflow-y:auto;opacity:0;pointer-events:none;transition:opacity 0.3s}
+.article-overlay.open{opacity:1;pointer-events:auto}
+.article-modal{background:var(--bg-secondary);border:1px solid var(--border);border-radius:20px;width:100%;max-width:760px;overflow:hidden;transform:translateY(20px);transition:transform 0.3s;margin:auto}
+.article-overlay.open .article-modal{transform:translateY(0)}
+.article-hero-img{width:100%;height:320px;object-fit:cover;display:block}
+.article-hero-img.hidden{display:none}
+.article-body{padding:2rem}
+.article-cat{font-family:var(--font-heading);font-size:0.75rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--red);margin-bottom:0.75rem}
+.article-title{font-family:var(--font-heading);font-size:clamp(1.4rem,3vw,2rem);font-weight:800;color:var(--text-primary);line-height:1.25;margin-bottom:1rem}
+.article-meta{display:flex;align-items:center;gap:1rem;font-size:0.82rem;color:var(--text-muted);margin-bottom:1.5rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border)}
+.article-author{font-weight:600;color:var(--text-secondary)}
+.article-desc{font-size:1rem;color:var(--text-secondary);line-height:1.8;margin-bottom:1.5rem}
+.article-desc p{margin-bottom:1rem}
+.article-read-more{display:inline-flex;align-items:center;gap:0.5rem;background:var(--red);color:#fff;padding:0.85rem 1.75rem;border-radius:10px;font-family:var(--font-heading);font-size:0.9rem;font-weight:700;letter-spacing:0.05em;text-decoration:none;transition:opacity 0.2s;margin-top:0.5rem}
+.article-read-more:hover{opacity:0.88}
+.article-close{position:absolute;top:1rem;right:1rem;background:rgba(0,0,0,0.5);border:1px solid var(--border);color:#fff;width:36px;height:36px;border-radius:50%;font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background 0.2s;z-index:10}
+.article-close:hover{background:var(--red)}
+.article-modal-inner{position:relative}
+@media(max-width:700px){.news-featured{grid-template-columns:1fr}.article-hero-img{height:200px}.article-body{padding:1.25rem}}
+</style>
+</head>
+<body>
+<div id="nav-placeholder"></div>
+<div class="page-wrapper">
+<div class="page-hero">
+<div class="container">
+<div class="page-hero-tag" data-i18n="noticias_000">📰 NFL 2025/26</div>
+<h1><span data-i18n="noticias_001">NOTÍCIAS </span><span data-i18n="noticias_002" style="color:var(--red)">NFL</span></h1>
+<p data-i18n="noticias_003">As últimas notícias da NFL, análises, rumores e tudo o que acontece na liga mais popular do mundo.</p>
+</div>
+</div>
+<section class="section">
+<div class="container">
+<input class="search-bar" id="news-search" placeholder="🔍 Pesquisar notícias..." type="text"/>
+<div class="cat-filters" id="cat-filters">
+<button class="cat-btn active" data-cat="all" data-i18n="noticias_004">Todas</button>
+<button class="cat-btn" data-cat="trade" data-i18n="noticias_005">Transferências</button>
+<button class="cat-btn" data-cat="injury" data-i18n="noticias_006">Lesões</button>
+<button class="cat-btn" data-cat="game" data-i18n="noticias_007">Jogos</button>
+<button class="cat-btn" data-cat="team" data-i18n="noticias_008">Equipas</button>
+</div>
+<div id="featured-news"><div class="loading-spinner"><div class="spinner"></div></div></div>
+<div class="news-grid" id="all-news"></div>
+<div style="text-align:center;margin-top:2rem;">
+<button class="btn btn-outline" data-i18n="noticias_009" id="load-more" style="display:none">Carregar Mais</button>
+</div>
+</div>
+</section>
+</div>
+
+<!-- Article Modal -->
+<div class="article-overlay" id="articleOverlay">
+<div class="article-modal" id="articleModal">
+<div class="article-modal-inner">
+<button class="article-close" id="articleClose">✕</button>
+<img class="article-hero-img" id="articleImg" src="" alt=""/>
+<div class="article-body">
+<div class="article-cat" id="articleCat"></div>
+<div class="article-title" id="articleTitle"></div>
+<div class="article-meta">
+<span class="article-author" id="articleAuthor"></span>
+<span id="articleDate"></span>
+</div>
+<div class="article-desc" id="articleDesc"></div>
+<a class="article-read-more" href="#" id="articleLink" target="_blank" rel="noopener">
+Ler artigo completo na ESPN ↗
+</a>
+</div>
+</div>
+</div>
+</div>
+
+<div id="footer-placeholder"></div>
+<script src="js/i18n.js"></script>
+<script src="js/shared.js"></script>
+<script src="js/nav.js"></script>
+<script>
+let allArticles = [];
+let shown = 9;
+
+async function loadNews() {
+  try {
+    const data = await getNFLNews(50);
+    allArticles = data.articles || [];
+    renderFeatured();
+    renderNews();
+  } catch(e) {
+    document.getElementById('featured-news').innerHTML =
+      '<p style="text-align:center;color:var(--text-muted);padding:2rem;">Notícias indisponíveis. Verifica a ligação à internet.</p>';
+  }
+}
+
+function getArticleUrl(a) {
+  return a.links?.web?.href || a.links?.mobile?.href || a.links?.api?.news?.href || null;
+}
+
+function openArticle(a) {
+  const overlay = document.getElementById('articleOverlay');
+  const img = document.getElementById('articleImg');
+  const imgUrl = a.images?.[0]?.url || '';
+  
+  if (imgUrl) {
+    img.src = imgUrl;
+    img.alt = a.headline || '';
+    img.classList.remove('hidden');
+    img.onerror = () => img.classList.add('hidden');
+  } else {
+    img.classList.add('hidden');
+  }
+  
+  document.getElementById('articleCat').textContent = a.categories?.[0]?.description || 'NFL';
+  document.getElementById('articleTitle').textContent = a.headline || '';
+  
+  const author = a.byline || (a.categories?.find(c => c.type === 'author')?.description) || '';
+  document.getElementById('articleAuthor').textContent = author ? `✍️ ${author}` : '';
+  
+  const date = a.published ? new Date(a.published).toLocaleDateString('pt-PT', {
+    day: 'numeric', month: 'long', year: 'numeric'
+  }) : '';
+  document.getElementById('articleDate').textContent = date;
+  
+  // Build content from description + story
+  let content = '';
+  if (a.description) content += `<p>${a.description}</p>`;
+  if (a.story) {
+    // ESPN story field has more content
+    content += `<p>${a.story.replace(/\n/g, '</p><p>')}</p>`;
+  }
+  if (!content) content = '<p>Conteúdo completo disponível na ESPN.</p>';
+  document.getElementById('articleDesc').innerHTML = content;
+  
+  // Link to full article
+  const url = getArticleUrl(a);
+  const linkEl = document.getElementById('articleLink');
+  if (url) {
+    linkEl.href = url;
+    linkEl.style.display = 'inline-flex';
+  } else {
+    linkEl.style.display = 'none';
+  }
+  
+  // Open overlay
+  overlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  
+  // Scroll modal to top
+  document.getElementById('articleModal').scrollTop = 0;
+}
+
+function closeArticle() {
+  document.getElementById('articleOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+document.getElementById('articleClose').addEventListener('click', closeArticle);
+document.getElementById('articleOverlay').addEventListener('click', (e) => {
+  if (e.target === document.getElementById('articleOverlay')) closeArticle();
+});
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeArticle(); });
+
+function renderFeatured() {
+  const arts = allArticles.slice(0, 2);
+  document.getElementById('featured-news').innerHTML =
+    `<div class="news-featured">${arts.map(a => {
+      const img = a.images?.[0]?.url || 'https://a.espncdn.com/i/teamlogos/leagues/500/nfl.png';
+      const cat = a.categories?.[0]?.description || 'NFL';
+      const date = a.published ? new Date(a.published).toLocaleDateString('pt-PT') : '';
+      return `<div class="news-featured-card" onclick="openArticle(allArticles[${allArticles.indexOf(a)}])">
+        <img class="news-featured-img" src="${img}" alt="${a.headline}" loading="lazy"
+          onerror="this.src='https://a.espncdn.com/i/teamlogos/leagues/500/nfl.png'">
+        <div class="news-featured-body">
+          <div class="news-card-cat">${cat}</div>
+          <div class="news-featured-title">${a.headline}</div>
+          <div class="news-card-desc" style="-webkit-line-clamp:3;">${a.description || ''}</div>
+          <div class="news-card-meta" style="margin-top:1rem;">
+            <span>${date}</span>
+            <span style="color:var(--red);font-weight:600;margin-left:auto;font-size:0.8rem;">Ler mais →</span>
+          </div>
+        </div>
+      </div>`;
+    }).join('')}</div>`;
+}
+
+function renderNews(filter = 'all', search = '') {
+  const arts = allArticles.slice(2).filter(a => {
+    if (search && !a.headline.toLowerCase().includes(search.toLowerCase())) return false;
+    return true;
+  });
+  const toShow = arts.slice(0, shown);
+  document.getElementById('all-news').innerHTML = toShow.map((a, i) => {
+    const img = a.images?.[0]?.url || 'https://a.espncdn.com/i/teamlogos/leagues/500/nfl.png';
+    const cat = a.categories?.[0]?.description || 'NFL';
+    const date = a.published ? new Date(a.published).toLocaleDateString('pt-PT') : '';
+    const idx = allArticles.indexOf(a);
+    return `<div class="news-card reveal" onclick="openArticle(allArticles[${idx}])" style="cursor:pointer;">
+      <div class="news-card-img-wrapper">
+        <img class="news-card-img" src="${img}" alt="${a.headline}" loading="lazy"
+          onerror="this.src='https://a.espncdn.com/i/teamlogos/leagues/500/nfl.png'">
+      </div>
+      <div class="news-card-body">
+        <div class="news-card-cat">${cat}</div>
+        <div class="news-card-title">${a.headline}</div>
+        <div class="news-card-desc">${a.description || ''}</div>
+        <div class="news-card-meta">
+          <span>${date}</span>
+          <span style="color:var(--red);font-weight:600;font-size:0.78rem;">Ler mais →</span>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+  initScrollReveal();
+  document.getElementById('load-more').style.display = arts.length > shown ? 'inline-flex' : 'none';
+}
+
+document.getElementById('news-search').addEventListener('input', e => { shown = 9; renderNews('all', e.target.value); });
+document.getElementById('load-more').addEventListener('click', () => { shown += 9; renderNews(); });
+document.querySelectorAll('.cat-btn').forEach(b => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('.cat-btn').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    shown = 9;
+    renderNews(b.dataset.cat, document.getElementById('news-search').value);
+  });
+});
+
+loadNews();
+</script>
+</body>
+</html>

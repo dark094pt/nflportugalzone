@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+
+<html data-theme="dark" lang="pt">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Classificações NFL — NFL PT</title>
+<link href="css/style.css" rel="stylesheet"/>
+</head>
+<body>
+<div id="nav-placeholder"></div>
+<div class="page-wrapper">
+<div class="page-hero">
+<div class="container">
+<div class="page-hero-tag" data-i18n="classificacoes_000">📊 Temporada 2025/26</div>
+<h1><span data-i18n="classificacoes_001">CLASSIFICAÇÕES </span><span data-i18n="classificacoes_002" style="color:var(--red)">NFL</span></h1>
+<p data-i18n="classificacoes_003">Classificações atualizadas de todas as divisões da NFL — AFC e NFC — para a temporada 2025.</p>
+</div>
+</div>
+<section class="section">
+<div class="container">
+<div data-tabs="">
+<div class="tabs">
+<button class="tab-btn active" data-i18n="classificacoes_004" data-tab="division">Por Divisão</button> 
+<button class="tab-btn" data-i18n="classificacoes_005" data-tab="conference">Por Conferência</button> 
+<button class="tab-btn" data-i18n="classificacoes_006" data-tab="league">Liga</button>
+</div>
+<div class="tab-content active" data-tab-content="division" id="standings-division">
+<div class="loading-spinner"><div class="spinner"></div></div>
+</div>
+<div class="tab-content" data-tab-content="conference" id="standings-conference">
+<div class="loading-spinner"><div class="spinner"></div></div>
+</div>
+<div class="tab-content" data-tab-content="league" id="standings-league">
+<div class="loading-spinner"><div class="spinner"></div></div>
+</div>
+</div>
+<p data-i18n="classificacoes_007" style="font-size:0.8rem;color:var(--text-muted);margin-top:1rem;">Dados fornecidos pela ESPN. V=Vitórias, D=Derrotas, E=Empates, %=Percentagem, PF=Pontos Marcados, PA=Pontos Sofridos, Dif=Diferença</p>
+</div>
+</section>
+</div>
+<div id="footer-placeholder"></div>
+<script src="js/i18n.js"></script>
+<script src="js/shared.js"></script>
+<script src="js/nav.js"></script>
+<script>
+const DIV_NAMES={East:'Este',North:'Norte',South:'Sul',West:'Oeste'};
+function buildTable(entries,cols){
+  const header=`<tr>${cols.map(c=>`<th>${c.label}</th>`).join('')}</tr>`;
+  const rows=entries.map((e,i)=>{
+    const s=e.stats||[];
+    const get=(n)=>s.find(x=>x.name===n)?.value??'–';
+    const ab=e.team?.abbreviation?.toLowerCase()||'';
+    const name=e.team?.shortDisplayName||e.team?.name||'?';
+    return`<tr>
+      <td style="font-weight:600;color:var(--text-muted);width:30px;">${i+1}</td>
+      <td><div class="team-cell"><img src="https://a.espncdn.com/i/teamlogos/nfl/500/${ab}.png" onerror="this.src='https://a.espncdn.com/i/teamlogos/leagues/500/nfl.png'" alt="" style="width:24px;height:24px;"><span>${name}</span></div></td>
+      <td>${get('wins')}</td>
+      <td>${get('losses')}</td>
+      <td>${get('ties')}</td>
+      <td>${parseFloat(get('winPercent')||0).toFixed(3)}</td>
+      <td>${get('pointsFor')}</td>
+      <td>${get('pointsAgainst')}</td>
+      <td>${get('differential')}</td>
+    </tr>`;
+  }).join('');
+  return`<div class="standings-wrapper"><table class="standings-table"><thead>${header}</thead><tbody>${rows}</tbody></table></div>`;
+}
+
+const COLS=[
+  {label:'#'},{label:'Equipa'},{label:'V'},{label:'D'},{label:'E'},{label:'%'},
+  {label:'PF'},{label:'PA'},{label:'Dif'}
+];
+
+async function loadAllStandings(){
+  try{
+    const data=await getNFLStandings();
+    const confs=data.children||[];
+    
+    // Division view
+    let divHtml='';
+    confs.forEach(conf=>{
+      divHtml+=`<div style="margin-bottom:3rem;"><h2 style="font-family:var(--font-display);font-size:2rem;color:var(--red);margin-bottom:1.5rem;">${conf.name}</h2>`;
+      const divGroups=conf.children||[];
+      if(divGroups.length){
+        divGroups.forEach(div=>{
+          const dn=div.name||'';
+          const entries=div.standings?.entries||[];
+          divHtml+=`<div style="margin-bottom:1.5rem;"><div class="division-header">${conf.abbreviation} ${dn}</div>${buildTable(entries,COLS)}</div>`;
+        });
+      } else {
+        const entries=conf.standings?.entries||[];
+        divHtml+=buildTable(entries,COLS);
+      }
+      divHtml+='</div>';
+    });
+    document.getElementById('standings-division').innerHTML=divHtml||'<p style="text-align:center;color:var(--text-muted);padding:2rem;">Dados indisponíveis.</p>';
+
+    // Conference view
+    let confHtml='';
+    confs.forEach(conf=>{
+      const allEntries=[];
+      const divGroups=conf.children||[];
+      if(divGroups.length){divGroups.forEach(d=>allEntries.push(...(d.standings?.entries||[])));}
+      else{allEntries.push(...(conf.standings?.entries||[]));}
+      allEntries.sort((a,b)=>{
+        const wa=(a.stats||[]).find(s=>s.name==='wins')?.value||0;
+        const wb=(b.stats||[]).find(s=>s.name==='wins')?.value||0;
+        return wb-wa;
+      });
+      confHtml+=`<div style="margin-bottom:2rem;"><h2 style="font-family:var(--font-display);font-size:2rem;color:var(--red);margin-bottom:1rem;">${conf.name}</h2>${buildTable(allEntries,COLS)}</div>`;
+    });
+    document.getElementById('standings-conference').innerHTML=confHtml||'<p style="text-align:center;color:var(--text-muted);padding:2rem;">Dados indisponíveis.</p>';
+
+    // League view
+    const all=[];
+    confs.forEach(conf=>{
+      const dg=conf.children||[];
+      if(dg.length){dg.forEach(d=>all.push(...(d.standings?.entries||[])));}
+      else{all.push(...(conf.standings?.entries||[]));}
+    });
+    all.sort((a,b)=>{
+      const wa=(a.stats||[]).find(s=>s.name==='wins')?.value||0;
+      const wb=(b.stats||[]).find(s=>s.name==='wins')?.value||0;
+      return wb-wa;
+    });
+    document.getElementById('standings-league').innerHTML=buildTable(all,COLS)||'<p style="text-align:center;color:var(--text-muted);padding:2rem;">Dados indisponíveis.</p>';
+  }catch(e){
+    ['standings-division','standings-conference','standings-league'].forEach(id=>{
+      document.getElementById(id).innerHTML='<p style="text-align:center;color:var(--text-muted);padding:2rem;">Não foi possível carregar as classificações. Verifica a tua ligação à internet.</p>';
+    });
+  }
+}
+loadAllStandings();
+</script>
+</body>
+</html>

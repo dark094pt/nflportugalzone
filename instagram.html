@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+
+<html data-theme="dark" lang="pt">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Destaques &amp; Redes Sociais — NFL PT</title>
+<link href="css/style.css" rel="stylesheet"/>
+<style>
+    .page-hero { padding: 140px 0 60px; background: radial-gradient(ellipse at 50% 0%, rgba(212,0,38,0.12) 0%, transparent 60%), linear-gradient(180deg, var(--bg) 0%, var(--surface) 100%); text-align: center; }
+    /* Gallery */
+    .gallery-filters { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin: 40px 0 32px; }
+    .gf-btn { padding: 9px 22px; border-radius: 100px; border: 1px solid var(--border); background: transparent; color: var(--text-secondary); font-family: 'Barlow Condensed', sans-serif; font-size: 0.82rem; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; }
+    .gf-btn.active, .gf-btn:hover { background: var(--red); border-color: var(--red); color: #fff; }
+    .gallery-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 60px; }
+    .gallery-item { position: relative; aspect-ratio: 1; border-radius: 14px; overflow: hidden; cursor: pointer; background: var(--surface); }
+    .gallery-item:first-child, .gallery-item:nth-child(5) { grid-column: span 2; aspect-ratio: 2/1; }
+    .gallery-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease; }
+    .gallery-item:hover img { transform: scale(1.06); }
+    .gallery-overlay { position: absolute; inset: 0; background: linear-gradient(0deg, rgba(0,0,0,0.7) 0%, transparent 50%); opacity: 0; transition: opacity 0.3s; display: flex; align-items: flex-end; padding: 16px; }
+    .gallery-item:hover .gallery-overlay { opacity: 1; }
+    .gallery-caption { font-family: 'Barlow Condensed', sans-serif; font-size: 0.85rem; font-weight: 600; color: #fff; line-height: 1.3; }
+    .gallery-tag { display: inline-block; padding: 2px 8px; border-radius: 6px; background: var(--red); color: #fff; font-size: 0.65rem; font-weight: 700; font-family: 'Barlow Condensed', sans-serif; margin-bottom: 4px; }
+    /* Highlights section */
+    .highlights-section { margin: 0 0 60px; }
+    .highlights-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; letter-spacing: 0.06em; margin-bottom: 20px; }
+    .highlights-title span { color: var(--red); }
+    .highlights-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+    .highlight-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; transition: all 0.3s; }
+    .highlight-card:hover { transform: translateY(-4px); border-color: rgba(212,0,38,0.4); box-shadow: 0 16px 40px rgba(212,0,38,0.1); }
+    .hc-thumb { position: relative; width: 100%; height: 180px; overflow: hidden; }
+    .hc-thumb img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s; }
+    .highlight-card:hover .hc-thumb img { transform: scale(1.05); }
+    .play-btn { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 52px; height: 52px; border-radius: 50%; background: rgba(212,0,38,0.9); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; font-size: 1.3rem; transition: all 0.3s; }
+    .highlight-card:hover .play-btn { background: var(--red); transform: translate(-50%,-50%) scale(1.1); }
+    .hc-body { padding: 18px; }
+    .hc-meta { font-family: 'Barlow Condensed', sans-serif; font-size: 0.72rem; color: var(--text-muted); font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 6px; }
+    .hc-title { font-family: 'Barlow Condensed', sans-serif; font-size: 1rem; font-weight: 700; line-height: 1.4; }
+    .hc-views { font-family: 'Barlow Condensed', sans-serif; font-size: 0.78rem; color: var(--text-muted); margin-top: 8px; }
+    /* Social links */
+    .social-section { background: var(--surface); border: 1px solid var(--border); border-radius: 24px; padding: 48px; text-align: center; margin-bottom: 60px; }
+    .social-grid { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; margin-top: 32px; }
+    .social-btn { display: flex; align-items: center; gap: 12px; padding: 16px 28px; border-radius: 16px; border: 1px solid var(--border); background: var(--bg); font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 1rem; letter-spacing: 0.04em; cursor: pointer; transition: all 0.3s; text-decoration: none; color: var(--text); }
+    .social-btn:hover { transform: translateY(-3px); }
+    .social-btn.ig { border-color: #E1306C; }
+    .social-btn.ig:hover { background: rgba(225,48,108,0.1); }
+    .social-btn.yt { border-color: #FF0000; }
+    .social-btn.yt:hover { background: rgba(255,0,0,0.1); }
+    .social-btn.tw { border-color: #1DA1F2; }
+    .social-btn.tw:hover { background: rgba(29,161,242,0.1); }
+    .social-btn.tt { border-color: #69C9D0; }
+    .social-btn.tt:hover { background: rgba(105,201,208,0.1); }
+    .social-icon { font-size: 1.6rem; }
+    @media (max-width: 700px) { .gallery-grid { grid-template-columns: repeat(2, 1fr); } .gallery-item:first-child, .gallery-item:nth-child(5) { grid-column: span 1; aspect-ratio: 1; } }
+    @media (max-width: 500px) { .gallery-grid { grid-template-columns: 1fr; } .social-section { padding: 32px 20px; } }
+  </style>
+</head>
+<body>
+<div id="nav-placeholder"></div>
+<div class="header-actions">
+<button class="btn-lang" data-i18n="instagram_018" onclick="toggleLang()" style="background:transparent;border:1px solid var(--border-color,rgba(255,255,255,.2));color:var(--text-primary,#f0f4ff);font-size:0.75rem;font-weight:700;padding:0.3rem 0.6rem;border-radius:6px;cursor:pointer;transition:all 0.2s;white-space:nowrap;font-family:inherit;" title="Switch to English">🌐 EN</button>
+<button aria-label="Alternar tema" class="theme-toggle" onclick="toggleTheme()">☀️</button>
+<button aria-expanded="false" aria-label="Menu" class="hamburger"><span></span> <span></span> <span></span></button>
+</div>
+<nav aria-hidden="true" class="mobile-nav">
+<a data-i18n="instagram_019" href="index.html">🏠 Início</a>
+<a data-i18n="instagram_020" href="nfl.html">🏈 NFL</a>
+<a data-i18n="instagram_021" href="portugal.html">🇵🇹 Portugal</a>
+<a data-i18n="instagram_022" href="equipas.html">🏟 Equipas</a>
+<a data-i18n="instagram_023" href="jogadores.html">👤 Jogadores</a>
+<a data-i18n="instagram_024" href="treinadores.html">🧑‍🏫 Treinadores</a>
+<a data-i18n="instagram_025" href="classificacoes.html">📊 Classificações</a>
+<a data-i18n="instagram_026" href="estatisticas.html">📈 Estatísticas</a>
+<a data-i18n="instagram_027" href="calendario.html">📅 Calendário</a>
+<a data-i18n="instagram_028" href="noticias.html">📰 Notícias</a>
+<a data-i18n="instagram_029" href="quiz.html">🧠 Quiz</a>
+<a data-i18n="instagram_030" href="contactos.html">📞 Contactos</a>
+</nav>
+<section class="page-hero">
+<div class="container">
+<span class="section-badge" data-i18n="instagram_031">📸 Galeria &amp; Destaques</span>
+<h1 class="section-title" data-i18n="instagram_032" style="font-size:clamp(2.2rem,5vw,4rem);margin-top:16px">Destaques NFL</h1>
+<p class="section-sub" data-i18n="instagram_033" style="max-width:520px;margin:0 auto">Galeria de imagens, vídeos em destaque e as melhores jogadas da temporada 2025/26–25 da NFL.</p>
+</div>
+</section>
+<main class="container" style="padding-bottom:80px">
+<!-- Gallery filters -->
+<div class="gallery-filters reveal">
+<button class="gf-btn active" data-i18n="instagram_035">🏈 Todos</button>
+<button class="gf-btn" data-i18n="instagram_036">🏆 Super Bowl</button>
+<button class="gf-btn" data-i18n="instagram_037">⭐ Jogadas</button>
+<button class="gf-btn" data-i18n="instagram_038">🎉 Celebrações</button>
+<button class="gf-btn" data-i18n="instagram_039">🏟️ Estádios</button>
+<button class="gf-btn" data-i18n="instagram_040">🇵🇹 Portugal</button>
+</div>
+<!-- Photo gallery -->
+<div class="gallery-grid reveal">
+<div class="gallery-item">
+<img alt="Super Bowl LIX" loading="lazy" src="https://images.unsplash.com/photo-1566577739112-5180d4bf9390?w=800&amp;q=80"/>
+<div class="gallery-overlay"><div><div class="gallery-tag" data-i18n="instagram_041">Super Bowl</div>
+<div class="gallery-caption" data-i18n="instagram_042">Eagles 40 – Chiefs 22 · Super Bowl LIX, Nova Orleães</div></div></div>
+</div>
+<div class="gallery-item">
+<img alt="NFL action" loading="lazy" src="https://images.unsplash.com/photo-1612872087720-bb876e2e67d1?w=600&amp;q=80"/>
+<div class="gallery-overlay"><div><div class="gallery-tag" data-i18n="instagram_043">Ação</div>
+<div class="gallery-caption" data-i18n="instagram_044">Futebol americano em alta intensidade</div></div></div>
+</div>
+<div class="gallery-item">
+<img alt="Stadium" loading="lazy" src="https://images.unsplash.com/photo-1508098682722-e99c43a406b2?w=600&amp;q=80"/>
+<div class="gallery-overlay"><div><div class="gallery-tag" data-i18n="instagram_045">Estádio</div>
+<div class="gallery-caption" data-i18n="instagram_046">Ambiente único nos estádios da NFL</div></div></div>
+</div>
+<div class="gallery-item">
+<img alt="Football" loading="lazy" src="https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=600&amp;q=80"/>
+<div class="gallery-overlay"><div><div class="gallery-tag" data-i18n="instagram_047">Clássico</div>
+<div class="gallery-caption" data-i18n="instagram_048">O futebol americano — paixão global</div></div></div>
+</div>
+<div class="gallery-item">
+<img alt="Trophy" loading="lazy" src="https://images.unsplash.com/photo-1551958219-acbc27250984?w=800&amp;q=80"/>
+<div class="gallery-overlay"><div><div class="gallery-tag" data-i18n="instagram_049">Troféu</div>
+<div class="gallery-caption" data-i18n="instagram_050">O Troféu Vince Lombardi — o mais cobiçado do desporto</div></div></div>
+</div>
+<div class="gallery-item">
+<img alt="Fans" loading="lazy" src="https://images.unsplash.com/photo-1587280501635-68a0e82cd5ff?w=600&amp;q=80"/>
+<div class="gallery-overlay"><div><div class="gallery-tag" data-i18n="instagram_051">Adeptos</div>
+<div class="gallery-caption" data-i18n="instagram_052">A paixão dos fãs que enche os estádios</div></div></div>
+</div>
+<div class="gallery-item">
+<img alt="Training" loading="lazy" src="https://images.unsplash.com/photo-1577223625816-7546f13df25d?w=600&amp;q=80"/>
+<div class="gallery-overlay"><div><div class="gallery-tag" data-i18n="instagram_053">Treino</div>
+<div class="gallery-caption" data-i18n="instagram_054">A preparação que está por detrás do espetáculo</div></div></div>
+</div>
+<div class="gallery-item">
+<img alt="NFL PT Portugal" loading="lazy" src="https://images.unsplash.com/photo-1489944440615-453fc2b6a9a9?w=600&amp;q=80"/>
+<div class="gallery-overlay"><div><div class="gallery-tag" data-i18n="instagram_055">🇵🇹 Portugal</div>
+<div class="gallery-caption" data-i18n="instagram_056">Futebol americano a crescer em Portugal</div></div></div>
+</div>
+<div class="gallery-item">
+<img alt="Championship" loading="lazy" src="https://images.unsplash.com/photo-1560272564-c83b66b1ad12?w=600&amp;q=80"/>
+<div class="gallery-overlay"><div><div class="gallery-tag" data-i18n="instagram_057">Playoff</div>
+<div class="gallery-caption" data-i18n="instagram_058">Momentos de playoffs inesquecíveis</div></div></div>
+</div>
+</div>
+<!-- Video highlights -->
+<div class="highlights-section reveal">
+<div class="highlights-title"><span data-i18n="instagram_059">🎬 Vídeos em </span><span data-i18n="instagram_060">Destaque</span></div>
+<div class="highlights-grid">
+<div class="highlight-card">
+<div class="hc-thumb">
+<img alt="Super Bowl LIX" loading="lazy" src="https://images.unsplash.com/photo-1566577739112-5180d4bf9390?w=500&amp;q=80"/>
+<div class="play-btn">▶</div>
+</div>
+<div class="hc-body">
+<div class="hc-meta" data-i18n="instagram_061">🏆 Super Bowl · Fev 2025</div>
+<div class="hc-title" data-i18n="instagram_062">Eagles dominam Chiefs no Super Bowl LIX — Melhores jogadas</div>
+<div class="hc-views" data-i18n="instagram_063">👁 4.2M visualizações</div>
+</div>
+</div>
+<div class="highlight-card">
+<div class="hc-thumb">
+<img alt="Saquon Barkley" loading="lazy" src="https://images.unsplash.com/photo-1612872087720-bb876e2e67d1?w=500&amp;q=80"/>
+<div class="play-btn">▶</div>
+</div>
+<div class="hc-body">
+<div class="hc-meta" data-i18n="instagram_064">🏃 Running Back · 2025/26</div>
+<div class="hc-title" data-i18n="instagram_065">Saquon Barkley — Todos os touchdowns da temporada 2025/26</div>
+<div class="hc-views" data-i18n="instagram_066">👁 2.8M visualizações</div>
+</div>
+</div>
+<div class="highlight-card">
+<div class="hc-thumb">
+<img alt="Lamar Jackson MVP" loading="lazy" src="https://images.unsplash.com/photo-1508098682722-e99c43a406b2?w=500&amp;q=80"/>
+<div class="play-btn">▶</div>
+</div>
+<div class="hc-body">
+<div class="hc-meta" data-i18n="instagram_067">🏅 MVP · Ravens 2025/26</div>
+<div class="hc-title" data-i18n="instagram_068">Lamar Jackson MVP Season — Os melhores momentos 2025/26</div>
+<div class="hc-views" data-i18n="instagram_069">👁 3.1M visualizações</div>
+</div>
+</div>
+<div class="highlight-card">
+<div class="hc-thumb">
+<img alt="Portugal NFL" loading="lazy" src="https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=500&amp;q=80"/>
+<div class="play-btn">▶</div>
+</div>
+<div class="hc-body">
+<div class="hc-meta" data-i18n="instagram_070">🇵🇹 Portugal · FPFA 2025/26</div>
+<div class="hc-title" data-i18n="instagram_071">Final da Liga Nacional FPFA 2025/26 — Resumo completo</div>
+<div class="hc-views" data-i18n="instagram_072">👁 18K visualizações</div>
+</div>
+</div>
+<div class="highlight-card">
+<div class="hc-thumb">
+<img alt="NFL Playoffs" loading="lazy" src="https://images.unsplash.com/photo-1551958219-acbc27250984?w=500&amp;q=80"/>
+<div class="play-btn">▶</div>
+</div>
+<div class="hc-body">
+<div class="hc-meta" data-i18n="instagram_073">🏆 Playoffs · Jan 2025</div>
+<div class="hc-title" data-i18n="instagram_074">Os melhores momentos dos Playoffs da NFL 2025</div>
+<div class="hc-views" data-i18n="instagram_075">👁 5.6M visualizações</div>
+</div>
+</div>
+<div class="highlight-card">
+<div class="hc-thumb">
+<img alt="NFL Draft" loading="lazy" src="https://images.unsplash.com/photo-1560272564-c83b66b1ad12?w=500&amp;q=80"/>
+<div class="play-btn">▶</div>
+</div>
+<div class="hc-body">
+<div class="hc-meta" data-i18n="instagram_076">🎓 Draft 2025 · Green Bay</div>
+<div class="hc-title" data-i18n="instagram_077">NFL Draft 2025 — Cam Ward vai para os Titans como 1ª pick</div>
+<div class="hc-views" data-i18n="instagram_078">👁 1.9M visualizações</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Social follow -->
+<div class="social-section reveal">
+<span class="section-badge" data-i18n="instagram_079" style="display:inline-block;margin-bottom:16px">📱 Redes Sociais</span>
+<h2 style="font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:0.06em;margin-bottom:8px"><span data-i18n="instagram_081_pre">Segue a NFL nas Redes </span> <span data-i18n="instagram_081" style="color:var(--red)">Sociais</span></h2>
+<p data-i18n="instagram_082" style="color:var(--text-muted);font-size:0.9rem;max-width:480px;margin:0 auto">Para os melhores highlights, notícias de última hora e conteúdo exclusivo da NFL, segue os canais oficiais:</p>
+<div class="social-grid">
+<a class="social-btn ig" href="#"><span class="social-icon">📸</span>@NFL no Instagram</a>
+<a class="social-btn yt" data-i18n="instagram_083" href="#"><span class="social-icon">▶️</span>NFL no YouTube</a>
+<a class="social-btn tw" href="#"><span class="social-icon">🐦</span>@NFL no Twitter/X</a>
+<a class="social-btn tt" href="#"><span class="social-icon">🎵</span>@NFL no TikTok</a>
+</div>
+<p data-i18n="instagram_084" style="margin-top:24px;font-size:0.78rem;color:var(--text-muted);font-family:'Barlow Condensed',sans-serif">* O NFL PT não é afiliado com a NFL. Os links levam para as redes sociais oficiais da NFL.</p>
+</div>
+</main>
+<div id="footer-placeholder"></div>
+<script src="js/i18n.js"></script>
+<script src="js/shared.js"></script>
+<script src="js/nav.js"></script>
+</body>
+</html>

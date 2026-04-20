@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+
+<html data-theme="dark" lang="pt">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Termos e Privacidade — NFL PT</title>
+<link href="css/style.css" rel="stylesheet"/>
+<style>
+    .page-hero { padding: 140px 0 60px; background: radial-gradient(ellipse at 50% 0%, rgba(1,51,105,0.15) 0%, transparent 60%), linear-gradient(180deg, var(--bg) 0%, var(--surface) 100%); text-align: center; }
+    .terms-layout { display: grid; grid-template-columns: 240px 1fr; gap: 48px; padding: 56px 0 80px; align-items: start; }
+    .terms-nav { position: sticky; top: 100px; background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 20px; }
+    .terms-nav-title { font-family: 'Barlow Condensed', sans-serif; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 12px; }
+    .terms-nav a { display: block; padding: 8px 12px; border-radius: 8px; font-family: 'Barlow Condensed', sans-serif; font-size: 0.88rem; font-weight: 600; color: var(--text-secondary); text-decoration: none; transition: all 0.2s; margin-bottom: 2px; }
+    .terms-nav a:hover { background: rgba(212,0,38,0.08); color: var(--red); }
+    .terms-section { margin-bottom: 56px; scroll-margin-top: 100px; }
+    .terms-section h2 { font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; letter-spacing: 0.06em; margin-bottom: 6px; }
+    .terms-section h2 span { color: var(--red); }
+    .terms-section .lead { font-size: 0.8rem; color: var(--text-muted); font-family: 'Barlow Condensed', sans-serif; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+    .terms-section p { color: var(--text-secondary); line-height: 1.8; font-size: 0.93rem; margin-bottom: 14px; }
+    .terms-section p:last-child { margin-bottom: 0; }
+    .terms-section h3 { font-family: 'Barlow Condensed', sans-serif; font-size: 1rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--text); margin: 24px 0 10px; }
+    .terms-list { list-style: none; padding: 0; }
+    .terms-list li { padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.04); color: var(--text-secondary); font-size: 0.92rem; line-height: 1.6; padding-left: 18px; position: relative; }
+    .terms-list li:last-child { border-bottom: none; }
+    .terms-list li::before { content: '—'; position: absolute; left: 0; color: var(--red); }
+    .notice-box { background: rgba(212,0,38,0.06); border: 1px solid rgba(212,0,38,0.2); border-radius: 12px; padding: 18px 22px; margin: 20px 0; }
+    .notice-box p { margin: 0; font-size: 0.88rem; color: var(--text-secondary); }
+    .notice-box.info { background: rgba(1,51,105,0.1); border-color: rgba(1,51,105,0.3); }
+    .divider { height: 1px; background: var(--border); margin: 0 0 56px; }
+    @media (max-width: 800px) { .terms-layout { grid-template-columns: 1fr; } .terms-nav { position: static; } }
+  </style>
+</head>
+<body>
+<div id="nav-placeholder"></div>
+<div class="header-actions">
+<button class="btn-lang" data-i18n="termos_018" onclick="toggleLang()" style="background:transparent;border:1px solid var(--border-color,rgba(255,255,255,.2));color:var(--text-primary,#f0f4ff);font-size:0.75rem;font-weight:700;padding:0.3rem 0.6rem;border-radius:6px;cursor:pointer;transition:all 0.2s;white-space:nowrap;font-family:inherit;" title="Switch to English">🌐 EN</button>
+<button aria-label="Alternar tema" class="theme-toggle" onclick="toggleTheme()">☀️</button>
+<button aria-expanded="false" aria-label="Menu" class="hamburger"><span></span> <span></span> <span></span></button>
+</div>
+<nav aria-hidden="true" class="mobile-nav">
+<a data-i18n="termos_019" href="index.html">🏠 Início</a>
+<a data-i18n="termos_020" href="nfl.html">🏈 NFL</a>
+<a data-i18n="termos_021" href="portugal.html">🇵🇹 Portugal</a>
+<a data-i18n="termos_022" href="equipas.html">🏟 Equipas</a>
+<a data-i18n="termos_023" href="jogadores.html">👤 Jogadores</a>
+<a data-i18n="termos_024" href="treinadores.html">🧑‍🏫 Treinadores</a>
+<a data-i18n="termos_025" href="classificacoes.html">📊 Classificações</a>
+<a data-i18n="termos_026" href="estatisticas.html">📈 Estatísticas</a>
+<a data-i18n="termos_027" href="calendario.html">📅 Calendário</a>
+<a data-i18n="termos_028" href="noticias.html">📰 Notícias</a>
+<a data-i18n="termos_029" href="quiz.html">🧠 Quiz</a>
+<a data-i18n="termos_030" href="contactos.html">📞 Contactos</a>
+</nav>
+<section class="page-hero">
+<div class="container">
+<span class="section-badge" data-i18n="termos_031">📄 Legal</span>
+<h1 class="section-title" data-i18n="termos_032" style="font-size:clamp(2rem,5vw,3.5rem);margin-top:16px">Termos e Privacidade</h1>
+<p class="section-sub" data-i18n="termos_033" style="max-width:500px;margin:0 auto">Informações sobre os termos de utilização, privacidade e propriedade intelectual do NFL PT.</p>
+</div>
+</section>
+<main class="container">
+<div class="terms-layout">
+<!-- Sidebar nav -->
+<aside>
+<div class="terms-nav">
+<div class="terms-nav-title" data-i18n="termos_035">Conteúdo</div>
+<a data-i18n="termos_036" href="#disclaimer">Aviso Legal</a> 
+<a data-i18n="termos_037" href="#copyright">Direitos de Autor</a> 
+<a data-i18n="termos_038" href="#privacidade">Privacidade</a> 
+<a data-i18n="termos_039" href="#cookies">Cookies</a> 
+<a data-i18n="termos_040" href="#conteudo">Conteúdo</a> 
+<a data-i18n="termos_041" href="#responsabilidade">Responsabilidade</a> 
+<a data-i18n="termos_042" href="#contacto">Contacto</a>
+</div>
+</aside>
+<!-- Content -->
+<div>
+<div class="terms-section reveal" id="disclaimer">
+<h2><span data-i18n="termos_044_pre">Aviso </span> <span data-i18n="termos_044">Legal</span></h2>
+<div class="lead" data-i18n="termos_045">Última atualização: Fevereiro 2026</div>
+<div class="notice-box">
+<p><span data-i18n="termos_046a">⚠️ O NFL PT é um </span><strong data-i18n="termos_047">projeto académico independente</strong><span data-i18n="termos_046b">, desenvolvido como Prova de Aptidão Profissional (PAP). Este website </span><strong data-i18n="termos_048">não é afiliado, patrocinado ou endossado</strong><span data-i18n="termos_046c"> pela National Football League (NFL), pela Federação Portuguesa de Futebol Americano (FPFA) ou por qualquer das suas equipas ou jogadores.</span></p>
+</div>
+<p data-i18n="termos_049">O NFL PT foi criado exclusivamente para fins educativos e de aprendizagem de desenvolvimento web, como parte do percurso académico do autor. Toda a informação apresentada é de caráter informativo e destina-se ao público português interessado no futebol americano.</p>
+<p data-i18n="termos_050">Os nomes, logótipos, cores e marcas das equipas da NFL são propriedade das respetivas franquias e da NFL. As imagens de jogadores e equipas são obtidas através de fontes públicas (ESPN CDN) e são usadas apenas para fins educativos e ilustrativos, sem fins lucrativos.</p>
+</div>
+<div class="divider"></div>
+<div class="terms-section reveal" id="copyright">
+<h2><span data-i18n="termos_052_pre">Direitos de </span> <span data-i18n="termos_052">Autor</span></h2>
+<div class="lead" data-i18n="termos_053">Propriedade intelectual e uso de conteúdo</div>
+<h3 data-i18n="termos_054">Conteúdo Original</h3>
+<p data-i18n="termos_055">O código-fonte, o design, os textos originais em português e a estrutura do website NFL PT são da autoria do criador do projeto e estão protegidos por direitos de autor.</p>
+<h3 data-i18n="termos_056">Conteúdo de Terceiros</h3>
+<ul class="terms-list">
+<li data-i18n="termos_057">Os logótipos das equipas NFL pertencem à NFL e às respetivas franquias</li>
+<li data-i18n="termos_058">As fotografias de jogadores e treinadores são obtidas através da API pública da ESPN</li>
+<li data-i18n="termos_059">As imagens de fundo e ilustrativas são obtidas através do Unsplash (licença livre)</li>
+<li data-i18n="termos_060">As fontes tipográficas (Bebas Neue, Barlow) são distribuídas pelo Google Fonts sob licença Open Font License</li>
+<li data-i18n="termos_061">Estatísticas e dados desportivos são de domínio público, com fonte referenciada onde aplicável</li>
+</ul>
+<div class="notice-box info">
+<p><span data-i18n="termos_062">ℹ️ Se for detentor de direitos sobre algum conteúdo apresentado e considerar que o seu uso não é adequado, por favor contacte-nos através da página de </span><a data-i18n="termos_063" href="contactos.html" style="color:var(--red)">Contactos</a><span data-i18n="termos_062b">.</span></p>
+</div>
+</div>
+<div class="divider"></div>
+<div class="terms-section reveal" id="privacidade">
+<h2><span data-i18n="termos_065_pre">Política de </span> <span data-i18n="termos_065">Privacidade</span></h2>
+<div class="lead" data-i18n="termos_066">Como tratamos os seus dados</div>
+<h3 data-i18n="termos_067">Dados Recolhidos</h3>
+<p><span data-i18n="termos_068a">O NFL PT é um website estático e educativo. </span><strong data-i18n="termos_069">Não recolhemos dados pessoais</strong><span data-i18n="termos_068b"> dos utilizadores de forma automática. Os únicos dados que podem ser guardados localmente no seu dispositivo são as preferências do utilizador (tema claro/escuro), através do mecanismo </span><code>localStorage</code><span data-i18n="termos_068c"> do browser.</span></p>
+<h3 data-i18n="termos_070">Formulário de Contacto</h3>
+<p data-i18n="termos_071">Se enviar uma mensagem através do formulário de contacto, os dados fornecidos (nome, email, mensagem) são utilizados exclusivamente para responder à sua questão e não são partilhados com terceiros, nem armazenados em bases de dados externas neste projeto académico.</p>
+<h3 data-i18n="termos_072">Os seus Direitos</h3>
+<ul class="terms-list">
+<li data-i18n="termos_073">Direito de acesso aos dados pessoais que nos forneceu</li>
+<li data-i18n="termos_074">Direito de retificação de dados incorretos</li>
+<li data-i18n="termos_075">Direito ao apagamento dos seus dados ("direito a ser esquecido")</li>
+<li data-i18n="termos_076">Direito de oposição ao tratamento dos seus dados</li>
+</ul>
+<p data-i18n="termos_077">Em conformidade com o Regulamento Geral de Proteção de Dados (RGPD) da União Europeia, pode exercer estes direitos entrando em contacto connosco.</p>
+</div>
+<div class="divider"></div>
+<div class="terms-section reveal" id="cookies">
+<h2><span data-i18n="termos_079">Cookies</span><span data-i18n="termos_078"> e Armazenamento</span></h2>
+<div class="lead" data-i18n="termos_080">Informação sobre o uso de cookies</div>
+<p data-i18n="termos_081">O NFL PT não utiliza cookies de rastreamento, cookies de terceiros ou cookies de publicidade.</p>
+<h3 data-i18n="termos_082">localStorage (Preferências)</h3>
+<p><span data-i18n="termos_083a">Utilizamos o </span><code>localStorage</code><span data-i18n="termos_083b"> do seu browser para guardar a sua preferência de tema (modo escuro ou claro). Esta informação permanece apenas no seu dispositivo e nunca é transmitida para qualquer servidor.</span></p>
+<ul class="terms-list">
+<li data-i18n="termos_084"><code>nflpt-theme</code> — Guarda a preferência de tema (dark/light)</li>
+</ul>
+<p data-i18n="termos_085">Pode eliminar estes dados em qualquer momento através das definições do seu browser, nas opções de dados de navegação ou armazenamento local.</p>
+</div>
+<div class="divider"></div>
+<div class="terms-section reveal" id="conteudo">
+<h2><span data-i18n="termos_087_pre">Precisão do </span> <span data-i18n="termos_087">Conteúdo</span></h2>
+<div class="lead" data-i18n="termos_088">Sobre a exatidão das informações</div>
+<p data-i18n="termos_089">Fazemos todos os esforços para apresentar informação precisa e atualizada sobre a NFL, equipas, jogadores, estatísticas e o futebol americano em Portugal. No entanto, dado o caráter dinâmico do desporto, alguns dados podem não refletir a situação mais recente.</p>
+<p data-i18n="termos_090">As estatísticas referem-se maioritariamente à temporada regular de 2025/26 da NFL. Dados históricos podem conter pequenas imprecisões. Para informação oficial e sempre atualizada, recomendamos consultar os sites oficiais da NFL, ESPN ou da FPFA.</p>
+<div class="notice-box">
+<p data-i18n="termos_091">📊 As estatísticas apresentadas têm como fonte principal a NFL.com e a ESPN, e referem-se à temporada 2025/26. Alguns valores podem diferir ligeiramente dependendo da fonte consultada.</p>
+</div>
+</div>
+<div class="divider"></div>
+<div class="terms-section reveal" id="responsabilidade">
+<h2><span data-i18n="termos_093_pre">Limitação de </span> <span data-i18n="termos_093">Responsabilidade</span></h2>
+<div class="lead" data-i18n="termos_094">Âmbito e limitações do projeto</div>
+<p data-i18n="termos_095">O NFL PT é fornecido "tal como está" para fins educativos. O autor não se responsabiliza por:</p>
+<ul class="terms-list">
+<li data-i18n="termos_096">Imprecisões ou erros nas informações apresentadas</li>
+<li data-i18n="termos_097">Decisões tomadas com base no conteúdo deste website</li>
+<li data-i18n="termos_098">Disponibilidade contínua do website ou de recursos externos referenciados</li>
+<li data-i18n="termos_099">Conteúdo de websites externos para os quais este site possa remeter</li>
+<li data-i18n="termos_100">Alterações nas regras, equipas, jogadores ou outros elementos da NFL após a data de publicação</li>
+</ul>
+<p data-i18n="termos_101">Este website é um projeto académico sem fins comerciais. Qualquer decisão relacionada com apostas desportivas, compra de bilhetes ou outros assuntos financeiros é da exclusiva responsabilidade do utilizador.</p>
+</div>
+<div class="divider"></div>
+<div class="terms-section reveal" id="contacto">
+<h2><span data-i18n="termos_103_pre">Contacto e </span> <span data-i18n="termos_103">Questões Legais</span></h2>
+<div class="lead" data-i18n="termos_104">Como nos contactar</div>
+<p data-i18n="termos_105">Para questões relacionadas com privacidade, direitos de autor ou qualquer outro assunto legal referente ao NFL PT, pode contactar-nos através:</p>
+<ul class="terms-list">
+<li><span data-i18n="termos_106">Formulário de contacto na página </span><a data-i18n="termos_107" href="contactos.html" style="color:var(--red)">Contactos</a></li>
+<li data-i18n="termos_108">Instagram: @nflportugalzone</li>
+</ul>
+<p data-i18n="termos_109">Comprometemo-nos a responder a todas as questões legítimas no prazo de 5 dias úteis.</p>
+<div class="notice-box info">
+<p data-i18n="termos_110">ℹ️ Este documento de Termos e Privacidade foi elaborado para o contexto académico do projeto PAP e pode ser atualizado sem aviso prévio.</p>
+</div>
+</div>
+</div>
+</div>
+</main>
+<div id="footer-placeholder"></div>
+<script src="js/i18n.js"></script>
+<script src="js/shared.js"></script>
+<script src="js/nav.js"></script>
+</body>
+</html>

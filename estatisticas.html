@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+
+<html data-theme="dark" lang="pt">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Estatísticas NFL 2025/26 — NFL PT</title>
+<link href="css/style.css" rel="stylesheet"/>
+<style>
+    .page-hero { padding: 140px 0 60px; background: radial-gradient(ellipse at 50% 0%, rgba(1,51,105,0.2) 0%, transparent 60%), linear-gradient(180deg, var(--bg) 0%, var(--surface) 100%); text-align: center; }
+    .stats-tabs { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin: 40px 0 32px; }
+    .stats-tab { padding: 10px 24px; border-radius: 100px; border: 1px solid var(--border); background: transparent; color: var(--text-secondary); font-family: 'Barlow Condensed', sans-serif; font-size: 0.85rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; }
+    .stats-tab.active, .stats-tab:hover { background: var(--red); border-color: var(--red); color: #fff; }
+    .stats-panel { display: none; }
+    .stats-panel.active { display: block; }
+    .stats-section-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; letter-spacing: 0.06em; margin: 40px 0 20px; color: var(--text); }
+    .stats-section-title span { color: var(--red); }
+    .stats-table-wrap { overflow-x: auto; border-radius: 16px; border: 1px solid var(--border); margin-bottom: 40px; }
+    .stats-table { width: 100%; border-collapse: collapse; }
+    .stats-table thead { background: var(--surface-2, var(--surface)); }
+    .stats-table th { padding: 14px 16px; text-align: left; font-family: 'Barlow Condensed', sans-serif; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); white-space: nowrap; }
+    .stats-table td { padding: 14px 16px; font-size: 0.9rem; border-top: 1px solid var(--border); white-space: nowrap; }
+    .stats-table tr:hover td { background: rgba(212,0,38,0.04); }
+    .rank-num { font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; color: var(--text-muted); min-width: 28px; }
+    .rank-num.top { color: var(--gold); }
+    .player-info { display: flex; align-items: center; gap: 12px; }
+    .player-mini-img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; background: var(--surface); }
+    .player-name { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 0.95rem; }
+    .player-team-badge { font-size: 0.72rem; color: var(--text-muted); }
+    .stat-value { font-family: 'Bebas Neue', sans-serif; font-size: 1.15rem; letter-spacing: 0.04em; }
+    .stat-bar-cell { width: 140px; }
+    .stat-bar { height: 6px; border-radius: 3px; background: var(--border); overflow: hidden; }
+    .stat-bar-fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--red), #ff4444); }
+    .stat-bar-fill.blue { background: linear-gradient(90deg, var(--blue), #1a6adc); }
+    .stat-bar-fill.gold { background: linear-gradient(90deg, var(--gold), #ffd060); }
+    .highlight-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 40px; }
+    .highlight-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 24px 20px; text-align: center; transition: all 0.3s; }
+    .highlight-card:hover { border-color: var(--red); transform: translateY(-3px); }
+    .hc-icon { font-size: 2rem; margin-bottom: 8px; }
+    .hc-stat { font-family: 'Bebas Neue', sans-serif; font-size: 2.4rem; letter-spacing: 0.04em; color: var(--red); line-height: 1; }
+    .hc-label { font-family: 'Barlow Condensed', sans-serif; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); margin-top: 4px; }
+    .hc-player { font-size: 0.82rem; color: var(--text-secondary); margin-top: 6px; }
+  </style>
+</head>
+<body>
+<div id="nav-placeholder"></div>
+<div class="header-actions">
+<button class="btn-lang" data-i18n="estatisticas_018" onclick="toggleLang()" style="background:transparent;border:1px solid var(--border-color,rgba(255,255,255,.2));color:var(--text-primary,#f0f4ff);font-size:0.75rem;font-weight:700;padding:0.3rem 0.6rem;border-radius:6px;cursor:pointer;transition:all 0.2s;white-space:nowrap;font-family:inherit;" title="Switch to English">🌐 EN</button>
+<button aria-label="Alternar tema" class="theme-toggle" onclick="toggleTheme()">☀️</button>
+<button aria-expanded="false" aria-label="Menu" class="hamburger"><span></span> <span></span> <span></span></button>
+</div>
+<nav aria-hidden="true" class="mobile-nav">
+<a data-i18n="estatisticas_019" href="index.html">🏠 Início</a>
+<a data-i18n="estatisticas_020" href="nfl.html">🏈 NFL</a>
+<a data-i18n="estatisticas_021" href="portugal.html">🇵🇹 Portugal</a>
+<a data-i18n="estatisticas_022" href="equipas.html">🏟 Equipas</a>
+<a data-i18n="estatisticas_023" href="jogadores.html">👤 Jogadores</a>
+<a data-i18n="estatisticas_024" href="treinadores.html">🧑‍🏫 Treinadores</a>
+<a data-i18n="estatisticas_025" href="classificacoes.html">📊 Classificações</a>
+<a data-i18n="estatisticas_026" href="estatisticas.html">📈 Estatísticas</a>
+<a data-i18n="estatisticas_027" href="calendario.html">📅 Calendário</a>
+<a data-i18n="estatisticas_028" href="noticias.html">📰 Notícias</a>
+<a data-i18n="estatisticas_029" href="quiz.html">🧠 Quiz</a>
+<a data-i18n="estatisticas_030" href="contactos.html">📞 Contactos</a>
+</nav>
+<section class="page-hero">
+<div class="container">
+<span class="section-badge" data-i18n="estatisticas_031">📈 Temporada 2025/26</span>
+<h1 class="section-title" data-i18n="estatisticas_032" style="font-size:clamp(2.2rem,5vw,4rem);margin-top:16px">Estatísticas NFL</h1>
+<p class="section-sub" data-i18n="estatisticas_033" style="max-width:540px;margin:0 auto">Os números mais impressionantes da temporada regular 2025/26 — passadores, corredores, recebedores e defesas.</p>
+</div>
+</section>
+<main class="container" style="padding-bottom:80px">
+<!-- Season highlights -->
+<div class="highlight-cards reveal">
+<div class="highlight-card">
+<div class="hc-icon">🎯</div>
+<div class="hc-stat">4.113</div>
+<div class="hc-label" data-i18n="estatisticas_035">Jardas Corridas (Temporada)</div>
+<div class="hc-player" data-i18n="estatisticas_036">Saquon Barkley — Eagles</div>
+</div>
+<div class="highlight-card">
+<div class="hc-icon">💫</div>
+<div class="hc-stat">41</div>
+<div class="hc-label" data-i18n="estatisticas_037">Touchdowns Passados</div>
+<div class="hc-player" data-i18n="estatisticas_038">Lamar Jackson — Ravens</div>
+</div>
+<div class="highlight-card">
+<div class="hc-icon">🏹</div>
+<div class="hc-stat">1.921</div>
+<div class="hc-label" data-i18n="estatisticas_039">Jardas Rececionadas</div>
+<div class="hc-player" data-i18n="estatisticas_040">Ja'Marr Chase — Bengals</div>
+</div>
+<div class="highlight-card">
+<div class="hc-icon">🛡️</div>
+<div class="hc-stat">11</div>
+<div class="hc-label" data-i18n="estatisticas_041">Sacks na Época</div>
+<div class="hc-player" data-i18n="estatisticas_042">Micah Parsons — Cowboys</div>
+</div>
+<div class="highlight-card">
+<div class="hc-icon">🏆</div>
+<div class="hc-stat">40–22</div>
+<div class="hc-label" data-i18n="estatisticas_043">Super Bowl LIX</div>
+<div class="hc-player" data-i18n="estatisticas_044">Eagles vs Chiefs</div>
+</div>
+</div>
+<!-- Tabs -->
+<div class="stats-tabs">
+<button class="stats-tab active" data-i18n="estatisticas_045" onclick="showStatsTab('passing',this)">🎯 Passadores</button>
+<button class="stats-tab" data-i18n="estatisticas_046" onclick="showStatsTab('rushing',this)">🏃 Corredores</button>
+<button class="stats-tab" data-i18n="estatisticas_047" onclick="showStatsTab('receiving',this)">🙌 Recebedores</button>
+<button class="stats-tab" data-i18n="estatisticas_048" onclick="showStatsTab('defense',this)">🛡️ Defesa</button>
+<button class="stats-tab" data-i18n="estatisticas_049" onclick="showStatsTab('teams',this)">🏟️ Equipas</button>
+</div>
+<!-- Passing -->
+<div class="stats-panel active" id="tab-passing">
+<div class="stats-section-title"><span data-i18n="estat_t1">🎯 Líderes em </span><span data-i18n="estatisticas_051">Jardas Passadas</span> — 2025/26</div>
+<div class="stats-table-wrap">
+<table class="stats-table">
+<thead><tr>
+<th>#</th>
+<th data-i18n="estatisticas_052">Jogador</th>
+<th data-i18n="estatisticas_053">Equipa</th>
+<th data-i18n="estatisticas_054">Jogos</th>
+<th data-i18n="estatisticas_055">Tentativas</th>
+<th data-i18n="estatisticas_056">Completas</th>
+<th>%</th>
+<th data-i18n="estatisticas_057">Jardas</th>
+<th data-i18n="estatisticas_058">TDs</th>
+<th data-i18n="estatisticas_059">INTs</th>
+<th data-i18n="estatisticas_060">Rating</th>
+</tr></thead>
+<tbody id="passing-tbody">
+<tr>
+<td><span class="rank-num top">1</span></td>
+<td><div class="player-info"><img alt="" class="player-mini-img" onerror="this.style.opacity='0.3'" src="https://a.espncdn.com/combiner/i?img=/i/headshots/nfl/players/full/3916387.png&w=80&h=58"/><div><div class="player-name" data-i18n="estatisticas_061">Lamar Jackson</div>
+<div class="player-team-badge" data-i18n="estatisticas_062">Baltimore Ravens</div></div></div></td>
+<td data-i18n="estatisticas_063">BAL</td>
+<td>16</td>
+<td>474</td>
+<td>330</td>
+<td><span class="stat-value">69.6%</span></td>
+<td><span class="stat-value" style="color:var(--red)">4.172</span></td>
+<td><span class="stat-value" style="color:var(--gold)">41</span></td>
+<td>4</td>
+<td><b>119.6</b></td>
+</tr>
+<tr>
+<td><span class="rank-num">2</span></td>
+<td><div class="player-info"><img alt="" class="player-mini-img" onerror="this.style.opacity='0.3'" src="https://a.espncdn.com/combiner/i?img=/i/headshots/nfl/players/full/3918298.png&w=80&h=58"/><div><div class="player-name" data-i18n="estatisticas_064">Josh Allen</div>
+<div class="player-team-badge" data-i18n="estatisticas_065">Buffalo Bills</div></div></div></td>
+<td data-i18n="estatisticas_066">BUF</td>
+<td>17</td>
+<td>590</td>
+<td>383</td>
+<td><span class="stat-value">64.9%</span></td>
+<td><span class="stat-value">4.306</span></td>
+<td><span class="stat-value" style="color:var(--gold)">40</span></td>
+<td>10</td>
+<td>101.4</td>
+</tr>
+<tr>
+<td><span class="rank-num">3</span></td>
+<td><div class="player-info"><img alt="" class="player-mini-img" onerror="this.style.opacity='0.3'" src="https://a.espncdn.com/combiner/i?img=/i/headshots/nfl/players/full/4047365.png&w=80&h=58"/><div><div class="player-name" data-i18n="estatisticas_067">Jalen Hurts</div>
+<div class="player-team-badge" data-i18n="estatisticas_068">Philadelphia Eagles</div></div></div></td>
+<td data-i18n="estatisticas_069">PHI</td>
+<td>16</td>
+<td>490</td>
+<td>319</td>
+<td><span class="stat-value">65.1%</span></td>
+<td><span class="stat-value">3.903</span></td>
+<td><span class="stat-value">35</span></td>
+<td>6</td>
+<td>104.2</td>
+</tr>
+<tr>
+<td><span class="rank-num">4</span></td>
+<td><div class="player-info"><img alt="" class="player-mini-img" onerror="this.style.opacity='0.3'" src="https://a.espncdn.com/combiner/i?img=/i/headshots/nfl/players/full/4430807.png&w=80&h=58"/><div><div class="player-name" data-i18n="estatisticas_070">C.J. Stroud</div>
+<div class="player-team-badge" data-i18n="estatisticas_071">Houston Texans</div></div></div></td>
+<td data-i18n="estatisticas_072">HOU</td>
+<td>17</td>
+<td>528</td>
+<td>353</td>
+<td><span class="stat-value">66.9%</span></td>
+<td><span class="stat-value">3.828</span></td>
+<td><span class="stat-value">23</span></td>
+<td>7</td>
+<td>98.1</td>
+</tr>
+<tr>
+<td><span class="rank-num">5</span></td>
+<td><div class="player-info"><img alt="" class="player-mini-img" onerror="this.style.opacity='0.3'" src="https://a.espncdn.com/combiner/i?img=/i/headshots/nfl/players/full/3139477.png&w=80&h=58"/><div><div class="player-name" data-i18n="estatisticas_073">Patrick Mahomes</div>
+<div class="player-team-badge" data-i18n="estatisticas_074">Kansas City Chiefs</div></div></div></td>
+<td>KC</td>
+<td>17</td>
+<td>597</td>
+<td>392</td>
+<td><span class="stat-value">65.7%</span></td>
+<td><span class="stat-value">3.928</span></td>
+<td><span class="stat-value">26</span></td>
+<td>11</td>
+<td>95.6</td>
+</tr>
+<tr>
+<td><span class="rank-num">6</span></td>
+<td><div class="player-info"><img alt="" class="player-mini-img" onerror="this.style.opacity='0.3'" src="https://a.espncdn.com/combiner/i?img=/i/headshots/nfl/players/full/3915511.png&w=80&h=58"/><div><div class="player-name" data-i18n="estatisticas_075">Joe Burrow</div>
+<div class="player-team-badge" data-i18n="estatisticas_076">Cincinnati Bengals</div></div></div></td>
+<td data-i18n="estatisticas_077">CIN</td>
+<td>16</td>
+<td>519</td>
+<td>355</td>
+<td><span class="stat-value">68.4%</span></td>
+<td><span class="stat-value">4.918</span></td>
+<td><span class="stat-value">43</span></td>
+<td>9</td>
+<td>110.1</td>
+</tr>
+<tr>
+<td><span class="rank-num">7</span></td>
+<td><div class="player-info"><img alt="" class="player-mini-img" onerror="this.style.opacity='0.3'" src="https://a.espncdn.com/combiner/i?img=/i/headshots/nfl/players/full/3918394.png&w=80&h=58"/><div><div class="player-name" data-i18n="estatisticas_078">Brock Purdy</div>
+<div class="player-team-badge" data-i18n="estatisticas_079">San Francisco 49ers</div></div></div></td>
+<td>SF</td>
+<td>17</td>
+<td>524</td>
+<td>356</td>
+<td><span class="stat-value">67.9%</span></td>
+<td><span class="stat-value">3.864</span></td>
+<td><span class="stat-value">20</span></td>
+<td>12</td>
+<td>94.8</td>
+</tr>
+<tr>
+<td><span class="rank-num">8</span></td>
+<td><div class="player-info"><img alt="" class="player-mini-img" onerror="this.style.opacity='0.3'" src="https://a.espncdn.com/combiner/i?img=/i/headshots/nfl/players/full/2577417.png&w=80&h=58"/><div><div class="player-name" data-i18n="estatisticas_080">Dak Prescott</div>
+<div class="player-team-badge" data-i18n="estatisticas_081">Dallas Cowboys</div></div></div></td>
+<td data-i18n="estatisticas_082">DAL</td>
+<td>12</td>
+<td>403</td>
+<td>262</td>
+<td><span class="stat-value">65.0%</span></td>
+<td><span class="stat-value">2.888</span></td>
+<td><span class="stat-value">20</span></td>
+<td>9</td>
+<td>91.4</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Rushing -->
+<div class="stats-panel" id="tab-rushing">
+<div class="stats-section-title"><span data-i18n="estat_t2">🏃 Líderes em </span><span data-i18n="estatisticas_084">Jardas Corridas</span> — 2025/26</div>
+<div class="stats-table-wrap">
+<table class="stats-table">
+<thead><tr>
+<th>#</th>
+<th data-i18n="estatisticas_085">Jogador</th>
+<th data-i18n="estatisticas_086">Equipa</th>
+<th data-i18n="estatisticas_087">Jogos</th>
+<th data-i18n="estatisticas_088">Carries</th>
+<th data-i18n="estatisticas_089">Jardas</th>
+<th data-i18n="estatisticas_090">Méd/Carry</th>
+<th data-i18n="estatisticas_091">Long</th>
+<th data-i18n="estatisticas_092">TDs</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><span class="rank-num top">1</span></td>
+<td><div class="player-info"><img alt="" class="player-mini-img" onerror="this.style.opacity='0.3'" src="https://a.espncdn.com/combiner/i?img=/i/headshots/nfl/players/full/4360310.png&w=80&h=58"/><div><div class="player-name" data-i18n="estatisticas_093">Saquon Barkley</div>
+<div class="player-team-badge" data-i18n="estatisticas_094">Philadelphia Eagles</div></div></div></td>
+<td data-i18n="estatisticas_095">PHI</td>
+<td>17</td>
+<td>345</td>
+<td><span class="stat-value" style="color:var(--red)">2.005</span></td>
+<td><b>5.8</b></td>
+<td>72</td>
+<td><span class="stat-value" style="color:var(--gold)">13</span></td>
+</tr>
+<tr>
+<td><span class="rank-num">2</span></td>
+<td><div class="player-info"><img alt="" class="player-mini-img" onerror="this.style.opacity='0.3'" src="https://a.espncdn.com/combiner/i?img=/i/headshots/nfl/players/full/2576980.png&w=80&h=58"/><div><div class="player-name" data-i18n="estatisticas_096">Derrick Henry</div>
+<div class="player-team-badge" data-i18n="estatisticas_097">Baltimore Ravens</div></div></div></td>
+<td data-i18n="estatisticas_098">BAL</td>
+<td>16</td>
+<td>292</td>
+<td><span class="stat-value">1.921</span></td>
+<td><b>6.6</b></td>
+<td>57</td>
+<td><span class="stat-value">16</span></td>
+</tr>
+<tr>
+<td><span class="rank-num">3</span></td>
+<td><div class="player-info"><img alt="" class="player-mini-img" onerror="this.style.opacity='0.3'" src="https://a.espncdn.com/combiner/i?img=/i/headshots/nfl/players/full/3054050.png&w=80&h=58"/><div><div class="player-name" data-i18n="estatisticas_099">Joe Mixon</div>
+<div class="player-team-badge" data-i18n="estatisticas_100">Houston Texans</div></div></div></td>
+<td data-i18n="estatisticas_101">HOU</td>
+<td>16</td>
+<td>244</td>
+<td><span class="stat-value">1.108</span></td>
+<td><b>4.5</b></td>
+<td>36</td>
+<td><span class="stat-value">12</span></td>
+</tr>
+<tr>
+<td><span class="rank-num">4</span></td>
+<td><div class="player-info"><img alt="" class="player-mini-img" onerror="this.style.opacity='0.3'" src="https://a.espncdn.com/combiner/i?img=/i/headshots/nfl/players/full/3916387.png&w=80&h=58"/><div><div class="player-name" data-i18n="estatisticas_102">Lamar Jackson</div>
+<div class="player-team-badge" data-i18n="estatisticas_103">Baltimore Ravens</div></div></div></td>
+<td data-i18n="estatisticas_104">BAL</td>
+<td>16</td>
+<td>139</td>
+<td><span class="stat-value">915</span></td>
+<td><b>6.6</b></td>
+<td>62</td>
+<td><span class="stat-value">4</span></td>
+</tr>
+<tr>
+<td><span class="rank-num">5</span></td>
+<td><div class="player-info"><img alt="" class="player-mini-img" onerror="this.style.opacity='0.3'" src="https://a.espncdn.com/combiner/i?img=/i/headshots/nfl/players/full/3918298.png&w=80&h=58"/><div><div class="player-name" data-i18n="estatisticas_105">Josh Allen</div>
+<div class="player-team-badge" data-i18n="estatisticas_106">Buffalo Bills</div></div></div></td>
+<td data-i18n="estatisticas_107">BUF</td>
+<td>17</td>
+<td>111</td>
+<td><span class="stat-value">531</span></td>
+<td><b>4.8</b></td>
+<td>47</td>
+<td><span class="stat-value">12</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Receiving -->
+<div class="stats-panel" id="tab-receiving">
+<div class="stats-section-title"><span data-i18n="estat_t3">🙌 Líderes em </span><span data-i18n="estatisticas_109">Receções</span> — 2025/26</div>
+<div class="stats-table-wrap">
+<table class="stats-table">
+<thead><tr>
+<th>#</th>
+<th data-i18n="estatisticas_110">Jogador</th>
+<th data-i18n="estatisticas_111">Equipa</th>
+<th data-i18n="estatisticas_112">Jogos</th>
+<th data-i18n="estatisticas_113">Targets</th>
+<th data-i18n="estatisticas_114">Rec</th>
+<th data-i18n="estatisticas_115">Jardas</th>
+<th data-i18n="estatisticas_116">Méd</th>
+<th data-i18n="estatisticas_117">Long</th>
+<th data-i18n="estatisticas_118">TDs</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><span class="rank-num top">1</span></td>
+<td><div class="player-info"><img alt="" class="player-mini-img" onerror="this.style.opacity='0.3'" src="https://a.espncdn.com/combiner/i?img=/i/headshots/nfl/players/full/4361307.png&w=80&h=58"/><div><div class="player-name" data-i18n="estatisticas_119">Ja'Marr Chase</div>
+<div class="player-team-badge" data-i18n="estatisticas_120">Cincinnati Bengals</div></div></div></td>
+<td data-i18n="estatisticas_121">CIN</td>
+<td>16</td>
+<td>181</td>
+<td>100</td>
+<td><span class="stat-value" style="color:var(--red)">1.708</span></td>
+<td><b>17.1</b></td>
+<td>70</td>
+<td><span class="stat-value" style="color:var(--gold)">17</span></td>
+</tr>
+<tr>
+<td><span class="rank-num">2</span></td>
+<td><div class="player-info"><img alt="" class="player-mini-img" onerror="this.style.opacity='0.3'" src="https://a.espncdn.com/combiner/i?img=/i/headshots/nfl/players/full/3054211.png&w=80&h=58"/><div><div class="player-name" data-i18n="estatisticas_122">Tyreek Hill</div>
+<div class="player-team-badge" data-i18n="estatisticas_123">Miami Dolphins</div></div></div></td>
+<td data-i18n="estatisticas_124">MIA</td>
+<td>17</td>
+<td>171</td>
+<td>119</td>
+<td><span class="stat-value">1.799</span></td>
+<td><b>15.1</b></td>
+<td>66</td>
+<td><span class="stat-value">13</span></td>
+</tr>
+<tr>
+<td><span class="rank-num">3</span></td>
+<td><div class="player-info"><img alt="" class="player-mini-img" onerror="this.style.opacity='0.3'" src="https://a.espncdn.com/combiner/i?img=/i/headshots/nfl/players/full/4241478.png&w=80&h=58"/><div><div class="player-name" data-i18n="estatisticas_125">A.J. Brown</div>
+<div class="player-team-badge" data-i18n="estatisticas_126">Philadelphia Eagles</div></div></div></td>
+<td data-i18n="estatisticas_127">PHI</td>
+<td>16</td>
+<td>118</td>
+<td>67</td>
+<td><span class="stat-value">1.020</span></td>
+<td><b>15.2</b></td>
+<td>61</td>
+<td><span class="stat-value">7</span></td>
+</tr>
+<tr>
+<td><span class="rank-num">4</span></td>
+<td><div class="player-info"><img alt="" class="player-mini-img" onerror="this.style.opacity='0.3'" src="https://a.espncdn.com/combiner/i?img=/i/headshots/nfl/players/full/3054055.png&w=80&h=58"/><div><div class="player-name" data-i18n="estatisticas_128">Davante Adams</div>
+<div class="player-team-badge" data-i18n="estatisticas_129">Las Vegas Raiders</div></div></div></td>
+<td>LV</td>
+<td>12</td>
+<td>101</td>
+<td>67</td>
+<td><span class="stat-value">843</span></td>
+<td><b>12.6</b></td>
+<td>42</td>
+<td><span class="stat-value">6</span></td>
+</tr>
+<tr>
+<td><span class="rank-num">5</span></td>
+<td><div class="player-info"><img alt="" class="player-mini-img" onerror="this.style.opacity='0.3'" src="https://a.espncdn.com/combiner/i?img=/i/headshots/nfl/players/full/4241479.png&w=80&h=58"/><div><div class="player-name" data-i18n="estatisticas_130">Justin Jefferson</div>
+<div class="player-team-badge" data-i18n="estatisticas_131">Minnesota Vikings</div></div></div></td>
+<td data-i18n="estatisticas_132">MIN</td>
+<td>17</td>
+<td>135</td>
+<td>103</td>
+<td><span class="stat-value">1.533</span></td>
+<td><b>14.9</b></td>
+<td>79</td>
+<td><span class="stat-value">10</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Defense -->
+<div class="stats-panel" id="tab-defense">
+<div class="stats-section-title"><span data-i18n="estat_t4">🛡️ Líderes em </span><span data-i18n="estatisticas_134">Defesa</span> — 2025/26</div>
+<div class="stats-table-wrap">
+<table class="stats-table">
+<thead><tr>
+<th>#</th>
+<th data-i18n="estatisticas_135">Jogador</th>
+<th data-i18n="estatisticas_136">Equipa</th>
+<th data-i18n="estatisticas_137">Tackles</th>
+<th data-i18n="estatisticas_138">TFL</th>
+<th data-i18n="estatisticas_139">Sacks</th>
+<th data-i18n="estatisticas_140">INTs</th>
+<th>PD</th>
+<th data-i18n="estatisticas_141">FFs</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><span class="rank-num top">1</span></td>
+<td><div class="player-info"><img alt="" class="player-mini-img" onerror="this.style.opacity='0.3'" src="https://a.espncdn.com/combiner/i?img=/i/headshots/nfl/players/full/4241985.png&w=80&h=58"/><div><div class="player-name" data-i18n="estatisticas_142">Micah Parsons</div>
+<div class="player-team-badge" data-i18n="estatisticas_143">Dallas Cowboys</div></div></div></td>
+<td data-i18n="estatisticas_144">DAL</td>
+<td>65</td>
+<td>14</td>
+<td><span class="stat-value" style="color:var(--red)">14.0</span></td>
+<td>0</td>
+<td>3</td>
+<td>2</td>
+</tr>
+<tr>
+<td><span class="rank-num">2</span></td>
+<td><div class="player-info"><img alt="" class="player-mini-img" onerror="this.style.opacity='0.3'" src="https://a.espncdn.com/combiner/i?img=/i/headshots/nfl/players/full/3054210.png&w=80&h=58"/><div><div class="player-name" data-i18n="estatisticas_145">Myles Garrett</div>
+<div class="player-team-badge" data-i18n="estatisticas_146">Cleveland Browns</div></div></div></td>
+<td data-i18n="estatisticas_147">CLE</td>
+<td>58</td>
+<td>16</td>
+<td><span class="stat-value" style="color:var(--red)">14.0</span></td>
+<td>0</td>
+<td>1</td>
+<td>3</td>
+</tr>
+<tr>
+<td><span class="rank-num">3</span></td>
+<td><div class="player-info"><img alt="" class="player-mini-img" onerror="this.style.opacity='0.3'" src="https://a.espncdn.com/combiner/i?img=/i/headshots/nfl/players/full/4241986.png&w=80&h=58"/><div><div class="player-name" data-i18n="estatisticas_148">Maxx Crosby</div>
+<div class="player-team-badge" data-i18n="estatisticas_149">Las Vegas Raiders</div></div></div></td>
+<td>LV</td>
+<td>70</td>
+<td>13</td>
+<td><span class="stat-value">10.5</span></td>
+<td>0</td>
+<td>2</td>
+<td>4</td>
+</tr>
+<tr>
+<td><span class="rank-num">4</span></td>
+<td><div class="player-info"><img alt="" class="player-mini-img" onerror="this.style.opacity='0.3'" src="https://a.espncdn.com/combiner/i?img=/i/headshots/nfl/players/full/4035671.png&w=80&h=58"/><div><div class="player-name" data-i18n="estatisticas_150">T.J. Watt</div>
+<div class="player-team-badge" data-i18n="estatisticas_151">Pittsburgh Steelers</div></div></div></td>
+<td data-i18n="estatisticas_152">PIT</td>
+<td>61</td>
+<td>12</td>
+<td><span class="stat-value">11.5</span></td>
+<td>0</td>
+<td>4</td>
+<td>2</td>
+</tr>
+<tr>
+<td><span class="rank-num">5</span></td>
+<td><div class="player-info"><img alt="" class="player-mini-img" onerror="this.style.opacity='0.3'" src="https://a.espncdn.com/combiner/i?img=/i/headshots/nfl/players/full/4035228.png&w=80&h=58"/><div><div class="player-name" data-i18n="estatisticas_153">Jaire Alexander</div>
+<div class="player-team-badge" data-i18n="estatisticas_154">Green Bay Packers</div></div></div></td>
+<td>GB</td>
+<td>52</td>
+<td>2</td>
+<td>1.0</td>
+<td><span class="stat-value" style="color:var(--gold)">6</span></td>
+<td>14</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Teams -->
+<div class="stats-panel" id="tab-teams">
+<div class="stats-section-title"><span data-i18n="estat_t5">🏟️ Estatísticas por </span><span data-i18n="estatisticas_156">Equipa</span> — 2025/26</div>
+<div class="stats-table-wrap">
+<table class="stats-table">
+<thead><tr>
+<th>#</th>
+<th data-i18n="estatisticas_157">Equipa</th>
+<th data-i18n="estatisticas_158">Conf</th>
+<th data-i18n="estatisticas_159">V-D</th>
+<th data-i18n="estatisticas_160">Pontos/J</th>
+<th data-i18n="estatisticas_161">Jardas/J</th>
+<th data-i18n="estatisticas_162">Jarads Pass/J</th>
+<th data-i18n="estatisticas_163">Jardas Cor/J</th>
+<th data-i18n="estatisticas_164">Pontos Sofridos/J</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><span class="rank-num top">1</span></td>
+<td><div class="player-info"><img alt="" class="player-mini-img" onerror="this.style.opacity='0.3'" src="https://a.espncdn.com/i/teamlogos/nfl/500/phi.png"/><div><div class="player-name" data-i18n="estatisticas_165">Philadelphia Eagles</div></div></div></td>
+<td data-i18n="estatisticas_166">NFC</td>
+<td>14-3</td>
+<td><span class="stat-value" style="color:var(--red)">31.9</span></td>
+<td>421.2</td>
+<td>228.1</td>
+<td>193.1</td>
+<td>19.2</td>
+</tr>
+<tr>
+<td><span class="rank-num">2</span></td>
+<td><div class="player-info"><img alt="" class="player-mini-img" onerror="this.style.opacity='0.3'" src="https://a.espncdn.com/i/teamlogos/nfl/500/bal.png"/><div><div class="player-name" data-i18n="estatisticas_167">Baltimore Ravens</div></div></div></td>
+<td data-i18n="estatisticas_168">AFC</td>
+<td>12-5</td>
+<td><span class="stat-value">30.1</span></td>
+<td>407.8</td>
+<td>241.3</td>
+<td>166.5</td>
+<td>20.1</td>
+</tr>
+<tr>
+<td><span class="rank-num">3</span></td>
+<td><div class="player-info"><img alt="" class="player-mini-img" onerror="this.style.opacity='0.3'" src="https://a.espncdn.com/i/teamlogos/nfl/500/buf.png"/><div><div class="player-name" data-i18n="estatisticas_169">Buffalo Bills</div></div></div></td>
+<td data-i18n="estatisticas_170">AFC</td>
+<td>13-4</td>
+<td><span class="stat-value">28.7</span></td>
+<td>392.5</td>
+<td>247.0</td>
+<td>145.5</td>
+<td>21.8</td>
+</tr>
+<tr>
+<td><span class="rank-num">4</span></td>
+<td><div class="player-info"><img alt="" class="player-mini-img" onerror="this.style.opacity='0.3'" src="https://a.espncdn.com/i/teamlogos/nfl/500/kc.png"/><div><div class="player-name" data-i18n="estatisticas_171">Kansas City Chiefs</div></div></div></td>
+<td data-i18n="estatisticas_172">AFC</td>
+<td>15-2</td>
+<td><span class="stat-value">27.2</span></td>
+<td>349.1</td>
+<td>213.7</td>
+<td>135.4</td>
+<td>18.9</td>
+</tr>
+<tr>
+<td><span class="rank-num">5</span></td>
+<td><div class="player-info"><img alt="" class="player-mini-img" onerror="this.style.opacity='0.3'" src="https://a.espncdn.com/i/teamlogos/nfl/500/min.png"/><div><div class="player-name" data-i18n="estatisticas_173">Minnesota Vikings</div></div></div></td>
+<td data-i18n="estatisticas_174">NFC</td>
+<td>14-3</td>
+<td><span class="stat-value">26.6</span></td>
+<td>374.4</td>
+<td>258.3</td>
+<td>116.1</td>
+<td>24.4</td>
+</tr>
+<tr>
+<td><span class="rank-num">6</span></td>
+<td><div class="player-info"><img alt="" class="player-mini-img" onerror="this.style.opacity='0.3'" src="https://a.espncdn.com/i/teamlogos/nfl/500/sf.png"/><div><div class="player-name" data-i18n="estatisticas_175">San Francisco 49ers</div></div></div></td>
+<td data-i18n="estatisticas_176">NFC</td>
+<td>6-11</td>
+<td><span class="stat-value">22.4</span></td>
+<td>358.2</td>
+<td>232.0</td>
+<td>126.2</td>
+<td>26.5</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p class="reveal" data-i18n="estatisticas_177" style="text-align:center;color:var(--text-muted);font-size:0.85rem;font-family:'Barlow Condensed',sans-serif;margin-top:16px">
+    * Estatísticas da temporada regular 2025/26. Fonte: NFL.com / ESPN.
+  </p>
+</main>
+<div id="footer-placeholder"></div>
+<script src="js/i18n.js"></script>
+<script src="js/shared.js"></script>
+<script src="js/nav.js"></script>
+<script>
+function showStatsTab(id, btn) {
+  document.querySelectorAll('.stats-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.stats-tab').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  btn.classList.add('active');
+}
+</script>
+</body>
+</html>

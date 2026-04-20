@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+
+<html data-theme="dark" lang="pt">
+<head>
+<meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Calendário NFL — NFL PT</title>
+<link href="css/style.css" rel="stylesheet"/>
+<style>
+.week-selector{display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:2rem}
+.week-btn{background:var(--bg-card);border:1px solid var(--border);color:var(--text-secondary);font-family:var(--font-heading);font-size:0.8rem;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;padding:0.4rem 0.8rem;border-radius:6px;cursor:pointer;transition:var(--transition)}
+.week-btn:hover,.week-btn.active{background:rgba(230,57,70,0.1);border-color:var(--red);color:var(--red)}
+.game-card{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:1.5rem;margin-bottom:1rem;transition:var(--transition)}
+.game-card:hover{border-color:var(--border-accent)}
+.game-teams{display:flex;align-items:center;justify-content:space-between;gap:1rem}
+.game-team{display:flex;flex-direction:column;align-items:center;gap:0.5rem;min-width:100px}
+.game-team img{width:60px;height:60px;object-fit:contain}
+.game-team-name{font-family:var(--font-heading);font-size:0.95rem;font-weight:700;color:var(--text-primary);text-align:center}
+.game-team-record{font-size:0.75rem;color:var(--text-muted)}
+.game-center{text-align:center;flex:1}
+.game-score{font-family:var(--font-display);font-size:2.5rem;color:var(--text-primary);line-height:1}
+.game-status{font-family:var(--font-heading);font-size:0.8rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.05em;margin-top:0.3rem}
+.game-time{font-family:var(--font-heading);font-size:1rem;font-weight:700;color:var(--text-secondary)}
+.game-meta{display:flex;align-items:center;justify-content:space-between;margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border);font-size:0.8rem;color:var(--text-muted)}
+.games-grid{display:grid;grid-template-columns:1fr;gap:1rem}
+@media(min-width:900px){.games-grid{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<div id="nav-placeholder"></div>
+<div class="page-wrapper">
+<div class="page-hero">
+<div class="container">
+<div class="page-hero-tag" data-i18n="calendario_000">📅 NFL 2025/26</div>
+<h1><span data-i18n="calendario_001">CALENDÁRIO </span><span data-i18n="calendario_002" style="color:var(--red)">NFL</span></h1>
+<p data-i18n="calendario_003">Todos os jogos da temporada regular e playoffs da NFL 2025. Resultados, horários e informações completas.</p>
+</div>
+</div>
+<section class="section">
+<div class="container">
+<div data-tabs="">
+<div class="tabs">
+<button class="tab-btn active" data-i18n="calendario_004" data-tab="reg">Temporada Regular</button> 
+<button class="tab-btn" data-i18n="calendario_005" data-tab="post">Playoffs</button>
+</div>
+<div class="tab-content active" data-tab-content="reg">
+<div class="week-selector" id="week-selector-reg"></div>
+<div id="games-reg"><div class="loading-spinner"><div class="spinner"></div></div></div>
+</div>
+<div class="tab-content" data-tab-content="post">
+<div class="week-selector" id="week-selector-post"></div>
+<div id="games-post"><div class="loading-spinner"><div class="spinner"></div></div></div>
+</div>
+</div>
+</div>
+</section>
+</div>
+<div id="footer-placeholder"></div>
+<script src="js/i18n.js"></script>
+<script src="js/shared.js"></script>
+<script src="js/nav.js"></script>
+<script>
+const ESPN_SCORES='https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard';
+let currentWeek=1;let currentType='reg';
+
+function buildWeekSelector(type,total,postNames){
+  const sel=document.getElementById(`week-selector-${type}`);
+  sel.innerHTML='';
+  for(let w=1;w<=total;w++){
+    const btn=document.createElement('button');
+    btn.className='week-btn'+(w===1?' active':'');
+    btn.textContent=type==='post'?(postNames[w-1]||`Ronda ${w}`):`Semana ${w}`;
+    btn.addEventListener('click',()=>{
+      sel.querySelectorAll('.week-btn').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      loadWeek(w,type);
+    });
+    sel.appendChild(btn);
+  }
+}
+
+async function loadWeek(week,type){
+  const container=document.getElementById(`games-${type}`);
+  container.innerHTML='<div class="loading-spinner"><div class="spinner"></div></div>';
+  try{
+    const seasonType=type==='reg'?2:3;
+    const url=`${ESPN_SCORES}?seasontype=${seasonType}&week=${week}`;
+    const data=await fetchJSON(url);
+    const events=data.events||[];
+    if(!events.length){
+      container.innerHTML='<p style="text-align:center;color:var(--text-muted);padding:2rem;">Sem jogos nesta semana.</p>';
+      return;
+    }
+    container.innerHTML=`<div class="games-grid">${events.map(e=>{
+      const comp=e.competitions[0];
+      const home=comp.competitors.find(c=>c.homeAway==='home');
+      const away=comp.competitors.find(c=>c.homeAway==='away');
+      const status=comp.status.type.state;
+      const statusText=comp.status.type.shortDetail;
+      const isLive=status==='in';
+      const isFinal=status==='post';
+      const hs=home?.score||'';const as2=away?.score||'';
+      const hw=isFinal&&parseInt(hs)>parseInt(as2);
+      const aw=isFinal&&parseInt(as2)>parseInt(hs);
+      const ha=home?.team.abbreviation?.toLowerCase()||'';
+      const aa=away?.team.abbreviation?.toLowerCase()||'';
+      const venue=comp.venue?.fullName||'';
+      const broadcast=comp.broadcasts?.[0]?.names?.[0]||'';
+      const date=new Date(e.date);
+      const dateStr=date.toLocaleDateString('pt-PT',{weekday:'short',day:'numeric',month:'short'});
+      const timeStr=date.toLocaleTimeString('pt-PT',{hour:'2-digit',minute:'2-digit'});
+      return`<div class="game-card">
+        <div class="game-teams">
+          <div class="game-team">
+            <img src="https://a.espncdn.com/i/teamlogos/nfl/500/${aa}.png" onerror="this.src='https://a.espncdn.com/i/teamlogos/leagues/500/nfl.png'" alt="">
+            <span class="game-team-name" style="${aw?'color:var(--red)':''}">${away?.team.abbreviation||'?'}</span>
+            <span class="game-team-record">${away?.records?.[0]?.summary||''}</span>
+          </div>
+          <div class="game-center">
+            ${isFinal||isLive?`<div class="game-score">${as2} - ${hs}</div>`:
+              `<div class="game-time">${timeStr}</div>`}
+            <div class="game-status">${isLive?'🔴 ':''} ${statusText}</div>
+          </div>
+          <div class="game-team">
+            <img src="https://a.espncdn.com/i/teamlogos/nfl/500/${ha}.png" onerror="this.src='https://a.espncdn.com/i/teamlogos/leagues/500/nfl.png'" alt="">
+            <span class="game-team-name" style="${hw?'color:var(--red)':''}">${home?.team.abbreviation||'?'}</span>
+            <span class="game-team-record">${home?.records?.[0]?.summary||''}</span>
+          </div>
+        </div>
+        <div class="game-meta">
+          <span>${dateStr}</span>
+          ${venue?`<span>🏟 ${venue}</span>`:''}
+          ${broadcast?`<span>📺 ${broadcast}</span>`:''}
+        </div>
+      </div>`;
+    }).join('')}</div>`;
+  }catch(err){
+    container.innerHTML='<p style="text-align:center;color:var(--text-muted);padding:2rem;">Dados indisponíveis. Verifica a ligação à internet.</p>';
+  }
+}
+
+async function init(){
+  buildWeekSelector('reg',18,[]);
+  const postNames=['Wild Card','Divisional','Conference Championship','Super Bowl'];
+  buildWeekSelector('post',4,postNames);
+  await loadWeek(1,'reg');
+  await loadWeek(1,'post');
+}
+
+function fetchJSON(url){return fetch(url).then(r=>r.json());}
+init();
+</script>
+</body>
+</html>

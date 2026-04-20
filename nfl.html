@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+
+<html data-theme="dark" lang="pt">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>NFL — História, Estrutura e Regras | NFL PT</title>
+<link href="css/style.css" rel="stylesheet"/>
+<style>
+    .timeline { position: relative; padding: 0; }
+    .timeline::before {
+      content: ''; position: absolute; left: 24px; top: 0; bottom: 0;
+      width: 2px; background: var(--card-border);
+    }
+    .timeline-item {
+      position: relative;
+      padding: 0 0 40px 64px;
+    }
+    .timeline-dot {
+      position: absolute; left: 13px; top: 4px;
+      width: 24px; height: 24px; border-radius: 50%;
+      background: var(--red);
+      border: 3px solid var(--bg);
+      z-index: 1;
+    }
+    .timeline-year {
+      font-family: 'Oswald', sans-serif;
+      font-size: 0.9rem; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--red); margin-bottom: 6px;
+    }
+    .timeline-title { font-family: 'Oswald', sans-serif; font-size: 1.1rem; font-weight: 600; margin-bottom: 6px; }
+    .timeline-text { font-size: 0.95rem; color: var(--text-muted); line-height: 1.7; }
+
+    .conf-card {
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+    .conf-header {
+      padding: 20px 24px;
+      background: var(--red);
+      color: white;
+    }
+    .conf-header.navy { background: var(--navy); }
+    .conf-header h3 { font-size: 1.3rem; font-weight: 700; text-transform: uppercase; }
+    .conf-header p { font-size: 0.85rem; opacity: 0.85; margin-top: 4px; }
+    .division-list { padding: 20px 24px; }
+    .division-item { padding: 14px 0; border-bottom: 1px solid var(--card-border); }
+    .division-item:last-child { border-bottom: none; }
+    .division-name {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 0.8rem; font-weight: 700;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--text-muted); margin-bottom: 8px;
+    }
+    .division-teams { display: flex; flex-wrap: wrap; gap: 8px; }
+    .division-team {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 0.85rem; font-weight: 600;
+    }
+    .division-team img { width: 24px; height: 24px; object-fit: contain; }
+
+    .rule-card {
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 24px;
+      height: 100%;
+    }
+    .rule-icon { font-size: 2rem; margin-bottom: 12px; }
+    .rule-card h3 {
+      font-family: 'Oswald', sans-serif;
+      font-size: 1.05rem; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.06em;
+      margin-bottom: 10px; color: var(--red);
+    }
+    .rule-card p { font-size: 0.9rem; color: var(--text-muted); line-height: 1.75; }
+
+    .position-table {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+    .pos-item {
+      background: var(--bg2);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 14px;
+    }
+    .pos-abbr {
+      font-family: 'Oswald', sans-serif;
+      font-size: 1.4rem; font-weight: 700;
+      color: var(--red); line-height: 1;
+    }
+    .pos-name { font-size: 0.85rem; font-weight: 600; margin: 4px 0 6px; }
+    .pos-desc { font-size: 0.8rem; color: var(--text-muted); line-height: 1.5; }
+
+    .scoring-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+    .score-item {
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 20px;
+      text-align: center;
+    }
+    .score-pts {
+      font-family: 'Oswald', sans-serif;
+      font-size: 3rem; font-weight: 700;
+      color: var(--red); line-height: 1;
+    }
+    .score-name {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 0.9rem; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--text-muted); margin-top: 6px;
+    }
+    .score-desc { font-size: 0.8rem; color: var(--text-dim); margin-top: 6px; }
+
+    .season-flow {
+      display: flex;
+      gap: 0;
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      overflow: hidden;
+    }
+    .sf-step {
+      flex: 1;
+      padding: 20px 16px;
+      text-align: center;
+      background: var(--card);
+      border-right: 1px solid var(--card-border);
+      position: relative;
+    }
+    .sf-step:last-child { border-right: none; }
+    .sf-step::after {
+      content: '→';
+      position: absolute; right: -10px; top: 50%;
+      transform: translateY(-50%);
+      color: var(--red); font-size: 1.2rem; font-weight: 700;
+      z-index: 1;
+    }
+    .sf-step:last-child::after { display: none; }
+    .sf-icon { font-size: 1.8rem; margin-bottom: 8px; }
+    .sf-name {
+      font-family: 'Oswald', sans-serif;
+      font-size: 0.9rem; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.05em;
+    }
+    .sf-weeks { font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; }
+
+    @media (max-width: 768px) {
+      .position-table { grid-template-columns: repeat(2,1fr); }
+      .scoring-grid { grid-template-columns: repeat(2,1fr); }
+      .season-flow { flex-direction: column; }
+      .sf-step { border-right: none; border-bottom: 1px solid var(--card-border); }
+      .sf-step::after { content: '↓'; right: auto; left: 50%; bottom: -14px; top: auto; transform: translateX(-50%); }
+    }
+    @media (max-width: 480px) { .position-table { grid-template-columns: 1fr 1fr; } }
+  </style>
+</head>
+<body>
+<!-- HEADER -->
+<div id="nav-placeholder"></div>
+<div class="header-actions">
+<button class="btn-lang" data-i18n="nfl_019" onclick="toggleLang()" style="background:transparent;border:1px solid var(--border-color,rgba(255,255,255,.2));color:var(--text-primary,#f0f4ff);font-size:0.75rem;font-weight:700;padding:0.3rem 0.6rem;border-radius:6px;cursor:pointer;transition:all 0.2s;white-space:nowrap;font-family:inherit;" title="Switch to English">🌐 EN</button>
+<button aria-label="Alternar tema" class="theme-toggle" onclick="toggleTheme()">☀️</button>
+<button aria-label="Menu" class="hamburger"><span></span> <span></span> <span></span></button>
+</div>
+<nav aria-hidden="true" class="mobile-nav">
+<a data-i18n="nfl_020" href="index.html">🏠 Início</a>
+<a data-i18n="nfl_021" href="nfl.html">🏈 NFL</a>
+<a data-i18n="nfl_022" href="portugal.html">🇵🇹 Portugal</a>
+<a data-i18n="nfl_023" href="equipas.html">🏟 Equipas</a>
+<a data-i18n="nfl_024" href="jogadores.html">👤 Jogadores</a>
+<a data-i18n="nfl_025" href="treinadores.html">🧑‍🏫 Treinadores</a>
+<a data-i18n="nfl_026" href="classificacoes.html">📊 Classificações</a>
+<a data-i18n="nfl_027" href="estatisticas.html">📈 Estatísticas</a>
+<a data-i18n="nfl_028" href="calendario.html">📅 Calendário</a>
+<a data-i18n="nfl_029" href="noticias.html">📰 Notícias</a>
+<a data-i18n="nfl_030" href="quiz.html">🧠 Quiz</a>
+<a data-i18n="nfl_031" href="contactos.html">📞 Contactos</a>
+<a data-i18n="nfl_032" href="sobre.html">ℹ️ Sobre</a>
+</nav>
+<!-- PAGE HERO -->
+<div class="page-hero">
+<div class="container page-hero-content">
+<div class="breadcrumb"><a data-i18n="nfl_033" href="index.html">Início</a> › <span data-i18n="nfl_034">NFL</span></div>
+<div class="section-label" data-i18n="nfl_035">National Football League</div>
+<h1 data-i18n="nfl_036">🏈 A NFL</h1>
+<p data-i18n="nfl_037">Tudo sobre a liga de futebol americano mais importante do mundo — história, estrutura, regras e muito mais.</p>
+</div>
+</div>
+<!-- INTRO -->
+<section class="section">
+<div class="container">
+<div class="grid-2" style="align-items:center;gap:60px">
+<div class="reveal-left">
+<div class="section-label" data-i18n="nfl_038">O Que é a NFL?</div>
+<h2 class="section-title" data-i18n="nfl_039">National Football League</h2>
+<p data-i18n="nfl_040" style="color:var(--text-muted);margin:20px 0;line-height:1.8">
+          A National Football League (NFL) é a liga desportiva profissional mais valiosa do mundo, estimada em mais de 100 mil milhões de dólares. Fundada em 1920 como American Professional Football Association (APFA) e renomeada NFL em 1922, a liga é composta por 32 equipas distribuídas por duas conferências e oito divisões.
+        </p>
+<p data-i18n="nfl_041" style="color:var(--text-muted);margin-bottom:24px;line-height:1.8">
+          Cada temporada regular consiste em 18 semanas com 17 jogos por equipa. Os playoffs culminam com o Super Bowl, o maior evento desportivo anual do mundo, assistido por mais de 100 milhões de espectadores nos EUA e centenas de milhões a nível global.
+        </p>
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px">
+<div style="background:var(--card);border:1px solid var(--card-border);border-radius:12px;padding:16px;text-align:center">
+<div style="font-family:'Oswald',sans-serif;font-size:1.8rem;font-weight:700;color:var(--red)">32</div>
+<div data-i18n="nfl_042" style="font-size:0.8rem;color:var(--text-muted);font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:0.1em;text-transform:uppercase">Equipas</div>
+</div>
+<div style="background:var(--card);border:1px solid var(--card-border);border-radius:12px;padding:16px;text-align:center">
+<div data-i18n="nfl_043" style="font-family:'Oswald',sans-serif;font-size:1.8rem;font-weight:700;color:var(--red)">$100B+</div>
+<div data-i18n="nfl_044" style="font-size:0.8rem;color:var(--text-muted);font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:0.1em;text-transform:uppercase">Valor</div>
+</div>
+<div style="background:var(--card);border:1px solid var(--card-border);border-radius:12px;padding:16px;text-align:center">
+<div style="font-family:'Oswald',sans-serif;font-size:1.8rem;font-weight:700;color:var(--red)">1920</div>
+<div data-i18n="nfl_045" style="font-size:0.8rem;color:var(--text-muted);font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:0.1em;text-transform:uppercase">Fundação</div>
+</div>
+</div>
+</div>
+<div class="reveal-right">
+<div style="background:var(--bg2);border-radius:20px;padding:32px;border:1px solid var(--card-border)">
+<div data-i18n="nfl_046" style="font-family:'Oswald',sans-serif;font-size:1.1rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:20px;color:var(--red)">Factos Rápidos</div>
+<div style="display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;justify-content:space-between;align-items:center;padding-bottom:14px;border-bottom:1px solid var(--card-border)">
+<span data-i18n="nfl_047" style="color:var(--text-muted);font-size:0.9rem">Fundação</span> 
+<span data-i18n="nfl_048" style="font-weight:600">17 Set 1920, Canton (Ohio)</span>
+</div>
+<div style="display:flex;justify-content:space-between;align-items:center;padding-bottom:14px;border-bottom:1px solid var(--card-border)">
+<span data-i18n="nfl_049" style="color:var(--text-muted);font-size:0.9rem">Comissário</span> 
+<span data-i18n="nfl_050" style="font-weight:600">Roger Goodell (desde 2006)</span>
+</div>
+<div style="display:flex;justify-content:space-between;align-items:center;padding-bottom:14px;border-bottom:1px solid var(--card-border)">
+<span data-i18n="nfl_051" style="color:var(--text-muted);font-size:0.9rem">Conferências</span> 
+<span data-i18n="nfl_052" style="font-weight:600">AFC + NFC</span>
+</div>
+<div style="display:flex;justify-content:space-between;align-items:center;padding-bottom:14px;border-bottom:1px solid var(--card-border)">
+<span data-i18n="nfl_053" style="color:var(--text-muted);font-size:0.9rem">Jogadores por equipa</span> 
+<span data-i18n="nfl_054" style="font-weight:600">53 (plantel ativo)</span>
+</div>
+<div style="display:flex;justify-content:space-between;align-items:center;padding-bottom:14px;border-bottom:1px solid var(--card-border)">
+<span data-i18n="nfl_055" style="color:var(--text-muted);font-size:0.9rem">Salário Cap 2025/26</span>
+<span data-i18n="nfl_056" style="font-weight:600">$255.4 milhões</span>
+</div>
+<div style="display:flex;justify-content:space-between;align-items:center">
+<span data-i18n="nfl_057" style="color:var(--text-muted);font-size:0.9rem">Super Bowl LIX MVP</span> 
+<span data-i18n="nfl_058" style="font-weight:600">Jalen Hurts (PHI)</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- HISTÓRIA -->
+<section class="section" id="historia" style="background:var(--bg2)">
+<div class="container">
+<div class="text-center mb-48">
+<div class="section-label" data-i18n="nfl_059">Desde 1920</div>
+<h2 class="section-title center" data-i18n="nfl_060">História da NFL</h2>
+</div>
+<div class="grid-2" style="gap:48px">
+<div class="reveal-left">
+<div class="timeline">
+<div class="timeline-item">
+<div class="timeline-dot"></div>
+<div class="timeline-year">1920</div>
+<div class="timeline-title" data-i18n="nfl_061">Fundação como APFA</div>
+<div class="timeline-text" data-i18n="nfl_062">A American Professional Football Association é fundada em Canton, Ohio, com 14 equipas fundadoras. Jim Thorpe é nomeado o primeiro presidente.</div>
+</div>
+<div class="timeline-item">
+<div class="timeline-dot"></div>
+<div class="timeline-year">1922</div>
+<div class="timeline-title" data-i18n="nfl_063">Renomeada para NFL</div>
+<div class="timeline-text" data-i18n="nfl_064">A liga é renomeada National Football League e começa a expandir-se por todo o país, consolidando o futebol americano como desporto profissional.</div>
+</div>
+<div class="timeline-item">
+<div class="timeline-dot"></div>
+<div class="timeline-year">1933</div>
+<div class="timeline-title" data-i18n="nfl_065">Divisão NFL em Conferências</div>
+<div class="timeline-text" data-i18n="nfl_066">A NFL divide-se em duas divisões: Este e Oeste. Introdução do primeiro jogo de campeonato da NFL — o Championship Game.</div>
+</div>
+<div class="timeline-item">
+<div class="timeline-dot"></div>
+<div class="timeline-year">1960</div>
+<div class="timeline-title" data-i18n="nfl_067">Fundação da AFL</div>
+<div class="timeline-text" data-i18n="nfl_068">A American Football League é criada como liga rival. A concorrência feroz entre as duas ligas leva a uma guerra de talentos e salários crescentes.</div>
+</div>
+<div class="timeline-item">
+<div class="timeline-dot"></div>
+<div class="timeline-year">1967</div>
+<div class="timeline-title" data-i18n="nfl_069">Primeiro Super Bowl</div>
+<div class="timeline-text" data-i18n="nfl_070">O primeiro AFL-NFL World Championship Game (mais tarde chamado Super Bowl) é disputado. Os Green Bay Packers derrotam os Kansas City Chiefs por 35-10.</div>
+</div>
+</div>
+</div>
+<div class="reveal-right">
+<div class="timeline">
+<div class="timeline-item">
+<div class="timeline-dot"></div>
+<div class="timeline-year">1970</div>
+<div class="timeline-title" data-i18n="nfl_071">Fusão NFL-AFL</div>
+<div class="timeline-text" data-i18n="nfl_072">A NFL e a AFL fundem-se oficialmente, criando a liga de 26 equipas que conhecemos hoje. As equipas AFL formam a AFC; as NFL formam a NFC.</div>
+</div>
+<div class="timeline-item">
+<div class="timeline-dot"></div>
+<div class="timeline-year">1987</div>
+<div class="timeline-title" data-i18n="nfl_073">Era da Free Agency</div>
+<div class="timeline-text" data-i18n="nfl_074">A greve dos jogadores e a introdução gradual da free agency transformam a forma como os talentos são distribuídos pelas equipas.</div>
+</div>
+<div class="timeline-item">
+<div class="timeline-dot"></div>
+<div class="timeline-year">1993</div>
+<div class="timeline-title" data-i18n="nfl_075">Free Agency Moderna</div>
+<div class="timeline-text" data-i18n="nfl_076">O sistema moderno de free agency e salary cap é implementado, criando maior paridade competitiva entre as 32 equipas.</div>
+</div>
+<div class="timeline-item">
+<div class="timeline-dot"></div>
+<div class="timeline-year">2002</div>
+<div class="timeline-title" data-i18n="nfl_077">Expansão para 32 Equipas</div>
+<div class="timeline-text" data-i18n="nfl_078">Os Houston Texans entram na liga, completando as 32 equipas e 8 divisões que existem até hoje. A estrutura atual de playoffs é estabelecida.</div>
+</div>
+<div class="timeline-item">
+<div class="timeline-dot"></div>
+<div class="timeline-year">2021+</div>
+<div class="timeline-title" data-i18n="nfl_079">Era de Expansão Global</div>
+<div class="timeline-text" data-i18n="nfl_080">A NFL expande para 17 jogos regulares, realiza jogos em Londres, Frankfurt e São Paulo. A liga cresce para novos mercados internacionais.</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- ESTRUTURA -->
+<section class="section" id="estrutura">
+<div class="container">
+<div class="text-center mb-48">
+<div class="section-label" data-i18n="nfl_081">Organização</div>
+<h2 class="section-title center" data-i18n="nfl_082">Estrutura da Liga</h2>
+</div>
+<div class="grid-2 reveal">
+<!-- AFC -->
+<div class="conf-card">
+<div class="conf-header">
+<h3 data-i18n="nfl_084">🏈 AFC — American Football Conference</h3>
+<p data-i18n="nfl_085">16 equipas · 4 Divisões</p>
+</div>
+<div class="division-list">
+<div class="division-item">
+<div class="division-name" data-i18n="nfl_086">AFC East</div>
+<div class="division-teams">
+<div class="division-team" data-i18n="nfl_087"><img alt="" src="https://a.espncdn.com/i/teamlogos/nfl/500/buf.png"/>Bills</div>
+<div class="division-team" data-i18n="nfl_088"><img alt="" src="https://a.espncdn.com/i/teamlogos/nfl/500/mia.png"/>Dolphins</div>
+<div class="division-team" data-i18n="nfl_089"><img alt="" src="https://a.espncdn.com/i/teamlogos/nfl/500/ne.png"/>Patriots</div>
+<div class="division-team" data-i18n="nfl_090"><img alt="" src="https://a.espncdn.com/i/teamlogos/nfl/500/nyj.png"/>Jets</div>
+</div>
+</div>
+<div class="division-item">
+<div class="division-name" data-i18n="nfl_091">AFC North</div>
+<div class="division-teams">
+<div class="division-team" data-i18n="nfl_092"><img alt="" src="https://a.espncdn.com/i/teamlogos/nfl/500/bal.png"/>Ravens</div>
+<div class="division-team" data-i18n="nfl_093"><img alt="" src="https://a.espncdn.com/i/teamlogos/nfl/500/pit.png"/>Steelers</div>
+<div class="division-team" data-i18n="nfl_094"><img alt="" src="https://a.espncdn.com/i/teamlogos/nfl/500/cin.png"/>Bengals</div>
+<div class="division-team" data-i18n="nfl_095"><img alt="" src="https://a.espncdn.com/i/teamlogos/nfl/500/cle.png"/>Browns</div>
+</div>
+</div>
+<div class="division-item">
+<div class="division-name" data-i18n="nfl_096">AFC South</div>
+<div class="division-teams">
+<div class="division-team" data-i18n="nfl_097"><img alt="" src="https://a.espncdn.com/i/teamlogos/nfl/500/hou.png"/>Texans</div>
+<div class="division-team" data-i18n="nfl_098"><img alt="" src="https://a.espncdn.com/i/teamlogos/nfl/500/ind.png"/>Colts</div>
+<div class="division-team" data-i18n="nfl_099"><img alt="" src="https://a.espncdn.com/i/teamlogos/nfl/500/jax.png"/>Jaguars</div>
+<div class="division-team" data-i18n="nfl_100"><img alt="" src="https://a.espncdn.com/i/teamlogos/nfl/500/ten.png"/>Titans</div>
+</div>
+</div>
+<div class="division-item">
+<div class="division-name" data-i18n="nfl_101">AFC West</div>
+<div class="division-teams">
+<div class="division-team" data-i18n="nfl_102"><img alt="" src="https://a.espncdn.com/i/teamlogos/nfl/500/kc.png"/>Chiefs</div>
+<div class="division-team" data-i18n="nfl_103"><img alt="" src="https://a.espncdn.com/i/teamlogos/nfl/500/lac.png"/>Chargers</div>
+<div class="division-team" data-i18n="nfl_104"><img alt="" src="https://a.espncdn.com/i/teamlogos/nfl/500/den.png"/>Broncos</div>
+<div class="division-team" data-i18n="nfl_105"><img alt="" src="https://a.espncdn.com/i/teamlogos/nfl/500/lv.png"/>Raiders</div>
+</div>
+</div>
+</div>
+</div>
+<!-- NFC -->
+<div class="conf-card reveal delay-1">
+<div class="conf-header navy">
+<h3 data-i18n="nfl_106">🏈 NFC — National Football Conference</h3>
+<p data-i18n="nfl_107">16 equipas · 4 Divisões</p>
+</div>
+<div class="division-list">
+<div class="division-item">
+<div class="division-name" data-i18n="nfl_108">NFC East</div>
+<div class="division-teams">
+<div class="division-team" data-i18n="nfl_109"><img alt="" src="https://a.espncdn.com/i/teamlogos/nfl/500/phi.png"/>Eagles</div>
+<div class="division-team" data-i18n="nfl_110"><img alt="" src="https://a.espncdn.com/i/teamlogos/nfl/500/wsh.png"/>Commanders</div>
+<div class="division-team" data-i18n="nfl_111"><img alt="" src="https://a.espncdn.com/i/teamlogos/nfl/500/dal.png"/>Cowboys</div>
+<div class="division-team" data-i18n="nfl_112"><img alt="" src="https://a.espncdn.com/i/teamlogos/nfl/500/nyg.png"/>Giants</div>
+</div>
+</div>
+<div class="division-item">
+<div class="division-name" data-i18n="nfl_113">NFC North</div>
+<div class="division-teams">
+<div class="division-team" data-i18n="nfl_114"><img alt="" src="https://a.espncdn.com/i/teamlogos/nfl/500/det.png"/>Lions</div>
+<div class="division-team" data-i18n="nfl_115"><img alt="" src="https://a.espncdn.com/i/teamlogos/nfl/500/min.png"/>Vikings</div>
+<div class="division-team" data-i18n="nfl_116"><img alt="" src="https://a.espncdn.com/i/teamlogos/nfl/500/gb.png"/>Packers</div>
+<div class="division-team" data-i18n="nfl_117"><img alt="" src="https://a.espncdn.com/i/teamlogos/nfl/500/chi.png"/>Bears</div>
+</div>
+</div>
+<div class="division-item">
+<div class="division-name" data-i18n="nfl_118">NFC South</div>
+<div class="division-teams">
+<div class="division-team" data-i18n="nfl_119"><img alt="" src="https://a.espncdn.com/i/teamlogos/nfl/500/tb.png"/>Buccaneers</div>
+<div class="division-team" data-i18n="nfl_120"><img alt="" src="https://a.espncdn.com/i/teamlogos/nfl/500/atl.png"/>Falcons</div>
+<div class="division-team" data-i18n="nfl_121"><img alt="" src="https://a.espncdn.com/i/teamlogos/nfl/500/no.png"/>Saints</div>
+<div class="division-team" data-i18n="nfl_122"><img alt="" src="https://a.espncdn.com/i/teamlogos/nfl/500/car.png"/>Panthers</div>
+</div>
+</div>
+<div class="division-item">
+<div class="division-name" data-i18n="nfl_123">NFC West</div>
+<div class="division-teams">
+<div class="division-team" data-i18n="nfl_124"><img alt="" src="https://a.espncdn.com/i/teamlogos/nfl/500/sf.png"/>49ers</div>
+<div class="division-team" data-i18n="nfl_125"><img alt="" src="https://a.espncdn.com/i/teamlogos/nfl/500/sea.png"/>Seahawks</div>
+<div class="division-team" data-i18n="nfl_126"><img alt="" src="https://a.espncdn.com/i/teamlogos/nfl/500/lar.png"/>Rams</div>
+<div class="division-team" data-i18n="nfl_127"><img alt="" src="https://a.espncdn.com/i/teamlogos/nfl/500/ari.png"/>Cardinals</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- TEMPORADA -->
+<section class="section" id="temporada" style="background:var(--bg2)">
+<div class="container">
+<div class="text-center mb-48">
+<div class="section-label" data-i18n="nfl_128">Como Funciona</div>
+<h2 class="section-title center" data-i18n="nfl_129">Estrutura da Temporada</h2>
+</div>
+<div class="season-flow reveal">
+<div class="sf-step">
+<div class="sf-icon">⛺</div>
+<div class="sf-name" data-i18n="nfl_130">Pré-época</div>
+<div class="sf-weeks" data-i18n="nfl_131">Agosto · 4 jogos</div>
+</div>
+<div class="sf-step">
+<div class="sf-icon">🏈</div>
+<div class="sf-name" data-i18n="nfl_132">Temporada Regular</div>
+<div class="sf-weeks" data-i18n="nfl_133">Set–Jan · 17 jogos · 18 semanas</div>
+</div>
+<div class="sf-step">
+<div class="sf-icon">⚡</div>
+<div class="sf-name" data-i18n="nfl_134">Wild Card</div>
+<div class="sf-weeks" data-i18n="nfl_135">Janeiro · 14 equipas</div>
+</div>
+<div class="sf-step">
+<div class="sf-icon">🔥</div>
+<div class="sf-name" data-i18n="nfl_136">Divisional</div>
+<div class="sf-weeks" data-i18n="nfl_137">Janeiro · 8 equipas</div>
+</div>
+<div class="sf-step">
+<div class="sf-icon">🏟</div>
+<div class="sf-name" data-i18n="nfl_138">Conf. Champions</div>
+<div class="sf-weeks" data-i18n="nfl_139">Janeiro · AFC+NFC</div>
+</div>
+<div class="sf-step" style="background:linear-gradient(135deg,rgba(200,166,48,0.1),rgba(212,0,38,0.1))">
+<div class="sf-icon">🏆</div>
+<div class="sf-name" data-i18n="nfl_140">Super Bowl</div>
+<div class="sf-weeks" data-i18n="nfl_141">Fevereiro · Jogo Final</div>
+</div>
+</div>
+<div class="grid-3 mt-48">
+<div class="info-block reveal">
+<h4 data-i18n="nfl_142">Qualificação para Playoffs</h4>
+<p data-i18n="nfl_143">7 equipas de cada conferência (14 no total): os 4 campeões de divisão + 3 wild cards. O 1.º seed de cada conferência recebe um bye na Wild Card Round.</p>
+</div>
+<div class="info-block reveal delay-1">
+<h4 data-i18n="nfl_144">Sistema de Seedings</h4>
+<p data-i18n="nfl_145">Os seeds 1-4 são os campeões de divisão (por ordem de recorde). Os seeds 5-7 são as melhores equipas restantes. O seed #1 joga sempre em casa nos playoffs.</p>
+</div>
+<div class="info-block reveal delay-2">
+<h4 data-i18n="nfl_146">Desempate</h4>
+<p data-i18n="nfl_147">Em caso de empate no recorde, usa-se o sistema de desempate: recorde na divisão, conferência, common opponents, strength of schedule, pontos marcados, etc.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- REGRAS -->
+<section class="section" id="regras">
+<div class="container">
+<div class="text-center mb-48">
+<div class="section-label" data-i18n="nfl_149">Fundamentos do Jogo</div>
+<h2 class="section-title center" data-i18n="nfl_150">Regras do Futebol Americano</h2>
+</div>
+<!-- Downs -->
+<div class="mb-48">
+<h3 data-i18n="nfl_151" style="font-family:'Oswald',sans-serif;font-size:1.5rem;font-weight:700;text-transform:uppercase;margin-bottom:24px;display:flex;align-items:center;gap:10px"><span style="color:var(--red)">01.</span> O Sistema de Downs</h3>
+<div class="grid-3">
+<div class="rule-card reveal">
+<div class="rule-icon">1️⃣</div>
+<h3 data-i18n="nfl_152">O Objetivo</h3>
+<p data-i18n="nfl_153">A equipa com posse de bola tem 4 tentativas (downs) para avançar pelo menos 10 jardas em direção à end zone adversária. Se conseguir, o contador de downs reinicia.</p>
+</div>
+<div class="rule-card reveal delay-1">
+<div class="rule-icon">📏</div>
+<h3 data-i18n="nfl_154">Progredir ou Pontuar</h3>
+<p data-i18n="nfl_155">Se a equipa não conseguir as 10 jardas em 4 downs, a posse passa para o adversário. Por isso, normalmente ao 4.º down a equipa faz punt ou tenta um field goal.</p>
+</div>
+<div class="rule-card reveal delay-2">
+<div class="rule-icon">🎯</div>
+<h3 data-i18n="nfl_156">Touchdown</h3>
+<p data-i18n="nfl_157">Quando um jogador leva a bola para a end zone adversária ou apanha um passe aí dentro, marca um touchdown — a forma mais valiosa de pontuar no jogo.</p>
+</div>
+</div>
+</div>
+<!-- Pontuação -->
+<div class="mb-48" id="pontuacao">
+<h3 data-i18n="nfl_158" style="font-family:'Oswald',sans-serif;font-size:1.5rem;font-weight:700;text-transform:uppercase;margin-bottom:24px;display:flex;align-items:center;gap:10px"><span style="color:var(--red)">02.</span> Sistema de Pontuação</h3>
+<div class="scoring-grid reveal">
+<div class="score-item">
+<div class="score-pts">6</div>
+<div class="score-name" data-i18n="nfl_159">Touchdown</div>
+<div class="score-desc" data-i18n="nfl_160">Levar a bola à end zone ou apanhar passe dentro da end zone</div>
+</div>
+<div class="score-item">
+<div class="score-pts">3</div>
+<div class="score-name" data-i18n="nfl_161">Field Goal</div>
+<div class="score-desc" data-i18n="nfl_162">Chutar a bola entre os postes após o snap (pode ser tentado a qualquer momento)</div>
+</div>
+<div class="score-item">
+<div class="score-pts">2</div>
+<div class="score-name" data-i18n="nfl_163">Safety</div>
+<div class="score-desc" data-i18n="nfl_164">Tacklear o jogador adversário com a bola dentro da sua própria end zone</div>
+</div>
+<div class="score-item">
+<div class="score-pts">2</div>
+<div class="score-name" data-i18n="nfl_165">Two-Point Conv.</div>
+<div class="score-desc" data-i18n="nfl_166">Após um TD, em vez do PAT, a equipa tenta avançar da linha de 2 jardas</div>
+</div>
+<div class="score-item">
+<div class="score-pts">1</div>
+<div class="score-name" data-i18n="nfl_167">PAT (Extra Point)</div>
+<div class="score-desc" data-i18n="nfl_168">Após um TD, chuto de conversão pelas hastes de 15 jardas. Quase sempre bem-sucedido.</div>
+</div>
+<div class="score-item" style="background:rgba(212,0,38,0.05);border-color:rgba(212,0,38,0.2)">
+<div class="score-pts" style="font-size:1.2rem;padding-top:1rem">6+1<br/>ou<br/>6+2</div>
+<div class="score-name" data-i18n="nfl_170">TD + Conversão</div>
+<div class="score-desc" data-i18n="nfl_171">Touchdown seguido de extra point (7 pts) ou two-point conversion (8 pts)</div>
+</div>
+</div>
+</div>
+<!-- Tempo -->
+<div class="mb-48">
+<h3 data-i18n="nfl_172" style="font-family:'Oswald',sans-serif;font-size:1.5rem;font-weight:700;text-transform:uppercase;margin-bottom:24px;display:flex;align-items:center;gap:10px"><span style="color:var(--red)">03.</span> Tempo de Jogo</h3>
+<div class="grid-2">
+<div class="reveal-left">
+<div class="info-block">
+<h4 data-i18n="nfl_173">Estrutura do Jogo</h4>
+<p data-i18n="nfl_174">Um jogo de NFL é dividido em 4 quartos de 15 minutos cada, totalizando 60 minutos de jogo. O relógio para em certas situações (passe incompleto, fora dos limites, timeout, etc.).</p>
+</div>
+<div class="info-block">
+<h4 data-i18n="nfl_175">Intervalo (Halftime)</h4>
+<p data-i18n="nfl_176">Após o 2.º quarto há um intervalo de 12 a 20 minutos (mais longo no Super Bowl com o espetáculo do intervalo). As equipas trocam de campo no início do 3.º quarto.</p>
+</div>
+<div class="info-block">
+<h4 data-i18n="nfl_177">Horas Extras (Overtime)</h4>
+<p data-i18n="nfl_178">Em caso de empate ao fim de 60 minutos, joga-se um período extra de 10 minutos de morte súbita. Na temporada regular, o jogo pode terminar em empate se nenhuma equipa marcar.</p>
+</div>
+</div>
+<div class="reveal-right">
+<div class="info-block">
+<h4 data-i18n="nfl_179">Two-Minute Warning</h4>
+<p data-i18n="nfl_180">Quando restam 2 minutos para o final do 2.º e 4.º quartos, o relógio é automaticamente parado para o "Two-Minute Warning" — uma pausa oficial que funciona como um timeout extra.</p>
+</div>
+<div class="info-block">
+<h4 data-i18n="nfl_181">Play Clock</h4>
+<p data-i18n="nfl_182">A equipa com posse tem 40 segundos desde o fim do último play para fazer o snap seguinte (ou 25 segundos após certas paragens). Exceder este tempo resulta em penalidade.</p>
+</div>
+<div class="info-block">
+<h4 data-i18n="nfl_183">Timeouts</h4>
+<p data-i18n="nfl_184">Cada equipa tem 3 timeouts por metade (6 no total). Usados estrategicamente para gerir o relógio, especialmente nos momentos finais de jogo.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Posições -->
+<div>
+<h3 data-i18n="nfl_185" style="font-family:'Oswald',sans-serif;font-size:1.5rem;font-weight:700;text-transform:uppercase;margin-bottom:24px;display:flex;align-items:center;gap:10px"><span style="color:var(--red)">04.</span> Posições no Campo</h3>
+<div style="margin-bottom:24px">
+<div data-i18n="nfl_186" style="font-family:'Barlow Condensed',sans-serif;font-size:0.85rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--red);margin-bottom:16px">⚔️ Ataque (Offense)</div>
+<div class="position-table reveal">
+<div class="pos-item"><div class="pos-abbr">QB</div>
+<div class="pos-name" data-i18n="nfl_187">Quarterback</div>
+<div class="pos-desc" data-i18n="nfl_188">O líder do ataque. Recebe o snap e decide se passa, corre ou entrega a bola.</div></div>
+<div class="pos-item"><div class="pos-abbr">RB</div>
+<div class="pos-name" data-i18n="nfl_189">Running Back</div>
+<div class="pos-desc" data-i18n="nfl_190">Recebe handoffs do QB para corridas. Pode também receber passes curtos.</div></div>
+<div class="pos-item"><div class="pos-abbr">WR</div>
+<div class="pos-name" data-i18n="nfl_191">Wide Receiver</div>
+<div class="pos-desc" data-i18n="nfl_192">Recetor principal. Corre rotas para receber passes do QB.</div></div>
+<div class="pos-item"><div class="pos-abbr">TE</div>
+<div class="pos-name" data-i18n="nfl_193">Tight End</div>
+<div class="pos-desc" data-i18n="nfl_194">Híbrido entre bloqueador e recetor. Pode bloquear ou receber passes.</div></div>
+<div class="pos-item"><div class="pos-abbr">OL</div>
+<div class="pos-name" data-i18n="nfl_195">Offensive Line</div>
+<div class="pos-desc" data-i18n="nfl_196">5 jogadores (C, 2 G, 2 T) que protegem o QB e abrem espaço para corridas.</div></div>
+<div class="pos-item"><div class="pos-abbr">FB</div>
+<div class="pos-name" data-i18n="nfl_197">Fullback</div>
+<div class="pos-desc" data-i18n="nfl_198">Bloqueador poderoso que corre à frente do RB ou pode carregar a bola.</div></div>
+</div>
+</div>
+<div style="margin-bottom:24px">
+<div data-i18n="nfl_199" style="font-family:'Barlow Condensed',sans-serif;font-size:0.85rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--navy-mid);margin-bottom:16px">🛡️ Defesa (Defense)</div>
+<div class="position-table reveal">
+<div class="pos-item"><div class="pos-abbr">DE</div>
+<div class="pos-name" data-i18n="nfl_200">Defensive End</div>
+<div class="pos-desc" data-i18n="nfl_201">Pressionam o QB e param corridas pelo exterior da linha defensiva.</div></div>
+<div class="pos-item"><div class="pos-abbr">DT</div>
+<div class="pos-name" data-i18n="nfl_202">Defensive Tackle</div>
+<div class="pos-desc" data-i18n="nfl_203">No interior da linha defensiva, ocupam bloqueadores e param corridas pelo meio.</div></div>
+<div class="pos-item"><div class="pos-abbr">LB</div>
+<div class="pos-name" data-i18n="nfl_204">Linebacker</div>
+<div class="pos-desc" data-i18n="nfl_205">Versáteis: param corridas, pressionam o QB e cobrem recetores curtos.</div></div>
+<div class="pos-item"><div class="pos-abbr">CB</div>
+<div class="pos-name" data-i18n="nfl_206">Cornerback</div>
+<div class="pos-desc" data-i18n="nfl_207">Cobrem os Wide Receivers e tentam interceptar passes.</div></div>
+<div class="pos-item"><div class="pos-abbr">S</div>
+<div class="pos-name" data-i18n="nfl_208">Safety (FS/SS)</div>
+<div class="pos-desc" data-i18n="nfl_209">Última linha de defesa. Free Safety e Strong Safety protegem o espaço profundo.</div></div>
+<div class="pos-item"><div class="pos-abbr">NT</div>
+<div class="pos-name" data-i18n="nfl_210">Nose Tackle</div>
+<div class="pos-desc" data-i18n="nfl_211">Em defesas 3-4, ocupa o centro da linha, libertando os linebackers.</div></div>
+</div>
+</div>
+<div>
+<div data-i18n="nfl_212" style="font-family:'Barlow Condensed',sans-serif;font-size:0.85rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:16px">⚽ Equipas Especiais (Special Teams)</div>
+<div class="position-table reveal">
+<div class="pos-item"><div class="pos-abbr">K</div>
+<div class="pos-name" data-i18n="nfl_213">Kicker</div>
+<div class="pos-desc" data-i18n="nfl_214">Responsável pelos kickoffs e field goals. Um especialista de precisão.</div></div>
+<div class="pos-item"><div class="pos-abbr">P</div>
+<div class="pos-name" data-i18n="nfl_215">Punter</div>
+<div class="pos-desc" data-i18n="nfl_216">Chuta a bola ao 4.º down para recuar o adversário no campo.</div></div>
+<div class="pos-item"><div class="pos-abbr">LS</div>
+<div class="pos-name" data-i18n="nfl_217">Long Snapper</div>
+<div class="pos-desc" data-i18n="nfl_218">Especialista no snap longo para punts e field goals.</div></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- PLAYOFFS -->
+<section class="section" id="playoffs" style="background:var(--bg2)">
+<div class="container">
+<div class="text-center mb-48">
+<div class="section-label" data-i18n="nfl_219">O Caminho para a Glória</div>
+<h2 class="section-title center" data-i18n="nfl_220">Playoffs &amp; Super Bowl</h2>
+</div>
+<div class="grid-2" style="gap:40px;align-items:start">
+<div class="reveal-left">
+<h3 data-i18n="nfl_221" style="font-family:'Oswald',sans-serif;font-size:1.3rem;font-weight:700;text-transform:uppercase;margin-bottom:20px">Estrutura dos Playoffs</h3>
+<div class="accordion-item open">
+<button class="accordion-header" data-i18n="nfl_222">Wild Card Weekend (14 equipas) <span class="accordion-arrow">▼</span></button>
+<div class="accordion-body" data-i18n="nfl_223" style="display:block">6 jogos (3 AFC + 3 NFC). As equipas com seed 2-7 de cada conferência jogam entre si. Os campeões de divisão com seed 2, 3 e 4 jogam em casa contra os wild cards. O seed #1 de cada conferência tem bye automático.</div>
+</div>
+<div class="accordion-item">
+<button class="accordion-header" data-i18n="nfl_224">Divisional Round (8 equipas) <span class="accordion-arrow">▼</span></button>
+<div class="accordion-body" data-i18n="nfl_225">4 jogos (2 AFC + 2 NFC). Os vencedores da Wild Card somam-se ao seed #1 de cada conferência. Os seeds mais altos jogam sempre em casa.</div>
+</div>
+<div class="accordion-item">
+<button class="accordion-header" data-i18n="nfl_226">Conference Championships (4 equipas) <span class="accordion-arrow">▼</span></button>
+<div class="accordion-body" data-i18n="nfl_227">2 jogos — o AFC Championship e o NFC Championship. Os vencedores avançam para o Super Bowl. O seed mais alto joga em casa.</div>
+</div>
+<div class="accordion-item">
+<button class="accordion-header" data-i18n="nfl_228">🏆 Super Bowl (2 equipas) <span class="accordion-arrow">▼</span></button>
+<div class="accordion-body" data-i18n="nfl_229">O jogo mais assistido do ano, realizado num campo neutro em fevereiro. O campeão da AFC enfrenta o campeão da NFC. O MVP é atribuído ao melhor jogador do jogo.</div>
+</div>
+</div>
+<div class="reveal-right">
+<h3 data-i18n="nfl_230" style="font-family:'Oswald',sans-serif;font-size:1.3rem;font-weight:700;text-transform:uppercase;margin-bottom:20px">Super Bowls Recentes</h3>
+<div style="display:flex;flex-direction:column;gap:12px">
+<div style="background:linear-gradient(135deg,rgba(200,166,48,0.1),rgba(212,0,38,0.05));border:1px solid rgba(200,166,48,0.25);border-radius:12px;padding:16px;display:flex;align-items:center;gap:16px">
+<div data-i18n="nfl_231" style="font-family:'Oswald',sans-serif;font-size:1.4rem;font-weight:700;color:var(--gold);min-width:40px;text-align:center">LIX</div>
+<div style="flex:1">
+<div data-i18n="nfl_232" style="font-weight:600">Philadelphia Eagles 40 — Kansas City Chiefs 22</div>
+<div data-i18n="nfl_233" style="font-size:0.85rem;color:var(--text-muted)">9 Fev 2025 · New Orleans · MVP: Jalen Hurts</div>
+</div>
+</div>
+<div style="background:var(--card);border:1px solid var(--card-border);border-radius:12px;padding:16px;display:flex;align-items:center;gap:16px">
+<div data-i18n="nfl_234" style="font-family:'Oswald',sans-serif;font-size:1.4rem;font-weight:700;color:var(--text-muted);min-width:40px;text-align:center">LVIII</div>
+<div style="flex:1">
+<div data-i18n="nfl_235" style="font-weight:600">Kansas City Chiefs 25 — San Francisco 49ers 22 (OT)</div>
+<div data-i18n="nfl_236" style="font-size:0.85rem;color:var(--text-muted)">11 Fev 2024 · Las Vegas · MVP: Patrick Mahomes</div>
+</div>
+</div>
+<div style="background:var(--card);border:1px solid var(--card-border);border-radius:12px;padding:16px;display:flex;align-items:center;gap:16px">
+<div data-i18n="nfl_237" style="font-family:'Oswald',sans-serif;font-size:1.4rem;font-weight:700;color:var(--text-muted);min-width:40px;text-align:center">LVII</div>
+<div style="flex:1">
+<div data-i18n="nfl_238" style="font-weight:600">Kansas City Chiefs 38 — Philadelphia Eagles 35</div>
+<div data-i18n="nfl_239" style="font-size:0.85rem;color:var(--text-muted)">12 Fev 2023 · Glendale, AZ · MVP: Patrick Mahomes</div>
+</div>
+</div>
+<div style="background:var(--card);border:1px solid var(--card-border);border-radius:12px;padding:16px;display:flex;align-items:center;gap:16px">
+<div data-i18n="nfl_240" style="font-family:'Oswald',sans-serif;font-size:1.4rem;font-weight:700;color:var(--text-muted);min-width:40px;text-align:center">LVI</div>
+<div style="flex:1">
+<div data-i18n="nfl_241" style="font-weight:600">Los Angeles Rams 23 — Cincinnati Bengals 20</div>
+<div data-i18n="nfl_242" style="font-size:0.85rem;color:var(--text-muted)">13 Fev 2022 · Los Angeles · MVP: Cooper Kupp</div>
+</div>
+</div>
+<div style="background:var(--card);border:1px solid var(--card-border);border-radius:12px;padding:16px;display:flex;align-items:center;gap:16px">
+<div style="font-family:'Oswald',sans-serif;font-size:1.4rem;font-weight:700;color:var(--text-muted);min-width:40px;text-align:center">LV</div>
+<div style="flex:1">
+<div data-i18n="nfl_243" style="font-weight:600">Tampa Bay Buccaneers 31 — Kansas City Chiefs 9</div>
+<div data-i18n="nfl_244" style="font-size:0.85rem;color:var(--text-muted)">7 Fev 2021 · Tampa Bay · MVP: Tom Brady</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- FOOTER -->
+<div id="footer-placeholder"></div>
+<script src="js/i18n.js"></script>
+<script src="js/shared.js"></script>
+<script src="js/nav.js"></script>
+</body>
+</html>
